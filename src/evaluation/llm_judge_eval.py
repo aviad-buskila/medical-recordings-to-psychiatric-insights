@@ -93,7 +93,6 @@ def run_llm_judge_eval(
             candidate_score = float(result.get("candidate_overall_score", 0.0) or 0.0)
             baseline_score = float(result.get("baseline_overall_score", 0.0) or 0.0)
             rationale = str(result.get("rationale", "")).strip()
-            rationale_short = (rationale[:140] + "...") if len(rationale) > 140 else rationale
 
             if winner == "candidate":
                 wins_candidate += 1
@@ -114,7 +113,7 @@ def run_llm_judge_eval(
                 baseline_label,
                 baseline_score,
                 delta_value,
-                rationale_short or "n/a",
+                rationale or "n/a",
             )
             analytics.insert_eval_metric(
                 sample_id=sample_id,
