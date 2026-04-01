@@ -1,4 +1,8 @@
-from src.evaluation.speaker_wer import per_speaker_breakdown, speaker_labels_for_reference_words
+from src.evaluation.speaker_wer import (
+    per_speaker_breakdown,
+    per_speaker_char_breakdown,
+    speaker_labels_for_reference_words,
+)
 
 
 def test_per_speaker_substitution_on_speaker_two() -> None:
@@ -18,6 +22,15 @@ def test_speaker_labels_zip_when_identical() -> None:
     js = [1, 2]
     sp = speaker_labels_for_reference_words(ref, jw, js)
     assert sp == [1, 2]
+
+
+def test_per_speaker_cer_substitution() -> None:
+    ref_chars = list("ab")
+    hyp_chars = list("ax")
+    sp = [1, 2]
+    out = per_speaker_char_breakdown(ref_chars, hyp_chars, sp)
+    assert out[1]["substitutions"] == 0
+    assert out[2]["substitutions"] == 1
 
 
 def test_insertion_attributed_to_last_ref_speaker() -> None:

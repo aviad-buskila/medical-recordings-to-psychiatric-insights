@@ -36,7 +36,7 @@ Place dataset folders under `data/raw`:
 - `data/raw/casenotes`
 - `data/raw/recordings`
 - `data/raw/dataset.pickle` (used as primary gold source for evaluation)
-- `data/raw/transcripts/transcribed/<sample_id>.json` (optional) — speaker-tagged dialogue for **per-speaker WER** (speakers 1 and 2) on `run-eval`. Each file is a JSON array of `{ "speaker": 1, "dialogue": ["...", ...] }` objects. Gold text for WER still comes from `dataset.pickle`; the JSON is used only to label words by speaker.
+- `data/raw/transcripts/transcribed/<sample_id>.json` (optional) — speaker-tagged dialogue for **per-speaker WER and CER** (speakers 1 and 2) on `run-eval`. Each file is a JSON array of `{ "speaker": 1, "dialogue": ["...", ...] }` objects. Gold text for evaluation still comes from `dataset.pickle`; the JSON is used only to label words/characters by speaker.
 
 ## CLI Commands
 
@@ -47,7 +47,7 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-stt --flavor both --limit 3`
 - `python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback`
 - `python -m src.cli.main build-rag-index`
-- `python -m src.cli.main run-eval`
+- `python -m src.cli.main run-eval` (stores `wer` and `cer` metrics per sample; **CER** = character-level S/I/D vs normalized gold)
 - `python -m src.cli.main run-eval --limit 5`
 - `python -m src.cli.main run-eval --run-id <stt_run_id>`
 - `python -m src.cli.main run-eval --run-id <stt_run_id> --ref-run-id <baseline_run_id>`
