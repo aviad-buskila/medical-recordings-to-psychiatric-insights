@@ -9,7 +9,11 @@ from src.stt.mlx_whisper_service import MLXWhisperService
 logger = logging.getLogger(__name__)
 
 
-def run_stt_pipeline(limit: int | None = None, stt_profile: str = "default") -> None:
+def run_stt_pipeline(
+    limit: int | None = None,
+    stt_profile: str = "default",
+    selected_sample_ids: list[str] | None = None,
+) -> str:
     settings = get_settings()
     loader = DatasetLoader(
         recordings_dir=settings.recordings_dir,
@@ -17,6 +21,9 @@ def run_stt_pipeline(limit: int | None = None, stt_profile: str = "default") -> 
         casenotes_dir=settings.casenotes_dir,
     )
     samples = loader.load_samples()
+    if selected_sample_ids:
+        selected_set = set(selected_sample_ids)
+        samples = [s for s in samples if s.sample_id in selected_set]
     total_candidates = sum(1 for s in samples if s.recording_path is not None)
     stt, provider_name = _resolve_stt_engine(stt_profile)
     analytics = AnalyticsRepository()
@@ -104,6 +111,35 @@ def run_stt_pipeline(limit: int | None = None, stt_profile: str = "default") -> 
         skipped_invalid_audio,
         failed_other,
     )
+    return run_id
+
+
+def run_stt_both_profiles(limit: int | None = None) -> dict[str, str]:
+    settings = get_settings()
+    loader = DatasetLoader(
+        recordings_dir=settings.recordings_dir,
+        transcripts_dir=settings.transcripts_dir,
+        casenotes_dir=settings.casenotes_dir,
+    )
+    all_samples = loader.load_samples()
+    with_audio = [s for s in all_samples if s.recording_path is not None]
+    target_samples = with_audio[:limit] if limit is not None else with_audio
+    selected_sample_ids = [s.sample_id for s in target_samples]
+    logger.info(
+        "Running both STT profiles on the same files. selected_samples=%s",
+        len(selected_sample_ids),
+    )
+    default_run_id = run_stt_pipeline(
+        limit=limit,
+        stt_profile="default",
+        selected_sample_ids=selected_sample_ids,
+    )
+    quality_run_id = run_stt_pipeline(
+        limit=limit,
+        stt_profile="quality",
+        selected_sample_ids=selected_sample_ids,
+    )
+    return {"default": default_run_id, "quality": quality_run_id}
 
 
 def _resolve_stt_engine(stt_profile: str):

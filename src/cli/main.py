@@ -6,7 +6,7 @@ from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
 from src.rag.indexing import build_rag_index
-from src.stt.pipeline import run_stt_pipeline
+from src.stt.pipeline import run_stt_both_profiles, run_stt_pipeline
 
 
 @click.group()
@@ -36,9 +36,23 @@ def validate_dataset() -> None:
     show_default=True,
     help="STT profile: default (mlx turbo) or quality (mlx large-v3).",
 )
-def run_stt(limit: int | None, profile: str) -> None:
+@click.option(
+    "--flavor",
+    type=click.Choice(["single", "both"], case_sensitive=False),
+    default="single",
+    show_default=True,
+    help="single: run one profile. both: run default+quality on same files.",
+)
+def run_stt(limit: int | None, profile: str, flavor: str) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
+    if flavor.lower() == "both":
+        run_ids = run_stt_both_profiles(limit=limit)
+        click.echo(
+            "STT both-profiles completed. "
+            f"default_run_id={run_ids['default']} quality_run_id={run_ids['quality']}"
+        )
+        return
     run_stt_pipeline(limit=limit, stt_profile=profile)
     click.echo("STT pipeline completed.")
 

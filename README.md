@@ -1,6 +1,7 @@
 # Eleos Health Clinical AI Pipeline
 
 Production-ready scaffold for a clinical AI workflow:
+
 - local speech-to-text from clinical recordings (Apple MLX Whisper)
 - hybrid clinical retrieval grounding (pgvector + BM25)
 - multi-provider generation (OpenAI, Anthropic, Ollama fallback)
@@ -30,6 +31,7 @@ Production-ready scaffold for a clinical AI workflow:
 ## Expected Dataset Layout
 
 Place dataset folders under `data/raw`:
+
 - `data/raw/transcripts`
 - `data/raw/casenotes`
 - `data/raw/recordings`
@@ -41,6 +43,7 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-stt`
 - `python -m src.cli.main run-stt --limit 5`
 - `python -m src.cli.main run-stt --profile quality`
+- `python -m src.cli.main run-stt --flavor both --limit 3`
 - `python -m src.cli.main build-rag-index`
 - `python -m src.cli.main run-eval`
 - `python -m src.cli.main run-eval --limit 5`
