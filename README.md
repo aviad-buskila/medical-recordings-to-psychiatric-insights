@@ -53,3 +53,9 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-llm-judge --run-id <stt_run_id>`
 - `python -m src.cli.main run-llm-judge --run-id <stt_run_id> --ref-run-id <baseline_run_id> --limit 3`
 - `python -m src.cli.main run-all`
+
+## Generated Transcripts
+
+Each STT run also writes local transcript files to:
+
+- `data/generated_transcripts/<run_id>_<timestamp>/<sample_id>.txt`

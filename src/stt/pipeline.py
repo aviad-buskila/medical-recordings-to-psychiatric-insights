@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
@@ -46,6 +47,11 @@ def run_stt_pipeline(
         run_parameters=run_parameters,
         run_timestamp=datetime.utcnow(),
     )
+    run_dir = _prepare_run_output_dir(
+        base_dir=Path(settings.generated_transcripts_dir),
+        run_id=run_id,
+        run_timestamp=run_timestamp,
+    )
     processed = 0
     skipped_invalid_audio = 0
     failed_other = 0
@@ -85,6 +91,7 @@ def run_stt_pipeline(
                 provider=provider_name,
                 payload=payload,
             )
+            _write_transcript_file(run_dir=run_dir, sample_id=sample.sample_id, transcript=payload.get("text", ""))
             processed += 1
             logger.info(
                 "STT success: sample=%s successful=%s/%s",
@@ -159,3 +166,16 @@ def _resolve_stt_engine(stt_profile: str, allow_fallback: bool = True):
             settings.stt_provider,
         )
     return MLXWhisperService(enable_fallback=allow_fallback), settings.stt_provider
+
+
+def _prepare_run_output_dir(base_dir: Path, run_id: str, run_timestamp: datetime) -> Path:
+    timestamp_str = run_timestamp.strftime("%Y%m%dT%H%M%SZ")
+    run_dir = base_dir / f"{run_id}_{timestamp_str}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    return run_dir
+
+
+def _write_transcript_file(run_dir: Path, sample_id: str, transcript: str | object) -> None:
+    safe_sample_id = sample_id.replace("/", "_").replace("\\", "_")
+    out_path = run_dir / f"{safe_sample_id}.txt"
+    out_path.write_text(str(transcript or ""), encoding="utf-8")

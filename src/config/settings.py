@@ -50,6 +50,10 @@ class Settings(BaseSettings):
     casenotes_dir: str = Field(default="./data/raw/casenotes", alias="CASENOTES_DIR")
     recordings_dir: str = Field(default="./data/raw/recordings", alias="RECORDINGS_DIR")
     dataset_pickle_path: str = Field(default="./data/raw/dataset.pickle", alias="DATASET_PICKLE_PATH")
+    generated_transcripts_dir: str = Field(
+        default="./data/generated_transcripts",
+        alias="GENERATED_TRANSCRIPTS_DIR",
+    )
 
     @property
     def postgres_dsn(self) -> str:
