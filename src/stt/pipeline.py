@@ -13,6 +13,7 @@ def run_stt_pipeline(
     limit: int | None = None,
     stt_profile: str = "default",
     selected_sample_ids: list[str] | None = None,
+    allow_fallback: bool = True,
 ) -> str:
     settings = get_settings()
     loader = DatasetLoader(
@@ -25,7 +26,7 @@ def run_stt_pipeline(
         selected_set = set(selected_sample_ids)
         samples = [s for s in samples if s.sample_id in selected_set]
     total_candidates = sum(1 for s in samples if s.recording_path is not None)
-    stt, provider_name = _resolve_stt_engine(stt_profile)
+    stt, provider_name = _resolve_stt_engine(stt_profile, allow_fallback=allow_fallback)
     analytics = AnalyticsRepository()
     fallback_model = getattr(stt, "fallback_model_name", None)
     compute_type = getattr(stt, "compute_type", None)
@@ -35,6 +36,7 @@ def run_stt_pipeline(
         "fallback_model": fallback_model,
         "compute_type": compute_type,
         "profile": stt_profile,
+        "allow_fallback": allow_fallback,
     }
     run_scope = "sample" if limit is not None else "full"
     run_id, run_timestamp = analytics.create_stt_run(
@@ -114,7 +116,7 @@ def run_stt_pipeline(
     return run_id
 
 
-def run_stt_both_profiles(limit: int | None = None) -> dict[str, str]:
+def run_stt_both_profiles(limit: int | None = None, allow_fallback: bool = True) -> dict[str, str]:
     settings = get_settings()
     loader = DatasetLoader(
         recordings_dir=settings.recordings_dir,
@@ -133,16 +135,18 @@ def run_stt_both_profiles(limit: int | None = None) -> dict[str, str]:
         limit=limit,
         stt_profile="default",
         selected_sample_ids=selected_sample_ids,
+        allow_fallback=allow_fallback,
     )
     quality_run_id = run_stt_pipeline(
         limit=limit,
         stt_profile="quality",
         selected_sample_ids=selected_sample_ids,
+        allow_fallback=allow_fallback,
     )
     return {"default": default_run_id, "quality": quality_run_id}
 
 
-def _resolve_stt_engine(stt_profile: str):
+def _resolve_stt_engine(stt_profile: str, allow_fallback: bool = True):
     settings = get_settings()
     profile = stt_profile.lower().strip()
     if profile == "quality":
@@ -150,7 +154,8 @@ def _resolve_stt_engine(stt_profile: str):
             MLXWhisperService(
                 model_name=settings.stt_mlx_quality_model,
                 fallback_model_name=settings.stt_mlx_quality_fallback_model,
+                enable_fallback=allow_fallback,
             ),
             settings.stt_provider,
         )
-    return MLXWhisperService(), settings.stt_provider
+    return MLXWhisperService(enable_fallback=allow_fallback), settings.stt_provider

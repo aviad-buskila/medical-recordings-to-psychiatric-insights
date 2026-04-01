@@ -35,7 +35,7 @@ class Settings(BaseSettings):
         alias="STT_MODEL_FALLBACK",
     )
     stt_mlx_quality_model: str = Field(
-        default="mlx-community/whisper-large-v3",
+        default="mlx-community/whisper-large-v3-mlx",
         alias="STT_MLX_QUALITY_MODEL",
     )
     stt_mlx_quality_fallback_model: str = Field(

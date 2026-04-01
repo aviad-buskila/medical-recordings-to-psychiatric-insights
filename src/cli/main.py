@@ -43,17 +43,23 @@ def validate_dataset() -> None:
     show_default=True,
     help="single: run one profile. both: run default+quality on same files.",
 )
-def run_stt(limit: int | None, profile: str, flavor: str) -> None:
+@click.option(
+    "--no-fallback",
+    is_flag=True,
+    default=False,
+    help="Disable STT model fallback. Fail if selected model cannot be loaded.",
+)
+def run_stt(limit: int | None, profile: str, flavor: str, no_fallback: bool) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
     if flavor.lower() == "both":
-        run_ids = run_stt_both_profiles(limit=limit)
+        run_ids = run_stt_both_profiles(limit=limit, allow_fallback=not no_fallback)
         click.echo(
             "STT both-profiles completed. "
             f"default_run_id={run_ids['default']} quality_run_id={run_ids['quality']}"
         )
         return
-    run_stt_pipeline(limit=limit, stt_profile=profile)
+    run_stt_pipeline(limit=limit, stt_profile=profile, allow_fallback=not no_fallback)
     click.echo("STT pipeline completed.")
 
 

@@ -25,7 +25,7 @@ Production-ready scaffold for a clinical AI workflow:
 - Provider: `mlx-whisper`
 - Default model: `mlx-community/whisper-large-v3-turbo`
 - Fallback model: `mlx-community/whisper-large-v3-turbo`
-- Quality profile model: `mlx-community/whisper-large-v3`
+- Quality profile model: `mlx-community/whisper-large-v3-mlx`
 - Optimized for Apple M-series via MLX/Metal unified memory
 
 ## Expected Dataset Layout
@@ -44,6 +44,7 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-stt --limit 5`
 - `python -m src.cli.main run-stt --profile quality`
 - `python -m src.cli.main run-stt --flavor both --limit 3`
+- `python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback`
 - `python -m src.cli.main build-rag-index`
 - `python -m src.cli.main run-eval`
 - `python -m src.cli.main run-eval --limit 5`
