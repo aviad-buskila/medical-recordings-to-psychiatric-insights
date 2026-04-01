@@ -10,7 +10,7 @@ from src.ingestion.pickle_loader import DatasetPickleLoader
 logger = logging.getLogger(__name__)
 
 
-def evaluate_stt_against_gold(limit: int | None = None) -> None:
+def evaluate_stt_against_gold(limit: int | None = None, run_id: str | None = None) -> None:
     """Compare latest STT outputs against gold transcripts using WER.
 
     Gold references are sourced primarily from dataset.pickle.
@@ -25,6 +25,7 @@ def evaluate_stt_against_gold(limit: int | None = None) -> None:
     gold_transcripts = pickle_loader.load_transcripts()
     analytics = AnalyticsRepository()
     samples = loader.load_samples()
+    run_outputs = analytics.get_stt_outputs_for_run(run_id) if run_id else {}
 
     evaluated = 0
     for sample in samples:
@@ -33,16 +34,20 @@ def evaluate_stt_against_gold(limit: int | None = None) -> None:
         reference = _resolve_gold_reference(sample.sample_id, gold_transcripts, sample.transcript_path)
         if not reference:
             continue
-        hypothesis = analytics.get_latest_stt_output(sample.sample_id) or ""
+        hypothesis = run_outputs.get(sample.sample_id) if run_id else analytics.get_latest_stt_output(sample.sample_id)
+        hypothesis = hypothesis or ""
         if not hypothesis:
-            logger.warning("No STT output found in DB for sample_id=%s", sample.sample_id)
+            if run_id:
+                logger.warning("No STT output found for sample_id=%s in run_id=%s", sample.sample_id, run_id)
+            else:
+                logger.warning("No STT output found in DB for sample_id=%s", sample.sample_id)
             continue
         wer = word_error_rate(reference=reference, hypothesis=hypothesis)
         analytics.insert_eval_metric(
             sample_id=sample.sample_id,
             metric_name="wer",
             metric_value=wer,
-            details={"reference_source": "dataset.pickle"},
+            details={"reference_source": "dataset.pickle", "run_id": run_id},
         )
         logger.info("Sample %s WER: %.4f", sample.sample_id, wer)
         evaluated += 1

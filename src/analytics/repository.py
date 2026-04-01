@@ -116,3 +116,16 @@ class AnalyticsRepository:
         if not row:
             return None
         return str(row[0])
+
+    def get_stt_outputs_for_run(self, run_id: str) -> dict[str, str]:
+        query = """
+            SELECT DISTINCT ON (sample_id) sample_id, transcript_text
+            FROM clinical_ai.stt_outputs
+            WHERE run_id = %(run_id)s
+            ORDER BY sample_id, run_timestamp DESC NULLS LAST, id DESC
+        """
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, {"run_id": run_id})
+                rows = cur.fetchall()
+        return {str(sample_id): str(transcript_text) for sample_id, transcript_text in rows}

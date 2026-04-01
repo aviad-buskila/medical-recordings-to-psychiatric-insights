@@ -50,10 +50,11 @@ def build_index() -> None:
 
 @cli.command("run-eval")
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
-def run_eval(limit: int | None) -> None:
+@click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
+def run_eval(limit: int | None, run_id: str | None) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
-    evaluate_stt_against_gold(limit=limit)
+    evaluate_stt_against_gold(limit=limit, run_id=run_id)
     click.echo("Evaluation scaffold completed.")
 
 
