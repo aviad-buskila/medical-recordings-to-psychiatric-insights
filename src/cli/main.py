@@ -2,6 +2,7 @@ import click
 
 from src.config.settings import get_settings
 from src.core.logging import configure_logging
+from src.evaluation.alignment_report import run_alignment_report
 from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
@@ -89,6 +90,58 @@ def run_all() -> None:
     build_index()
     evaluate_stt_against_gold(limit=None)
     click.echo("Full scaffold pipeline run complete.")
+
+
+@cli.command("show-alignment")
+@click.option("--run-id", type=str, required=True, help="STT run_id whose transcripts align to gold.")
+@click.option(
+    "--ref-run-id",
+    type=str,
+    default=None,
+    help="Optional second run_id; shows a second GOLD vs HYP block for the same samples.",
+)
+@click.option("--limit", "-n", type=int, default=None, help="Only first N aligned samples.")
+@click.option(
+    "--sample-id",
+    multiple=True,
+    default=None,
+    help="Restrict to one or more sample_ids (repeat flag).",
+)
+@click.option(
+    "--chunk-columns",
+    type=int,
+    default=48,
+    show_default=True,
+    help="Alignment table width in word columns before wrapping.",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Path(writable=True),
+    default=None,
+    help="Write report to this UTF-8 file (still prints to stdout).",
+)
+def show_alignment(
+    run_id: str,
+    ref_run_id: str | None,
+    limit: int | None,
+    sample_id: tuple[str, ...] | None,
+    chunk_columns: int,
+    output: str | None,
+) -> None:
+    if limit is not None and limit <= 0:
+        raise click.BadParameter("--limit must be a positive integer")
+    if chunk_columns < 4:
+        raise click.BadParameter("--chunk-columns must be at least 4")
+    text = run_alignment_report(
+        run_id=run_id,
+        ref_run_id=ref_run_id,
+        limit=limit,
+        sample_ids=sample_id if sample_id else None,
+        chunk_columns=chunk_columns,
+        output_path=output,
+    )
+    click.echo(text)
 
 
 @cli.command("run-llm-judge")

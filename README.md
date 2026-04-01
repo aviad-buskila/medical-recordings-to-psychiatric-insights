@@ -54,6 +54,15 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-llm-judge --run-id <stt_run_id> --ref-run-id <baseline_run_id> --limit 3`
 - `python -m src.cli.main run-all`
 
+### Word alignment (gold vs hypothesis, S / I / D)
+
+Gold text comes from `dataset.pickle` (same normalization as WER). For each sample, prints `GOLD` / `HYP` / `OP` rows where `=` is match, `S` substitution, `D` deletion (word in gold missing in hypothesis), `I` insertion (extra word in hypothesis). Long transcripts wrap in chunks of `--chunk-columns` words.
+
+- `python -m src.cli.main show-alignment --run-id <stt_run_id>`
+- `python -m src.cli.main show-alignment --run-id <candidate_run_id> --ref-run-id <baseline_run_id>`
+- `python -m src.cli.main show-alignment --run-id <stt_run_id> --sample-id D0420-S1-T01 --limit 3`
+- `python -m src.cli.main show-alignment --run-id <stt_run_id> -o alignment_report.txt`
+
 ## Generated Transcripts
 
 Each STT run also writes local transcript files to:
