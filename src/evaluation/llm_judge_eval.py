@@ -29,6 +29,8 @@ def run_llm_judge_eval(
 
     analytics = AnalyticsRepository()
     judge = OllamaJudge()
+    candidate_run_info = analytics.get_stt_run_info(run_id)
+    baseline_run_info = analytics.get_stt_run_info(ref_run_id) if ref_run_id else None
 
     candidate_outputs = analytics.get_stt_outputs_for_run(run_id)
     baseline_outputs = analytics.get_stt_outputs_for_run(ref_run_id) if ref_run_id else {}
@@ -43,6 +45,30 @@ def run_llm_judge_eval(
     ties = 0
     score_deltas: list[float] = []
     parse_failures = 0
+    candidate_label = (
+        f"{candidate_run_info.get('provider')}:{candidate_run_info.get('model_name')}"
+        if candidate_run_info
+        else run_id
+    )
+    baseline_label = (
+        f"{baseline_run_info.get('provider')}:{baseline_run_info.get('model_name')}"
+        if baseline_run_info
+        else (ref_run_id or "")
+    )
+    if ref_run_id:
+        logger.info(
+            "LLM judge compare setup | candidate_run=%s (%s) vs baseline_run=%s (%s) | score_scale=0-10 (higher is better)",
+            run_id,
+            candidate_label,
+            ref_run_id,
+            baseline_label,
+        )
+    else:
+        logger.info(
+            "LLM judge setup | run=%s (%s) | score_scale=0-10 (higher is better)",
+            run_id,
+            candidate_label,
+        )
     for sample_id in sample_ids:
         if limit is not None and evaluated >= limit:
             break
@@ -80,10 +106,12 @@ def run_llm_judge_eval(
             score_deltas.append(delta_value)
 
             logger.info(
-                "Sample %s | winner=%s | candidate=%.2f baseline=%.2f delta=%+.2f | rationale=%s",
+                "Sample %s | winner=%s | candidate[%s]=%.2f/10 baseline[%s]=%.2f/10 delta(candidate-baseline)=%+.2f | rationale=%s",
                 sample_id,
                 winner,
+                candidate_label,
                 candidate_score,
+                baseline_label,
                 baseline_score,
                 delta_value,
                 rationale_short or "n/a",
@@ -98,8 +126,9 @@ def run_llm_judge_eval(
             result = judge.evaluate_transcript(reference, candidate_text)
             score = float(result.get("overall_score", 0.0) or 0.0)
             logger.info(
-                "Sample %s | overall=%.2f | del=%s ins=%s sub=%s risk=%s",
+                "Sample %s | overall[%s]=%.2f/10 | del=%s/10 ins=%s/10 sub=%s/10 risk=%s/10",
                 sample_id,
+                candidate_label,
                 score,
                 result.get("deletion_error_severity", "n/a"),
                 result.get("insertion_error_severity", "n/a"),

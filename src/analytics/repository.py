@@ -129,3 +129,25 @@ class AnalyticsRepository:
                 cur.execute(query, {"run_id": run_id})
                 rows = cur.fetchall()
         return {str(sample_id): str(transcript_text) for sample_id, transcript_text in rows}
+
+    def get_stt_run_info(self, run_id: str) -> dict[str, Any] | None:
+        query = """
+            SELECT run_id, provider, model_name, run_scope, run_timestamp, run_parameters
+            FROM clinical_ai.stt_runs
+            WHERE run_id = %(run_id)s
+            LIMIT 1
+        """
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, {"run_id": run_id})
+                row = cur.fetchone()
+        if not row:
+            return None
+        return {
+            "run_id": str(row[0]),
+            "provider": str(row[1]),
+            "model_name": str(row[2]),
+            "run_scope": str(row[3]),
+            "run_timestamp": row[4],
+            "run_parameters": row[5] if isinstance(row[5], dict) else {},
+        }

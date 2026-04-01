@@ -70,16 +70,22 @@ class OllamaJudge:
     def _safe_parse(response: str) -> dict:
         def _coerce_compare_shape(payload: dict) -> dict:
             payload = dict(payload)
-            payload.setdefault("winner", "tie")
-            payload.setdefault("candidate_overall_score", 0)
-            payload.setdefault("baseline_overall_score", 0)
-            if "score_delta" not in payload:
-                try:
-                    payload["score_delta"] = float(payload["candidate_overall_score"]) - float(
-                        payload["baseline_overall_score"]
-                    )
-                except Exception:
-                    payload["score_delta"] = 0.0
+            candidate_score = float(payload.get("candidate_overall_score", 0) or 0)
+            baseline_score = float(payload.get("baseline_overall_score", 0) or 0)
+            delta = candidate_score - baseline_score
+            payload["candidate_overall_score"] = candidate_score
+            payload["baseline_overall_score"] = baseline_score
+            payload["score_delta"] = delta
+
+            winner = str(payload.get("winner", "")).strip().lower()
+            if winner not in {"candidate", "baseline", "tie"}:
+                if delta > 0:
+                    winner = "candidate"
+                elif delta < 0:
+                    winner = "baseline"
+                else:
+                    winner = "tie"
+            payload["winner"] = winner
             payload.setdefault("rationale", "")
             return payload
 
