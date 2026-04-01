@@ -1,7 +1,9 @@
 openai
 anthropic
 ollama
-faster-whisper
+mlx
+mlx-whisper
+huggingface_hub
 psycopg[binary]
 pydantic
 pydantic-settings

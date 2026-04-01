@@ -26,10 +26,14 @@ class Settings(BaseSettings):
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="gemma3:12b", alias="OLLAMA_MODEL")
     ollama_judge_model: str = Field(default="gemma3:12b", alias="OLLAMA_JUDGE_MODEL")
+    hf_token: str = Field(default="", alias="HF_TOKEN")
 
-    stt_model_size: str = Field(default="small", alias="STT_MODEL_SIZE")
-    stt_device: str = Field(default="cpu", alias="STT_DEVICE")
-    stt_compute_type: str = Field(default="int8", alias="STT_COMPUTE_TYPE")
+    stt_provider: str = Field(default="mlx-whisper", alias="STT_PROVIDER")
+    stt_model: str = Field(default="mlx-community/whisper-large-v3-turbo", alias="STT_MODEL")
+    stt_model_fallback: str = Field(
+        default="mlx-community/whisper-large-v3-turbo",
+        alias="STT_MODEL_FALLBACK",
+    )
 
     data_root: str = Field(default="./data/raw", alias="DATA_ROOT")
     transcripts_dir: str = Field(default="./data/raw/transcripts", alias="TRANSCRIPTS_DIR")

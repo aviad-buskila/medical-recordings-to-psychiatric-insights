@@ -27,8 +27,11 @@ def validate_dataset() -> None:
 
 
 @cli.command("run-stt")
-def run_stt() -> None:
-    run_stt_pipeline()
+@click.option("--limit", "-n", type=int, default=None, help="Process only N recordings.")
+def run_stt(limit: int | None) -> None:
+    if limit is not None and limit <= 0:
+        raise click.BadParameter("--limit must be a positive integer")
+    run_stt_pipeline(limit=limit)
     click.echo("STT pipeline completed.")
 
 
@@ -47,7 +50,7 @@ def run_eval() -> None:
 @cli.command("run-all")
 def run_all() -> None:
     validate_dataset()
-    run_stt()
+    run_stt_pipeline(limit=None)
     build_index()
     run_eval()
     click.echo("Full scaffold pipeline run complete.")
