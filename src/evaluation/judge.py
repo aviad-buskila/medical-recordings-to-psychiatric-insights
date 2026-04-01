@@ -30,3 +30,47 @@ class OllamaJudge:
                 "hallucination_risk": 5,
                 "rationale": "Judge output was not valid JSON.",
             }
+
+    def evaluate_transcript(self, reference_text: str, predicted_text: str) -> dict:
+        prompt = (
+            "You are a strict clinical transcription judge.\n"
+            "Compare PREDICTED transcript against REFERENCE transcript.\n"
+            "Return only JSON with keys:\n"
+            "- overall_score (1-10)\n"
+            "- deletion_error_severity (1-10)\n"
+            "- insertion_error_severity (1-10)\n"
+            "- substitution_error_severity (1-10)\n"
+            "- medical_safety_risk (1-10)\n"
+            "- rationale (string)\n"
+            "Scoring: higher overall_score is better; higher severities/risks are worse.\n\n"
+            f"REFERENCE:\n{reference_text}\n\nPREDICTED:\n{predicted_text}"
+        )
+        response = self.client.generate(prompt=prompt, model=self.model)
+        return self._safe_parse(response)
+
+    def compare_transcripts(self, reference_text: str, candidate_text: str, baseline_text: str) -> dict:
+        prompt = (
+            "You are a strict clinical transcription judge.\n"
+            "Compare two candidate transcripts against the REFERENCE.\n"
+            "Return only JSON with keys:\n"
+            "- winner (\"candidate\" or \"baseline\" or \"tie\")\n"
+            "- candidate_overall_score (1-10)\n"
+            "- baseline_overall_score (1-10)\n"
+            "- score_delta (candidate_minus_baseline)\n"
+            "- rationale (string)\n\n"
+            f"REFERENCE:\n{reference_text}\n\n"
+            f"CANDIDATE:\n{candidate_text}\n\n"
+            f"BASELINE:\n{baseline_text}"
+        )
+        response = self.client.generate(prompt=prompt, model=self.model)
+        return self._safe_parse(response)
+
+    @staticmethod
+    def _safe_parse(response: str) -> dict:
+        try:
+            parsed = json.loads(response)
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            pass
+        return {"rationale": "Judge output was not valid JSON.", "raw_output": response}

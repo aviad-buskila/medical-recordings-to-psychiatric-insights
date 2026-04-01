@@ -2,6 +2,7 @@ import click
 
 from src.config.settings import get_settings
 from src.core.logging import configure_logging
+from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
 from src.rag.indexing import build_rag_index
@@ -68,6 +69,17 @@ def run_all() -> None:
     build_index()
     evaluate_stt_against_gold(limit=None)
     click.echo("Full scaffold pipeline run complete.")
+
+
+@cli.command("run-llm-judge")
+@click.option("--run-id", type=str, required=True, help="Target STT run_id to evaluate.")
+@click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side comparison.")
+@click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
+def run_llm_judge(run_id: str, ref_run_id: str | None, limit: int | None) -> None:
+    if limit is not None and limit <= 0:
+        raise click.BadParameter("--limit must be a positive integer")
+    run_llm_judge_eval(run_id=run_id, ref_run_id=ref_run_id, limit=limit)
+    click.echo("LLM judge evaluation completed.")
 
 
 if __name__ == "__main__":
