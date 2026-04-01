@@ -55,6 +55,8 @@ class Settings(BaseSettings):
         alias="GENERATED_TRANSCRIPTS_DIR",
     )
 
+    bertscore_model: str = Field(default="roberta-large", alias="BERTSCORE_MODEL")
+
     @property
     def postgres_dsn(self) -> str:
         return (

@@ -51,6 +51,9 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-eval --limit 5`
 - `python -m src.cli.main run-eval --run-id <stt_run_id>`
 - `python -m src.cli.main run-eval --run-id <stt_run_id> --ref-run-id <baseline_run_id>`
+- `python -m src.cli.main run-bertscore --run-id <stt_run_id>` (BERTScore P/R/F1 vs gold; separate from `run-eval`, not written to `evaluation_metrics`)
+- `python -m src.cli.main run-bertscore --run-id <stt_run_id> --ref-run-id <baseline_run_id> --limit 10`
+- `python -m src.cli.main run-bertscore --run-id <stt_run_id> -o bertscore_summary.json`
 - `python -m src.cli.main run-llm-judge --run-id <stt_run_id>`
 - `python -m src.cli.main run-llm-judge --run-id <stt_run_id> --ref-run-id <baseline_run_id> --limit 3`
 - `python -m src.cli.main run-all`
@@ -63,6 +66,16 @@ Gold text comes from `dataset.pickle` (same normalization as WER). For each samp
 - `python -m src.cli.main show-alignment --run-id <candidate_run_id> --ref-run-id <baseline_run_id>`
 - `python -m src.cli.main show-alignment --run-id <stt_run_id> --sample-id D0420-S1-T01 --limit 3`
 - `python -m src.cli.main show-alignment --run-id <stt_run_id> -o alignment_report.txt`
+
+### BERTScore (`run-bertscore`)
+
+Embedding-based **precision, recall, and F1** between gold (from `dataset.pickle` / transcript fallback, same as WER eval) and STT text from PostgreSQL. Use when you care about semantic overlap, not only word errors. Results log to the console; optional `-o` / `--output-json` writes a full summary file. Does **not** insert rows into `evaluation_metrics` (unlike `run-eval`).
+
+- Pass `--run-id` to score transcripts from a specific STT run; omit it to use the latest STT output per sample from the DB.
+- Encoder defaults to `roberta-large`; override with `--model-type` or `BERTSCORE_MODEL` in `.env`.
+- First run downloads the encoder weights; use `--no-rescale` for faster scoring (scores are not comparable to rescaling baselines).
+
+Dependencies: `torch` and `bert-score` are listed in `requirements.txt`.
 
 ## Generated Transcripts
 
