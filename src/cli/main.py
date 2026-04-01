@@ -51,10 +51,13 @@ def build_index() -> None:
 @cli.command("run-eval")
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
-def run_eval(limit: int | None, run_id: str | None) -> None:
+@click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side WER comparison.")
+def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
-    evaluate_stt_against_gold(limit=limit, run_id=run_id)
+    if ref_run_id and not run_id:
+        raise click.BadParameter("--run-id is required when --ref-run-id is provided")
+    evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id)
     click.echo("Evaluation scaffold completed.")
 
 
