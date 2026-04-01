@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: clinical-ai-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-clinical_ai}
+      POSTGRES_USER: ${POSTGRES_USER:-clinical_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clinical_pass}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clinical_user} -d ${POSTGRES_DB:-clinical_ai}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
