@@ -41,4 +41,5 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-stt --limit 5`
 - `python -m src.cli.main build-rag-index`
 - `python -m src.cli.main run-eval`
+- `python -m src.cli.main run-eval --limit 5`
 - `python -m src.cli.main run-all`

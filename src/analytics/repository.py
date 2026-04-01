@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 
 import psycopg
+from psycopg.types.json import Json
 
 from src.config.settings import get_settings
 
@@ -28,7 +29,7 @@ class AnalyticsRepository:
             "audio_duration_s": payload.get("duration_s", 0.0),
             "transcription_time_s": payload.get("elapsed_s", 0.0),
             "created_at": datetime.utcnow(),
-            "metadata": payload,
+            "metadata": Json(payload),
         }
         with psycopg.connect(self.settings.postgres_dsn) as conn:
             with conn.cursor() as cur:
@@ -49,7 +50,7 @@ class AnalyticsRepository:
                         "sample_id": sample_id,
                         "metric_name": metric_name,
                         "metric_value": metric_value,
-                        "details": details,
+                        "details": Json(details),
                         "created_at": datetime.utcnow(),
                     },
                 )

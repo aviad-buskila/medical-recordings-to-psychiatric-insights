@@ -12,14 +12,14 @@ install: venv
 	$(ACTIVATE) && pip install -r requirements.txt
 
 up:
-	docker compose up -d
+	docker compose --env-file .env up -d
 
 down:
-	docker compose down
+	docker compose --env-file .env down
 
 db-init:
-	docker compose exec -T postgres psql -U $$POSTGRES_USER -d $$POSTGRES_DB -f /docker-entrypoint-initdb.d/001_init.sql
-	docker compose exec -T postgres psql -U $$POSTGRES_USER -d $$POSTGRES_DB -f /docker-entrypoint-initdb.d/002_rag_tables.sql
+	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f /docker-entrypoint-initdb.d/001_init.sql'
+	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f /docker-entrypoint-initdb.d/002_rag_tables.sql'
 
 test:
 	$(ACTIVATE) && pytest -q

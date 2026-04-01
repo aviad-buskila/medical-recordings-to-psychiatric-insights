@@ -10,7 +10,7 @@ from src.ingestion.pickle_loader import DatasetPickleLoader
 logger = logging.getLogger(__name__)
 
 
-def evaluate_stt_against_gold() -> None:
+def evaluate_stt_against_gold(limit: int | None = None) -> None:
     """Compare latest STT outputs against gold transcripts using WER.
 
     Gold references are sourced primarily from dataset.pickle.
@@ -26,7 +26,10 @@ def evaluate_stt_against_gold() -> None:
     analytics = AnalyticsRepository()
     samples = loader.load_samples()
 
+    evaluated = 0
     for sample in samples:
+        if limit is not None and evaluated >= limit:
+            break
         reference = _resolve_gold_reference(sample.sample_id, gold_transcripts, sample.transcript_path)
         if not reference:
             continue
@@ -42,6 +45,7 @@ def evaluate_stt_against_gold() -> None:
             details={"reference_source": "dataset.pickle"},
         )
         logger.info("Sample %s WER: %.4f", sample.sample_id, wer)
+        evaluated += 1
 
 
 def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], transcript_path: Path | None) -> str | None:

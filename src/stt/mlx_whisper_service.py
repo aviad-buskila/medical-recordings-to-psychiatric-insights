@@ -43,6 +43,10 @@ class MLXWhisperService:
         try:
             raw = self._transcribe_with_model(mlx_whisper, recording_path, self.model_name)
         except Exception as exc:
+            if self.is_invalid_audio_error(exc):
+                raise RuntimeError(
+                    f"Invalid or unreadable audio file: {recording_path}"
+                ) from exc
             if self.fallback_model_name and self.fallback_model_name != self.model_name:
                 try:
                     raw = self._transcribe_with_model(
@@ -51,6 +55,10 @@ class MLXWhisperService:
                         self.fallback_model_name,
                     )
                 except Exception as fallback_exc:
+                    if self.is_invalid_audio_error(fallback_exc):
+                        raise RuntimeError(
+                            f"Invalid or unreadable audio file: {recording_path}"
+                        ) from fallback_exc
                     if self._is_ffmpeg_error(fallback_exc):
                         raise RuntimeError(
                             "ffmpeg is required by mlx-whisper but was not found. "
@@ -91,3 +99,17 @@ class MLXWhisperService:
     @staticmethod
     def _is_ffmpeg_error(exc: Exception) -> bool:
         return isinstance(exc, FileNotFoundError) and "ffmpeg" in str(exc).lower()
+
+    @staticmethod
+    def is_invalid_audio_error(exc: Exception) -> bool:
+        current: BaseException | None = exc
+        while current is not None:
+            message = str(current).lower()
+            if "invalid or unreadable audio file" in message:
+                return True
+            if "failed to load audio" in message:
+                return True
+            if "invalid data found when processing input" in message:
+                return True
+            current = current.__cause__
+        return False
