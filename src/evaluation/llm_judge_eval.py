@@ -38,6 +38,11 @@ def run_llm_judge_eval(
         sample_ids = [sid for sid in sample_ids if sid in baseline_outputs]
 
     evaluated = 0
+    wins_candidate = 0
+    wins_baseline = 0
+    ties = 0
+    score_deltas: list[float] = []
+    parse_failures = 0
     for sample_id in sample_ids:
         if limit is not None and evaluated >= limit:
             break
@@ -57,22 +62,50 @@ def run_llm_judge_eval(
             if not baseline_text:
                 continue
             result = judge.compare_transcripts(reference, candidate_text, baseline_text)
+            winner = str(result.get("winner", "unknown")).lower()
+            delta_value = float(result.get("score_delta", 0.0) or 0.0)
+            candidate_score = float(result.get("candidate_overall_score", 0.0) or 0.0)
+            baseline_score = float(result.get("baseline_overall_score", 0.0) or 0.0)
+            rationale = str(result.get("rationale", "")).strip()
+            rationale_short = (rationale[:140] + "...") if len(rationale) > 140 else rationale
+
+            if winner == "candidate":
+                wins_candidate += 1
+            elif winner == "baseline":
+                wins_baseline += 1
+            elif winner == "tie":
+                ties += 1
+            else:
+                parse_failures += 1
+            score_deltas.append(delta_value)
+
             logger.info(
-                "Sample %s judge winner=%s delta=%s",
+                "Sample %s | winner=%s | candidate=%.2f baseline=%.2f delta=%+.2f | rationale=%s",
                 sample_id,
-                result.get("winner", "unknown"),
-                result.get("score_delta", "n/a"),
+                winner,
+                candidate_score,
+                baseline_score,
+                delta_value,
+                rationale_short or "n/a",
             )
             analytics.insert_eval_metric(
                 sample_id=sample_id,
                 metric_name="llm_judge_compare",
-                metric_value=float(result.get("score_delta", 0.0) or 0.0),
+                metric_value=delta_value,
                 details={"run_id": run_id, "ref_run_id": ref_run_id, "judge_result": result},
             )
         else:
             result = judge.evaluate_transcript(reference, candidate_text)
             score = float(result.get("overall_score", 0.0) or 0.0)
-            logger.info("Sample %s llm_judge_overall_score=%.2f", sample_id, score)
+            logger.info(
+                "Sample %s | overall=%.2f | del=%s ins=%s sub=%s risk=%s",
+                sample_id,
+                score,
+                result.get("deletion_error_severity", "n/a"),
+                result.get("insertion_error_severity", "n/a"),
+                result.get("substitution_error_severity", "n/a"),
+                result.get("medical_safety_risk", "n/a"),
+            )
             analytics.insert_eval_metric(
                 sample_id=sample_id,
                 metric_name="llm_judge_score",
@@ -80,6 +113,18 @@ def run_llm_judge_eval(
                 details={"run_id": run_id, "judge_result": result},
             )
         evaluated += 1
+
+    if ref_run_id and evaluated > 0:
+        avg_delta = sum(score_deltas) / len(score_deltas) if score_deltas else 0.0
+        logger.info(
+            "LLM judge compare summary | evaluated=%s candidate_wins=%s baseline_wins=%s ties=%s parse_failures=%s avg_delta=%+.3f",
+            evaluated,
+            wins_candidate,
+            wins_baseline,
+            ties,
+            parse_failures,
+            avg_delta,
+        )
 
     logger.info(
         "LLM judge evaluation completed. run_id=%s ref_run_id=%s evaluated=%s",
