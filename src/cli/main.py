@@ -9,7 +9,6 @@ from src.evaluation.bertscore_eval import run_bertscore_eval
 from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
-from src.rag.indexing import build_rag_index
 from src.stt.pipeline import run_stt_both_profiles, run_stt_pipeline
 
 
@@ -65,12 +64,6 @@ def run_stt(limit: int | None, profile: str, flavor: str, no_fallback: bool) -> 
         return
     run_stt_pipeline(limit=limit, stt_profile=profile, allow_fallback=not no_fallback)
     click.echo("STT pipeline completed.")
-
-
-@cli.command("build-rag-index")
-def build_index() -> None:
-    build_rag_index()
-    click.echo("RAG index build scaffold completed.")
 
 
 @cli.command("run-bertscore")
@@ -133,16 +126,15 @@ def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> N
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
     evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id)
-    click.echo("Evaluation scaffold completed.")
+    click.echo("Evaluation completed.")
 
 
 @cli.command("run-all")
 def run_all() -> None:
     validate_dataset()
     run_stt_pipeline(limit=None, stt_profile="default")
-    build_index()
     evaluate_stt_against_gold(limit=None)
-    click.echo("Full scaffold pipeline run complete.")
+    click.echo("Full pipeline run complete (STT + WER eval).")
 
 
 @cli.command("show-alignment")

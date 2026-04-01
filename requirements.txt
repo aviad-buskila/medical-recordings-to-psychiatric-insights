@@ -1,22 +1,13 @@
-openai
-anthropic
 ollama
 mlx
 mlx-whisper
-faster-whisper
 huggingface_hub
 psycopg[binary]
 pydantic
 pydantic-settings
 python-dotenv
-numpy
-pandas
-rank-bm25
-sentence-transformers
 torch>=2.0
 bert-score>=0.3.13
-pgvector
-tqdm
 click
 rapidfuzz
 
