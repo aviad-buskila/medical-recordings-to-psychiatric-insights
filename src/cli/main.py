@@ -5,7 +5,6 @@ from src.core.logging import configure_logging
 from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
-from src.rag.indexing import build_rag_index
 from src.stt.pipeline import run_stt_both_profiles, run_stt_pipeline
 
 
@@ -34,7 +33,7 @@ def validate_dataset() -> None:
     type=click.Choice(["default", "quality"], case_sensitive=False),
     default="default",
     show_default=True,
-    help="STT profile: default (mlx turbo) or quality (mlx large-v3).",
+    help="STT profile: default (turbo) or quality (large-v3-mlx).",
 )
 @click.option(
     "--flavor",
@@ -63,12 +62,6 @@ def run_stt(limit: int | None, profile: str, flavor: str, no_fallback: bool) -> 
     click.echo("STT pipeline completed.")
 
 
-@cli.command("build-rag-index")
-def build_index() -> None:
-    build_rag_index()
-    click.echo("RAG index build scaffold completed.")
-
-
 @cli.command("run-eval")
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
@@ -79,16 +72,15 @@ def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> N
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
     evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id)
-    click.echo("Evaluation scaffold completed.")
+    click.echo("Evaluation completed.")
 
 
 @cli.command("run-all")
 def run_all() -> None:
     validate_dataset()
     run_stt_pipeline(limit=None, stt_profile="default")
-    build_index()
     evaluate_stt_against_gold(limit=None)
-    click.echo("Full scaffold pipeline run complete.")
+    click.echo("Full pipeline run complete (STT + WER eval).")
 
 
 @cli.command("run-llm-judge")

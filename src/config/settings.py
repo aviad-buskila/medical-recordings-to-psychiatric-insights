@@ -18,11 +18,6 @@ class Settings(BaseSettings):
     postgres_password: str = Field(alias="POSTGRES_PASSWORD")
     postgres_schema: str = Field(default="clinical_ai", alias="POSTGRES_SCHEMA")
 
-    openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
-    openai_model: str = Field(default="gpt-5.2", alias="OPENAI_MODEL")
-    anthropic_api_key: str = Field(default="", alias="ANTHROPIC_API_KEY")
-    anthropic_model: str = Field(default="claude-sonnet-4-5", alias="ANTHROPIC_MODEL")
-
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="gemma3:12b", alias="OLLAMA_MODEL")
     ollama_judge_model: str = Field(default="gemma3:12b", alias="OLLAMA_JUDGE_MODEL")
@@ -42,8 +37,6 @@ class Settings(BaseSettings):
         default="mlx-community/whisper-large-v3-turbo",
         alias="STT_MLX_QUALITY_FALLBACK_MODEL",
     )
-    stt_quality_model: str = Field(default="large-v3", alias="STT_QUALITY_MODEL")
-    stt_quality_compute_type: str = Field(default="int8_float16", alias="STT_QUALITY_COMPUTE_TYPE")
 
     data_root: str = Field(default="./data/raw", alias="DATA_ROOT")
     transcripts_dir: str = Field(default="./data/raw/transcripts", alias="TRANSCRIPTS_DIR")
