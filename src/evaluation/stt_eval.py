@@ -3,7 +3,7 @@ from pathlib import Path
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
-from src.evaluation.wer import word_error_rate
+from src.evaluation.wer import word_error_breakdown
 from src.ingestion.dataset_loader import DatasetLoader
 from src.ingestion.pickle_loader import DatasetPickleLoader
 
@@ -56,26 +56,48 @@ def evaluate_stt_against_gold(
             if not run_id:
                 logger.warning("No STT output found in DB for sample_id=%s", sample.sample_id)
             continue
-        wer = word_error_rate(reference=reference, hypothesis=hypothesis)
-        details = {"reference_source": "dataset.pickle", "run_id": run_id}
+        breakdown = word_error_breakdown(reference=reference, hypothesis=hypothesis)
+        wer = float(breakdown["wer"])
+        details = {"reference_source": "dataset.pickle", "run_id": run_id, "wer_breakdown": breakdown}
         if ref_run_id:
             ref_hypothesis = ref_run_outputs.get(sample.sample_id, "")
             if not ref_hypothesis:
                 continue
-            ref_wer = word_error_rate(reference=reference, hypothesis=ref_hypothesis)
+            ref_breakdown = word_error_breakdown(reference=reference, hypothesis=ref_hypothesis)
+            ref_wer = float(ref_breakdown["wer"])
             delta = wer - ref_wer
-            details.update({"ref_run_id": ref_run_id, "ref_wer": ref_wer, "delta_vs_ref": delta})
+            details.update(
+                {
+                    "ref_run_id": ref_run_id,
+                    "ref_wer": ref_wer,
+                    "ref_wer_breakdown": ref_breakdown,
+                    "delta_vs_ref": delta,
+                }
+            )
             logger.info(
-                "Sample %s WER run=%s: %.4f | ref=%s: %.4f | delta=%.4f",
+                "Sample %s WER run=%s: %.4f (S:%s I:%s D:%s) | ref=%s: %.4f (S:%s I:%s D:%s) | delta=%.4f",
                 sample.sample_id,
                 run_id,
                 wer,
+                breakdown["substitutions"],
+                breakdown["insertions"],
+                breakdown["deletions"],
                 ref_run_id,
                 ref_wer,
+                ref_breakdown["substitutions"],
+                ref_breakdown["insertions"],
+                ref_breakdown["deletions"],
                 delta,
             )
         else:
-            logger.info("Sample %s WER: %.4f", sample.sample_id, wer)
+            logger.info(
+                "Sample %s WER: %.4f (S:%s I:%s D:%s)",
+                sample.sample_id,
+                wer,
+                breakdown["substitutions"],
+                breakdown["insertions"],
+                breakdown["deletions"],
+            )
 
         analytics.insert_eval_metric(
             sample_id=sample.sample_id,
