@@ -1,4 +1,5 @@
 import json
+import re
 
 from src.config.settings import get_settings
 from src.llm.ollama_client import OllamaClient
@@ -67,10 +68,43 @@ class OllamaJudge:
 
     @staticmethod
     def _safe_parse(response: str) -> dict:
+        def _coerce_compare_shape(payload: dict) -> dict:
+            payload = dict(payload)
+            payload.setdefault("winner", "tie")
+            payload.setdefault("candidate_overall_score", 0)
+            payload.setdefault("baseline_overall_score", 0)
+            if "score_delta" not in payload:
+                try:
+                    payload["score_delta"] = float(payload["candidate_overall_score"]) - float(
+                        payload["baseline_overall_score"]
+                    )
+                except Exception:
+                    payload["score_delta"] = 0.0
+            payload.setdefault("rationale", "")
+            return payload
+
         try:
             parsed = json.loads(response)
             if isinstance(parsed, dict):
-                return parsed
+                return _coerce_compare_shape(parsed)
         except json.JSONDecodeError:
-            pass
-        return {"rationale": "Judge output was not valid JSON.", "raw_output": response}
+            parsed = None
+
+        # Try extracting JSON from markdown/code-fenced or mixed output.
+        json_candidates = re.findall(r"\{[\s\S]*\}", response)
+        for candidate in json_candidates:
+            try:
+                parsed = json.loads(candidate)
+                if isinstance(parsed, dict):
+                    return _coerce_compare_shape(parsed)
+            except json.JSONDecodeError:
+                continue
+
+        return {
+            "winner": "unknown",
+            "candidate_overall_score": 0,
+            "baseline_overall_score": 0,
+            "score_delta": 0.0,
+            "rationale": "Judge output was not valid JSON.",
+            "raw_output": response,
+        }
