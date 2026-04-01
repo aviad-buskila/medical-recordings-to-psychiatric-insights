@@ -1,14 +1,16 @@
 import logging
+from datetime import datetime
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
 from src.ingestion.dataset_loader import DatasetLoader
+from src.stt.faster_whisper_service import FasterWhisperService
 from src.stt.mlx_whisper_service import MLXWhisperService
 
 logger = logging.getLogger(__name__)
 
 
-def run_stt_pipeline(limit: int | None = None) -> None:
+def run_stt_pipeline(limit: int | None = None, stt_profile: str = "default") -> None:
     settings = get_settings()
     loader = DatasetLoader(
         recordings_dir=settings.recordings_dir,
@@ -17,14 +19,34 @@ def run_stt_pipeline(limit: int | None = None) -> None:
     )
     samples = loader.load_samples()
     total_candidates = sum(1 for s in samples if s.recording_path is not None)
-    stt = MLXWhisperService()
+    stt, provider_name = _resolve_stt_engine(stt_profile)
     analytics = AnalyticsRepository()
+    fallback_model = getattr(stt, "fallback_model_name", None)
+    compute_type = getattr(stt, "compute_type", None)
+    run_parameters = {
+        "limit": limit,
+        "total_candidates_with_audio": total_candidates,
+        "fallback_model": fallback_model,
+        "compute_type": compute_type,
+        "profile": stt_profile,
+    }
+    run_scope = "sample" if limit is not None else "full"
+    run_id, run_timestamp = analytics.create_stt_run(
+        provider=provider_name,
+        model_name=stt.model_name,
+        run_scope=run_scope,
+        run_parameters=run_parameters,
+        run_timestamp=datetime.utcnow(),
+    )
     processed = 0
     skipped_invalid_audio = 0
     failed_other = 0
     seen_with_audio = 0
     logger.info(
-        "Starting STT pipeline. candidates_with_audio=%s target_limit=%s",
+        "Starting STT pipeline. run_id=%s model=%s scope=%s candidates_with_audio=%s target_limit=%s",
+        run_id,
+        stt.model_name,
+        run_scope,
         total_candidates,
         "all" if limit is None else limit,
     )
@@ -46,7 +68,15 @@ def run_stt_pipeline(limit: int | None = None) -> None:
         )
         try:
             payload = stt.transcribe(sample.recording_path)
-            analytics.insert_stt_run(sample_id=sample.sample_id, provider="mlx-whisper", payload=payload)
+            model_used = str(payload.get("model_name", stt.model_name))
+            analytics.insert_stt_output(
+                run_id=run_id,
+                run_timestamp=run_timestamp,
+                model_name=model_used,
+                sample_id=sample.sample_id,
+                provider=provider_name,
+                payload=payload,
+            )
             processed += 1
             logger.info(
                 "STT success: sample=%s successful=%s/%s",
@@ -75,3 +105,11 @@ def run_stt_pipeline(limit: int | None = None) -> None:
         skipped_invalid_audio,
         failed_other,
     )
+
+
+def _resolve_stt_engine(stt_profile: str):
+    settings = get_settings()
+    profile = stt_profile.lower().strip()
+    if profile == "quality":
+        return FasterWhisperService(), "faster-whisper"
+    return MLXWhisperService(), settings.stt_provider

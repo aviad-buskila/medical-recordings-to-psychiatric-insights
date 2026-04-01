@@ -3,6 +3,7 @@ anthropic
 ollama
 mlx
 mlx-whisper
+faster-whisper
 huggingface_hub
 psycopg[binary]
 pydantic

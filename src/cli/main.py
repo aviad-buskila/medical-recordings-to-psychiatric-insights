@@ -28,10 +28,17 @@ def validate_dataset() -> None:
 
 @cli.command("run-stt")
 @click.option("--limit", "-n", type=int, default=None, help="Process only N recordings.")
-def run_stt(limit: int | None) -> None:
+@click.option(
+    "--profile",
+    type=click.Choice(["default", "quality"], case_sensitive=False),
+    default="default",
+    show_default=True,
+    help="STT profile: default (mlx turbo) or quality (faster-whisper large-v3).",
+)
+def run_stt(limit: int | None, profile: str) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
-    run_stt_pipeline(limit=limit)
+    run_stt_pipeline(limit=limit, stt_profile=profile)
     click.echo("STT pipeline completed.")
 
 
@@ -53,7 +60,7 @@ def run_eval(limit: int | None) -> None:
 @cli.command("run-all")
 def run_all() -> None:
     validate_dataset()
-    run_stt_pipeline(limit=None)
+    run_stt_pipeline(limit=None, stt_profile="default")
     build_index()
     evaluate_stt_against_gold(limit=None)
     click.echo("Full scaffold pipeline run complete.")

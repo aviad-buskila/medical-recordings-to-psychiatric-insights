@@ -21,7 +21,7 @@ class MLXWhisperService:
 
     def transcribe(self, recording_path: Path) -> dict[str, str | float]:
         started_at = time.perf_counter()
-        result = self._run_transcription(recording_path)
+        result, model_used = self._run_transcription(recording_path)
         elapsed_s = time.perf_counter() - started_at
 
         text = str(result.get("text", "")).strip()
@@ -33,15 +33,17 @@ class MLXWhisperService:
             "language": language,
             "duration_s": duration_s,
             "elapsed_s": elapsed_s,
+            "model_name": model_used,
         }
 
-    def _run_transcription(self, recording_path: Path) -> dict[str, Any]:
+    def _run_transcription(self, recording_path: Path) -> tuple[dict[str, Any], str]:
         # Import lazily to avoid import-time failure when dependency is missing.
         import mlx_whisper
         self._ensure_ffmpeg_available()
 
         try:
             raw = self._transcribe_with_model(mlx_whisper, recording_path, self.model_name)
+            model_used = self.model_name
         except Exception as exc:
             if self.is_invalid_audio_error(exc):
                 raise RuntimeError(
@@ -54,6 +56,7 @@ class MLXWhisperService:
                         recording_path,
                         self.fallback_model_name,
                     )
+                    model_used = self.fallback_model_name
                 except Exception as fallback_exc:
                     if self.is_invalid_audio_error(fallback_exc):
                         raise RuntimeError(
@@ -78,8 +81,8 @@ class MLXWhisperService:
                     "MLX Whisper failed to load/transcribe. Check STT_MODEL and HF auth."
                 ) from exc
         if isinstance(raw, dict):
-            return raw
-        return {"text": str(raw)}
+            return raw, model_used
+        return {"text": str(raw)}, model_used
 
     @staticmethod
     def _transcribe_with_model(mlx_whisper: Any, recording_path: Path, model_name: str) -> Any:

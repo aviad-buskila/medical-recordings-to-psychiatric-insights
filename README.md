@@ -39,6 +39,7 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main validate-dataset`
 - `python -m src.cli.main run-stt`
 - `python -m src.cli.main run-stt --limit 5`
+- `python -m src.cli.main run-stt --profile quality`
 - `python -m src.cli.main build-rag-index`
 - `python -m src.cli.main run-eval`
 - `python -m src.cli.main run-eval --limit 5`
