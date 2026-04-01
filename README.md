@@ -99,7 +99,7 @@ Dependencies: `torch` and `bert-score` are in `requirements.txt`.
 - `make venv` / `make install` — create venv and install dependencies
 - `make up` / `make down` — start or stop Postgres
 - `make db-init` — apply SQL migrations
-- `make test` — run pytest
+- `make test` — run pytest (`tests/unit` covers WER/cpWER/MER helpers, alignment + BERTScore with mocks, transcribed JSON, gold resolution, CLI validation; `tests/integration` smoke-imports the CLI)
 - `make run-pipeline` — same as `run-all`
 
 ## Run IDs
