@@ -4,6 +4,7 @@ from typing import Any
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
+from src.evaluation.cp_wer import cp_wer_breakdown_from_json
 from src.evaluation.cer import character_error_breakdown
 from src.evaluation.mer_wil import word_mer_wil_breakdown
 from src.evaluation.speaker_wer import compute_speaker_wer_for_sample
@@ -20,10 +21,11 @@ def evaluate_stt_against_gold(
     run_id: str | None = None,
     ref_run_id: str | None = None,
 ) -> None:
-    """Compare STT outputs against gold: WER, CER, MER, WIL; per-speaker when JSON exists.
+    """Compare STT outputs against gold: WER, CER, MER, WIL, cpWER; per-speaker when JSON exists.
 
-    Gold references are sourced primarily from dataset.pickle. Per-speaker metrics use
-    ``transcripts/transcribed/<sample_id>.json`` for speaker labels.
+    Gold references are sourced primarily from dataset.pickle. Speaker-aware metrics use
+    ``transcripts/transcribed/<sample_id>.json``. **cpWER** minimizes WER over chronological
+    reference and permutations of speaker-aggregated blocks (see ``cp_wer.py``).
     """
     settings = get_settings()
     loader = DatasetLoader(
@@ -86,6 +88,12 @@ def evaluate_stt_against_gold(
         if sp_wer:
             details["speaker_wer"] = sp_wer
 
+        cp_payload = cp_wer_breakdown_from_json(hypothesis, json_path)
+        cp_val: float | None = None
+        if cp_payload:
+            details["cp_wer"] = cp_payload
+            cp_val = float(cp_payload["cp_wer"])
+
         if ref_run_id:
             ref_hypothesis = ref_run_outputs.get(sample.sample_id, "")
             if not ref_hypothesis:
@@ -101,6 +109,10 @@ def evaluate_stt_against_gold(
             ref_wil = float(ref_mer_wil["wil"])
             delta_mer = mer - ref_mer
             delta_wil = wil - ref_wil
+            ref_cp_payload = cp_wer_breakdown_from_json(ref_hypothesis, json_path)
+            delta_cp: float | None = None
+            if cp_payload and ref_cp_payload:
+                delta_cp = float(cp_payload["cp_wer"]) - float(ref_cp_payload["cp_wer"])
             details.update(
                 {
                     "ref_run_id": ref_run_id,
@@ -115,6 +127,10 @@ def evaluate_stt_against_gold(
                     "delta_wil_vs_ref": delta_wil,
                 }
             )
+            if ref_cp_payload:
+                details["ref_cp_wer"] = ref_cp_payload
+            if delta_cp is not None:
+                details["delta_cp_wer_vs_ref"] = delta_cp
             sp_ref = compute_speaker_wer_for_sample(
                 gold_text=reference,
                 hypothesis_text=ref_hypothesis,
@@ -158,6 +174,12 @@ def evaluate_stt_against_gold(
                 delta_mer,
                 delta_wil,
             )
+            _log_cp_wer_lines(
+                sample.sample_id,
+                cp_payload,
+                ref_cp_payload if ref_run_id else None,
+                delta_cp,
+            )
             if sp_wer:
                 _log_speaker_metrics_block(sample.sample_id, sp_wer, label="candidate")
             if sp_ref:
@@ -182,6 +204,7 @@ def evaluate_stt_against_gold(
             )
             if sp_wer:
                 _log_speaker_metrics_block(sample.sample_id, sp_wer, label="candidate")
+            _log_cp_wer_lines(sample.sample_id, cp_payload, None, None)
 
         analytics.insert_eval_metric(
             sample_id=sample.sample_id,
@@ -207,7 +230,52 @@ def evaluate_stt_against_gold(
             metric_value=wil,
             details=details,
         )
+        if cp_val is not None:
+            analytics.insert_eval_metric(
+                sample_id=sample.sample_id,
+                metric_name="cp_wer",
+                metric_value=cp_val,
+                details=details,
+            )
         evaluated += 1
+
+
+def _log_cp_wer_lines(
+    sample_id: str,
+    candidate: dict[str, Any] | None,
+    ref_payload: dict[str, Any] | None,
+    delta_cp: float | None,
+) -> None:
+    if not candidate:
+        return
+    if ref_payload is not None:
+        if delta_cp is not None:
+            logger.info(
+                "Sample %s cpWER=%.4f (best=%s, candidates=%s) | ref cpWER=%.4f | delta_cpWER=%.4f",
+                sample_id,
+                float(candidate["cp_wer"]),
+                candidate["best_candidate_label"],
+                candidate["candidates_evaluated"],
+                float(ref_payload["cp_wer"]),
+                delta_cp,
+            )
+        else:
+            logger.info(
+                "Sample %s cpWER=%.4f (best=%s, candidates=%s) | ref cpWER=%.4f",
+                sample_id,
+                float(candidate["cp_wer"]),
+                candidate["best_candidate_label"],
+                candidate["candidates_evaluated"],
+                float(ref_payload["cp_wer"]),
+            )
+    else:
+        logger.info(
+            "Sample %s cpWER=%.4f (best=%s, candidates=%s)",
+            sample_id,
+            float(candidate["cp_wer"]),
+            candidate["best_candidate_label"],
+            candidate["candidates_evaluated"],
+        )
 
 
 def _fmt_sp_line(tag: str, sp: dict[str, Any]) -> str:
