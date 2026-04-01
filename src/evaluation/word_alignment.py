@@ -61,6 +61,49 @@ def align_words(reference: str, hypothesis: str) -> list[AlignmentStep]:
     return steps
 
 
+def align_word_lists_with_indices(
+    ref_words: list[str],
+    hyp_words: list[str],
+) -> list[tuple[Op, int | None, int | None]]:
+    """Same alignment as ``align_words`` but on pre-split word lists; returns (op, ref_idx, hyp_idx)."""
+    n, m = len(ref_words), len(hyp_words)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        dp[i][0] = i
+    for j in range(1, m + 1):
+        dp[0][j] = j
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            cost = 0 if ref_words[i - 1] == hyp_words[j - 1] else 1
+            dp[i][j] = min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost,
+            )
+
+    raw: list[tuple[Op, int | None, int | None]] = []
+    i, j = n, m
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and ref_words[i - 1] == hyp_words[j - 1] and dp[i][j] == dp[i - 1][j - 1]:
+            raw.append(("=", i - 1, j - 1))
+            i -= 1
+            j -= 1
+        elif i > 0 and j > 0 and dp[i][j] == dp[i - 1][j - 1] + 1:
+            raw.append(("S", i - 1, j - 1))
+            i -= 1
+            j -= 1
+        elif i > 0 and dp[i][j] == dp[i - 1][j] + 1:
+            raw.append(("D", i - 1, None))
+            i -= 1
+        elif j > 0 and dp[i][j] == dp[i][j - 1] + 1:
+            raw.append(("I", None, j - 1))
+            j -= 1
+        else:
+            break
+    raw.reverse()
+    return raw
+
+
 def format_alignment_table(steps: list[AlignmentStep], *, include_legend: bool = True) -> str:
     """Side-by-side REF / HYP / OP with column padding (plain text)."""
     if not steps:

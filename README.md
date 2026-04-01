@@ -36,6 +36,7 @@ Place dataset folders under `data/raw`:
 - `data/raw/casenotes`
 - `data/raw/recordings`
 - `data/raw/dataset.pickle` (used as primary gold source for evaluation)
+- `data/raw/transcripts/transcribed/<sample_id>.json` (optional) — speaker-tagged dialogue for **per-speaker WER** (speakers 1 and 2) on `run-eval`. Each file is a JSON array of `{ "speaker": 1, "dialogue": ["...", ...] }` objects. Gold text for WER still comes from `dataset.pickle`; the JSON is used only to label words by speaker.
 
 ## CLI Commands
 

@@ -1,8 +1,11 @@
 import logging
 from pathlib import Path
+from typing import Any
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
+from src.evaluation.speaker_wer import compute_speaker_wer_for_sample
+from src.evaluation.transcribed_json import transcribed_json_path
 from src.evaluation.wer import word_error_breakdown
 from src.ingestion.dataset_loader import DatasetLoader
 from src.ingestion.pickle_loader import DatasetPickleLoader
@@ -58,7 +61,17 @@ def evaluate_stt_against_gold(
             continue
         breakdown = word_error_breakdown(reference=reference, hypothesis=hypothesis)
         wer = float(breakdown["wer"])
-        details = {"reference_source": "dataset.pickle", "run_id": run_id, "wer_breakdown": breakdown}
+        details: dict = {"reference_source": "dataset.pickle", "run_id": run_id, "wer_breakdown": breakdown}
+
+        json_path = transcribed_json_path(settings.transcripts_dir, sample.sample_id)
+        sp_wer = compute_speaker_wer_for_sample(
+            gold_text=reference,
+            hypothesis_text=hypothesis,
+            transcribed_json_path=json_path,
+        )
+        if sp_wer:
+            details["speaker_wer"] = sp_wer
+
         if ref_run_id:
             ref_hypothesis = ref_run_outputs.get(sample.sample_id, "")
             if not ref_hypothesis:
@@ -74,6 +87,14 @@ def evaluate_stt_against_gold(
                     "delta_vs_ref": delta,
                 }
             )
+            sp_ref = compute_speaker_wer_for_sample(
+                gold_text=reference,
+                hypothesis_text=ref_hypothesis,
+                transcribed_json_path=json_path,
+            )
+            if sp_ref:
+                details["speaker_wer_ref_run"] = sp_ref
+
             logger.info(
                 "Sample %s WER run=%s: %.4f (S:%s I:%s D:%s) | ref=%s: %.4f (S:%s I:%s D:%s) | delta=%.4f",
                 sample.sample_id,
@@ -89,6 +110,10 @@ def evaluate_stt_against_gold(
                 ref_breakdown["deletions"],
                 delta,
             )
+            if sp_wer:
+                _log_speaker_wer_block(sample.sample_id, sp_wer, label="candidate")
+            if sp_ref:
+                _log_speaker_wer_block(sample.sample_id, sp_ref, label="ref_run")
         else:
             logger.info(
                 "Sample %s WER: %.4f (S:%s I:%s D:%s)",
@@ -98,6 +123,8 @@ def evaluate_stt_against_gold(
                 breakdown["insertions"],
                 breakdown["deletions"],
             )
+            if sp_wer:
+                _log_speaker_wer_block(sample.sample_id, sp_wer, label="candidate")
 
         analytics.insert_eval_metric(
             sample_id=sample.sample_id,
@@ -106,6 +133,27 @@ def evaluate_stt_against_gold(
             details=details,
         )
         evaluated += 1
+
+
+def _fmt_sp_line(tag: str, sp: dict[str, Any]) -> str:
+    w = sp.get("wer")
+    wer_s = f"{float(w):.4f}" if w is not None else "n/a"
+    return (
+        f"{tag}: WER={wer_s} (S:{sp['substitutions']} I:{sp['insertions']} D:{sp['deletions']}, "
+        f"n_ref={sp['reference_word_count']})"
+    )
+
+
+def _log_speaker_wer_block(sample_id: str, payload: dict[str, Any], label: str) -> None:
+    s1 = payload["speaker_1"]
+    s2 = payload["speaker_2"]
+    logger.info(
+        "Sample %s per-speaker [%s] %s | %s",
+        sample_id,
+        label,
+        _fmt_sp_line("sp1", s1),
+        _fmt_sp_line("sp2", s2),
+    )
 
 
 def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], transcript_path: Path | None) -> str | None:
