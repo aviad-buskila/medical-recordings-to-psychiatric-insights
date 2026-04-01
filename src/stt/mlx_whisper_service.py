@@ -1,19 +1,29 @@
 import os
 import shutil
 import time
+import logging
 from pathlib import Path
 from typing import Any
 
 from src.config.settings import get_settings
 
+logger = logging.getLogger(__name__)
+
 
 class MLXWhisperService:
     """Local STT wrapper using Apple's MLX Whisper backend."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        model_name: str | None = None,
+        fallback_model_name: str | None = None,
+        enable_fallback: bool = True,
+    ) -> None:
         settings = get_settings()
-        self.model_name = settings.stt_model
-        self.fallback_model_name = settings.stt_model_fallback
+        self.model_name = self._resolve_model_alias(model_name or settings.stt_model)
+        fallback = self._resolve_model_alias(fallback_model_name or settings.stt_model_fallback)
+        self.fallback_model_name = fallback if enable_fallback else None
+        self.enable_fallback = enable_fallback
         if settings.hf_token:
             # Ensure huggingface_hub can use token even when only .env is configured.
             os.environ.setdefault("HF_TOKEN", settings.hf_token)
@@ -21,7 +31,7 @@ class MLXWhisperService:
 
     def transcribe(self, recording_path: Path) -> dict[str, str | float]:
         started_at = time.perf_counter()
-        result = self._run_transcription(recording_path)
+        result, model_used = self._run_transcription(recording_path)
         elapsed_s = time.perf_counter() - started_at
 
         text = str(result.get("text", "")).strip()
@@ -33,15 +43,17 @@ class MLXWhisperService:
             "language": language,
             "duration_s": duration_s,
             "elapsed_s": elapsed_s,
+            "model_name": model_used,
         }
 
-    def _run_transcription(self, recording_path: Path) -> dict[str, Any]:
+    def _run_transcription(self, recording_path: Path) -> tuple[dict[str, Any], str]:
         # Import lazily to avoid import-time failure when dependency is missing.
         import mlx_whisper
         self._ensure_ffmpeg_available()
 
         try:
             raw = self._transcribe_with_model(mlx_whisper, recording_path, self.model_name)
+            model_used = self.model_name
         except Exception as exc:
             if self.is_invalid_audio_error(exc):
                 raise RuntimeError(
@@ -52,6 +64,12 @@ class MLXWhisperService:
                     raw = self._transcribe_with_model(
                         mlx_whisper,
                         recording_path,
+                        self.fallback_model_name,
+                    )
+                    model_used = self.fallback_model_name
+                    logger.warning(
+                        "Primary MLX model failed (%s). Using fallback model (%s).",
+                        self.model_name,
                         self.fallback_model_name,
                     )
                 except Exception as fallback_exc:
@@ -78,8 +96,15 @@ class MLXWhisperService:
                     "MLX Whisper failed to load/transcribe. Check STT_MODEL and HF auth."
                 ) from exc
         if isinstance(raw, dict):
-            return raw
-        return {"text": str(raw)}
+            return raw, model_used
+        return {"text": str(raw)}, model_used
+
+    @staticmethod
+    def _resolve_model_alias(model_name: str) -> str:
+        aliases = {
+            "mlx-community/whisper-large-v3": "mlx-community/whisper-large-v3-mlx",
+        }
+        return aliases.get(model_name, model_name)
 
     @staticmethod
     def _transcribe_with_model(mlx_whisper: Any, recording_path: Path, model_name: str) -> Any:

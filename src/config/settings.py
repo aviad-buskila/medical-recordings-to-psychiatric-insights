@@ -34,12 +34,26 @@ class Settings(BaseSettings):
         default="mlx-community/whisper-large-v3-turbo",
         alias="STT_MODEL_FALLBACK",
     )
+    stt_mlx_quality_model: str = Field(
+        default="mlx-community/whisper-large-v3-mlx",
+        alias="STT_MLX_QUALITY_MODEL",
+    )
+    stt_mlx_quality_fallback_model: str = Field(
+        default="mlx-community/whisper-large-v3-turbo",
+        alias="STT_MLX_QUALITY_FALLBACK_MODEL",
+    )
+    stt_quality_model: str = Field(default="large-v3", alias="STT_QUALITY_MODEL")
+    stt_quality_compute_type: str = Field(default="int8_float16", alias="STT_QUALITY_COMPUTE_TYPE")
 
     data_root: str = Field(default="./data/raw", alias="DATA_ROOT")
     transcripts_dir: str = Field(default="./data/raw/transcripts", alias="TRANSCRIPTS_DIR")
     casenotes_dir: str = Field(default="./data/raw/casenotes", alias="CASENOTES_DIR")
     recordings_dir: str = Field(default="./data/raw/recordings", alias="RECORDINGS_DIR")
     dataset_pickle_path: str = Field(default="./data/raw/dataset.pickle", alias="DATASET_PICKLE_PATH")
+    generated_transcripts_dir: str = Field(
+        default="./data/generated_transcripts",
+        alias="GENERATED_TRANSCRIPTS_DIR",
+    )
 
     @property
     def postgres_dsn(self) -> str:

@@ -1,6 +1,7 @@
 # Eleos Health Clinical AI Pipeline
 
 Production-ready scaffold for a clinical AI workflow:
+
 - local speech-to-text from clinical recordings (Apple MLX Whisper)
 - hybrid clinical retrieval grounding (pgvector + BM25)
 - multi-provider generation (OpenAI, Anthropic, Ollama fallback)
@@ -24,11 +25,13 @@ Production-ready scaffold for a clinical AI workflow:
 - Provider: `mlx-whisper`
 - Default model: `mlx-community/whisper-large-v3-turbo`
 - Fallback model: `mlx-community/whisper-large-v3-turbo`
+- Quality profile model: `mlx-community/whisper-large-v3-mlx`
 - Optimized for Apple M-series via MLX/Metal unified memory
 
 ## Expected Dataset Layout
 
 Place dataset folders under `data/raw`:
+
 - `data/raw/transcripts`
 - `data/raw/casenotes`
 - `data/raw/recordings`
@@ -39,7 +42,20 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main validate-dataset`
 - `python -m src.cli.main run-stt`
 - `python -m src.cli.main run-stt --limit 5`
+- `python -m src.cli.main run-stt --profile quality`
+- `python -m src.cli.main run-stt --flavor both --limit 3`
+- `python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback`
 - `python -m src.cli.main build-rag-index`
 - `python -m src.cli.main run-eval`
 - `python -m src.cli.main run-eval --limit 5`
+- `python -m src.cli.main run-eval --run-id <stt_run_id>`
+- `python -m src.cli.main run-eval --run-id <stt_run_id> --ref-run-id <baseline_run_id>`
+- `python -m src.cli.main run-llm-judge --run-id <stt_run_id>`
+- `python -m src.cli.main run-llm-judge --run-id <stt_run_id> --ref-run-id <baseline_run_id> --limit 3`
 - `python -m src.cli.main run-all`
+
+## Generated Transcripts
+
+Each STT run also writes local transcript files to:
+
+- `data/generated_transcripts/<run_id>_<timestamp>/<sample_id>.txt`
