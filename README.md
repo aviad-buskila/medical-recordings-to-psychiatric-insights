@@ -24,6 +24,7 @@ Production-ready scaffold for a clinical AI workflow:
 - Provider: `mlx-whisper`
 - Default model: `mlx-community/whisper-large-v3-turbo`
 - Fallback model: `mlx-community/whisper-large-v3-turbo`
+- Quality profile model: `mlx-community/whisper-large-v3`
 - Optimized for Apple M-series via MLX/Metal unified memory
 
 ## Expected Dataset Layout

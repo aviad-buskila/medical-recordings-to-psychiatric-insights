@@ -34,7 +34,7 @@ def validate_dataset() -> None:
     type=click.Choice(["default", "quality"], case_sensitive=False),
     default="default",
     show_default=True,
-    help="STT profile: default (mlx turbo) or quality (faster-whisper large-v3).",
+    help="STT profile: default (mlx turbo) or quality (mlx large-v3).",
 )
 def run_stt(limit: int | None, profile: str) -> None:
     if limit is not None and limit <= 0:

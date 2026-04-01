@@ -34,6 +34,14 @@ class Settings(BaseSettings):
         default="mlx-community/whisper-large-v3-turbo",
         alias="STT_MODEL_FALLBACK",
     )
+    stt_mlx_quality_model: str = Field(
+        default="mlx-community/whisper-large-v3",
+        alias="STT_MLX_QUALITY_MODEL",
+    )
+    stt_mlx_quality_fallback_model: str = Field(
+        default="mlx-community/whisper-large-v3-turbo",
+        alias="STT_MLX_QUALITY_FALLBACK_MODEL",
+    )
     stt_quality_model: str = Field(default="large-v3", alias="STT_QUALITY_MODEL")
     stt_quality_compute_type: str = Field(default="int8_float16", alias="STT_QUALITY_COMPUTE_TYPE")
 

@@ -4,7 +4,6 @@ from datetime import datetime
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
 from src.ingestion.dataset_loader import DatasetLoader
-from src.stt.faster_whisper_service import FasterWhisperService
 from src.stt.mlx_whisper_service import MLXWhisperService
 
 logger = logging.getLogger(__name__)
@@ -111,5 +110,11 @@ def _resolve_stt_engine(stt_profile: str):
     settings = get_settings()
     profile = stt_profile.lower().strip()
     if profile == "quality":
-        return FasterWhisperService(), "faster-whisper"
+        return (
+            MLXWhisperService(
+                model_name=settings.stt_mlx_quality_model,
+                fallback_model_name=settings.stt_mlx_quality_fallback_model,
+            ),
+            settings.stt_provider,
+        )
     return MLXWhisperService(), settings.stt_provider

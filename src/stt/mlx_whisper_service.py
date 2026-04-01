@@ -10,10 +10,10 @@ from src.config.settings import get_settings
 class MLXWhisperService:
     """Local STT wrapper using Apple's MLX Whisper backend."""
 
-    def __init__(self) -> None:
+    def __init__(self, model_name: str | None = None, fallback_model_name: str | None = None) -> None:
         settings = get_settings()
-        self.model_name = settings.stt_model
-        self.fallback_model_name = settings.stt_model_fallback
+        self.model_name = model_name or settings.stt_model
+        self.fallback_model_name = fallback_model_name or settings.stt_model_fallback
         if settings.hf_token:
             # Ensure huggingface_hub can use token even when only .env is configured.
             os.environ.setdefault("HF_TOKEN", settings.hf_token)
