@@ -47,7 +47,7 @@ Place dataset folders under `data/raw`:
 - `python -m src.cli.main run-stt --flavor both --limit 3`
 - `python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback`
 - `python -m src.cli.main build-rag-index`
-- `python -m src.cli.main run-eval` (stores `wer` and `cer` metrics per sample; **CER** = character-level S/I/D vs normalized gold)
+- `python -m src.cli.main run-eval` (stores `wer`, `cer`, `mer`, `wil` per sample; **MER** = \(E/(R+H)\), **WIL** = \(2E/(R+H)\) with \(E{=}S{+}I{+}D\) at word level, \(R\) / \(H\) reference / hypothesis word counts after normalization)
 - `python -m src.cli.main run-eval --limit 5`
 - `python -m src.cli.main run-eval --run-id <stt_run_id>`
 - `python -m src.cli.main run-eval --run-id <stt_run_id> --ref-run-id <baseline_run_id>`

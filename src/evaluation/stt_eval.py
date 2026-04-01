@@ -5,6 +5,7 @@ from typing import Any
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
 from src.evaluation.cer import character_error_breakdown
+from src.evaluation.mer_wil import word_mer_wil_breakdown
 from src.evaluation.speaker_wer import compute_speaker_wer_for_sample
 from src.evaluation.transcribed_json import transcribed_json_path
 from src.evaluation.wer import word_error_breakdown
@@ -19,10 +20,10 @@ def evaluate_stt_against_gold(
     run_id: str | None = None,
     ref_run_id: str | None = None,
 ) -> None:
-    """Compare STT outputs against gold transcripts: WER and CER (character error rate).
+    """Compare STT outputs against gold: WER, CER, MER, WIL; per-speaker when JSON exists.
 
-    Gold references are sourced primarily from dataset.pickle. Per-speaker WER/CER
-    (speakers 1 and 2) are computed when ``transcripts/transcribed/<sample_id>.json`` exists.
+    Gold references are sourced primarily from dataset.pickle. Per-speaker metrics use
+    ``transcripts/transcribed/<sample_id>.json`` for speaker labels.
     """
     settings = get_settings()
     loader = DatasetLoader(
@@ -65,11 +66,15 @@ def evaluate_stt_against_gold(
         wer = float(breakdown["wer"])
         cer_breakdown = character_error_breakdown(reference=reference, hypothesis=hypothesis)
         cer = float(cer_breakdown["cer"])
+        mer_wil_breakdown = word_mer_wil_breakdown(reference=reference, hypothesis=hypothesis)
+        mer = float(mer_wil_breakdown["mer"])
+        wil = float(mer_wil_breakdown["wil"])
         details: dict = {
             "reference_source": "dataset.pickle",
             "run_id": run_id,
             "wer_breakdown": breakdown,
             "cer_breakdown": cer_breakdown,
+            "mer_wil_breakdown": mer_wil_breakdown,
         }
 
         json_path = transcribed_json_path(settings.transcripts_dir, sample.sample_id)
@@ -91,6 +96,11 @@ def evaluate_stt_against_gold(
             ref_cer_breakdown = character_error_breakdown(reference=reference, hypothesis=ref_hypothesis)
             ref_cer = float(ref_cer_breakdown["cer"])
             delta_cer = cer - ref_cer
+            ref_mer_wil = word_mer_wil_breakdown(reference=reference, hypothesis=ref_hypothesis)
+            ref_mer = float(ref_mer_wil["mer"])
+            ref_wil = float(ref_mer_wil["wil"])
+            delta_mer = mer - ref_mer
+            delta_wil = wil - ref_wil
             details.update(
                 {
                     "ref_run_id": ref_run_id,
@@ -100,6 +110,9 @@ def evaluate_stt_against_gold(
                     "ref_cer": ref_cer,
                     "ref_cer_breakdown": ref_cer_breakdown,
                     "delta_cer_vs_ref": delta_cer,
+                    "ref_mer_wil_breakdown": ref_mer_wil,
+                    "delta_mer_vs_ref": delta_mer,
+                    "delta_wil_vs_ref": delta_wil,
                 }
             )
             sp_ref = compute_speaker_wer_for_sample(
@@ -112,8 +125,9 @@ def evaluate_stt_against_gold(
 
             logger.info(
                 "Sample %s WER run=%s: %.4f (S:%s I:%s D:%s) | CER: %.4f (S:%s I:%s D:%s chars) | "
+                "MER=%.4f WIL=%.4f (R=%s H=%s) | "
                 "ref=%s WER: %.4f (S:%s I:%s D:%s) | ref CER: %.4f (S:%s I:%s D:%s) | "
-                "delta_WER=%.4f delta_CER=%.4f",
+                "ref MER=%.4f WIL=%.4f | delta_WER=%.4f delta_CER=%.4f delta_MER=%.4f delta_WIL=%.4f",
                 sample.sample_id,
                 run_id,
                 wer,
@@ -124,6 +138,10 @@ def evaluate_stt_against_gold(
                 cer_breakdown["substitutions"],
                 cer_breakdown["insertions"],
                 cer_breakdown["deletions"],
+                mer,
+                wil,
+                mer_wil_breakdown["reference_word_count"],
+                mer_wil_breakdown["hypothesis_word_count"],
                 ref_run_id,
                 ref_wer,
                 ref_breakdown["substitutions"],
@@ -133,8 +151,12 @@ def evaluate_stt_against_gold(
                 ref_cer_breakdown["substitutions"],
                 ref_cer_breakdown["insertions"],
                 ref_cer_breakdown["deletions"],
+                ref_mer,
+                ref_wil,
                 delta,
                 delta_cer,
+                delta_mer,
+                delta_wil,
             )
             if sp_wer:
                 _log_speaker_metrics_block(sample.sample_id, sp_wer, label="candidate")
@@ -142,7 +164,8 @@ def evaluate_stt_against_gold(
                 _log_speaker_metrics_block(sample.sample_id, sp_ref, label="ref_run")
         else:
             logger.info(
-                "Sample %s WER: %.4f (S:%s I:%s D:%s) | CER: %.4f (S:%s I:%s D:%s chars)",
+                "Sample %s WER: %.4f (S:%s I:%s D:%s) | CER: %.4f (S:%s I:%s D:%s chars) | "
+                "MER=%.4f WIL=%.4f (R=%s H=%s)",
                 sample.sample_id,
                 wer,
                 breakdown["substitutions"],
@@ -152,6 +175,10 @@ def evaluate_stt_against_gold(
                 cer_breakdown["substitutions"],
                 cer_breakdown["insertions"],
                 cer_breakdown["deletions"],
+                mer,
+                wil,
+                mer_wil_breakdown["reference_word_count"],
+                mer_wil_breakdown["hypothesis_word_count"],
             )
             if sp_wer:
                 _log_speaker_metrics_block(sample.sample_id, sp_wer, label="candidate")
@@ -168,6 +195,18 @@ def evaluate_stt_against_gold(
             metric_value=cer,
             details=details,
         )
+        analytics.insert_eval_metric(
+            sample_id=sample.sample_id,
+            metric_name="mer",
+            metric_value=mer,
+            details=details,
+        )
+        analytics.insert_eval_metric(
+            sample_id=sample.sample_id,
+            metric_name="wil",
+            metric_value=wil,
+            details=details,
+        )
         evaluated += 1
 
 
@@ -177,6 +216,17 @@ def _fmt_sp_line(tag: str, sp: dict[str, Any]) -> str:
     return (
         f"{tag}: WER={wer_s} (S:{sp['substitutions']} I:{sp['insertions']} D:{sp['deletions']}, "
         f"n_ref={sp['reference_word_count']})"
+    )
+
+
+def _fmt_mer_wil_sp_line(tag: str, sp: dict[str, Any]) -> str:
+    m = sp.get("mer")
+    w = sp.get("wil")
+    mer_s = f"{float(m):.4f}" if m is not None else "n/a"
+    wil_s = f"{float(w):.4f}" if w is not None else "n/a"
+    return (
+        f"{tag}: MER={mer_s} WIL={wil_s} "
+        f"(R={sp['reference_word_count']} H={sp['hypothesis_word_count']})"
     )
 
 
@@ -198,6 +248,13 @@ def _log_speaker_metrics_block(sample_id: str, payload: dict[str, Any], label: s
         label,
         _fmt_sp_line("sp1", s1),
         _fmt_sp_line("sp2", s2),
+    )
+    logger.info(
+        "Sample %s per-speaker [%s] %s | %s",
+        sample_id,
+        label,
+        _fmt_mer_wil_sp_line("sp1", s1),
+        _fmt_mer_wil_sp_line("sp2", s2),
     )
     cer_block = payload.get("cer")
     if cer_block:

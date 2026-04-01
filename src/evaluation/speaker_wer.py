@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from src.evaluation.cer import align_char_lists_with_indices, character_error_breakdown
+from src.evaluation.mer_wil import mer_wil_from_counts, word_mer_wil_breakdown
 from src.evaluation.text_normalizer import TextNormalizer
 from src.evaluation.wer import word_error_breakdown
 from src.evaluation.word_alignment import align_word_lists_with_indices
@@ -107,11 +108,15 @@ def per_speaker_breakdown(
     hyp_words: list[str],
     speaker_per_ref: list[int],
 ) -> dict[int, dict[str, Any]]:
-    """Partition S/I/D from the gold-vs-hyp alignment into speakers 1 and 2."""
+    """Partition S/I/D (and hypothesis word counts) from gold-vs-hyp alignment into speakers 1 and 2.
+
+    MER/WIL use E_s / (R_s + H_s) and 2 * E_s / (R_s + H_s) with H_s = hypothesis words aligned to speaker s.
+    """
     steps = align_word_lists_with_indices(ref_words, hyp_words)
     S = {1: 0, 2: 0}
     I = {1: 0, 2: 0}
     D = {1: 0, 2: 0}
+    H_count = {1: 0, 2: 0}
     ref_count = {1: 0, 2: 0}
     for sp in speaker_per_ref:
         if sp in ref_count:
@@ -122,25 +127,38 @@ def per_speaker_breakdown(
         if ri is not None:
             last_sp = speaker_per_ref[ri]
         if op == "=":
-            continue
-        if op == "S":
+            H_count[last_sp] += 1
+        elif op == "S":
             S[last_sp] += 1
+            H_count[last_sp] += 1
         elif op == "D":
             D[last_sp] += 1
         elif op == "I":
             I[last_sp] += 1
+            H_count[last_sp] += 1
 
     out: dict[int, dict[str, Any]] = {}
     for sp in (1, 2):
         rc = ref_count[sp]
+        hc = H_count[sp]
         errs = S[sp] + I[sp] + D[sp]
         wer_s = (errs / rc) if rc > 0 else None
+        mw = mer_wil_from_counts(
+            substitutions=S[sp],
+            insertions=I[sp],
+            deletions=D[sp],
+            reference_word_count=rc,
+            hypothesis_word_count=hc,
+        )
         out[sp] = {
             "wer": wer_s,
             "substitutions": S[sp],
             "insertions": I[sp],
             "deletions": D[sp],
             "reference_word_count": rc,
+            "hypothesis_word_count": hc,
+            "mer": mw["mer"],
+            "wil": mw["wil"],
         }
     return out
 
@@ -164,6 +182,7 @@ def compute_speaker_wer_for_sample(
     hyp_words = TextNormalizer.normalize(hypothesis_text).split()
 
     overall_wer = word_error_breakdown(gold_text, hypothesis_text)
+    overall_mer_wil = word_mer_wil_breakdown(gold_text, hypothesis_text)
     by_sp_wer = per_speaker_breakdown(ref_words, hyp_words, speaker_per_ref)
 
     ref_norm = TextNormalizer.normalize(gold_text)
@@ -176,6 +195,17 @@ def compute_speaker_wer_for_sample(
 
     return {
         "overall": overall_wer,
+        "mer_wil": {
+            "overall": overall_mer_wil,
+            "speaker_1": {
+                k: by_sp_wer[1][k]
+                for k in ("mer", "wil", "reference_word_count", "hypothesis_word_count")
+            },
+            "speaker_2": {
+                k: by_sp_wer[2][k]
+                for k in ("mer", "wil", "reference_word_count", "hypothesis_word_count")
+            },
+        },
         "speaker_1": by_sp_wer[1],
         "speaker_2": by_sp_wer[2],
         "cer": {
