@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: ankane/pgvector:latest
+    image: postgres:16-bookworm
     container_name: clinical-ai-postgres
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-clinical_ai}
