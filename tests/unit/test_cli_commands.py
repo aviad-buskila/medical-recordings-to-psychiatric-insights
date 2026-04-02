@@ -23,6 +23,7 @@ def test_cli_help_lists_commands() -> None:
         "run-all",
         "show-alignment",
         "run-llm-judge",
+        "insights-extract",
     ):
         assert name in result.output
 
@@ -176,6 +177,22 @@ def test_run_llm_judge_cli_sample_id(mock_eval: MagicMock) -> None:
     kwargs = mock_eval.call_args.kwargs
     assert kwargs["run_id"] == "r1"
     assert kwargs["sample_id"] == "D0420-S1-T01"
+
+
+@patch("src.cli.main.run_insights_extract")
+def test_insights_extract_cli_invokes_extractor(mock_extract: MagicMock, tmp_path: Path) -> None:
+    mock_extract.return_value = tmp_path / "insights.json"
+    runner = CliRunner()
+    result = runner.invoke(
+        cli,
+        ["insights-extract", "--run-id", "r1", "--sample-id", "D0420-S1-T01", "--limit", "2", "--model", "m"],
+    )
+    assert result.exit_code == 0
+    kwargs = mock_extract.call_args.kwargs
+    assert kwargs["run_id"] == "r1"
+    assert kwargs["sample_id"] == "D0420-S1-T01"
+    assert kwargs["limit"] == 2
+    assert kwargs["model_name"] == "m"
 
 
 def test_restore_stt_from_generated_dry_run_empty() -> None:

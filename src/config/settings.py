@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="gemma3:12b", alias="OLLAMA_MODEL")
     ollama_judge_model: str = Field(default="gemma3:12b", alias="OLLAMA_JUDGE_MODEL")
+    ollama_insights_model: str = Field(default="med-gemma1.5:4b", alias="OLLAMA_INSIGHTS_MODEL")
     hf_token: str = Field(default="", alias="HF_TOKEN")
 
     stt_provider: str = Field(default="mlx-whisper", alias="STT_PROVIDER")
@@ -46,6 +47,10 @@ class Settings(BaseSettings):
     generated_transcripts_dir: str = Field(
         default="./data/generated_transcripts",
         alias="GENERATED_TRANSCRIPTS_DIR",
+    )
+    insights_extract_dir: str = Field(
+        default="./data/processed/insights_extract",
+        alias="INSIGHTS_EXTRACT_DIR",
     )
 
     bertscore_model: str = Field(default="roberta-large", alias="BERTSCORE_MODEL")

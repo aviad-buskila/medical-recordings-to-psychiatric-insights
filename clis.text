@@ -61,6 +61,13 @@ python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id 
 python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID> --limit 3
 
+# --- Psychiatry insights extraction (Ollama med-gemma1.5:4b over STT transcripts) ---
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID>
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --sample-id D0420-S1-T01
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --limit 10
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --model med-gemma1.5:4b
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> -o data/processed/insights_extract/custom.json
+
 # --- Analysis notebook (compare 2 runs with visuals + recommendation) ---
 jupyter notebook analysis/model_eval_insights.ipynb
 CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> jupyter notebook analysis/model_eval_insights.ipynb

@@ -199,3 +199,40 @@ class AnalyticsRepository:
             "run_timestamp": row[4],
             "run_parameters": row[5] if isinstance(row[5], dict) else {},
         }
+
+    def upsert_transcript_insight(
+        self,
+        run_id: str,
+        sample_id: str,
+        insight_model: str,
+        prompt_version: str,
+        insights: dict[str, Any],
+        raw_output: str,
+    ) -> None:
+        query = """
+            INSERT INTO clinical_ai.transcript_insights (
+                run_id, sample_id, insight_model, prompt_version, insights, raw_output, created_at
+            ) VALUES (
+                %(run_id)s, %(sample_id)s, %(insight_model)s, %(prompt_version)s, %(insights)s, %(raw_output)s, %(created_at)s
+            )
+            ON CONFLICT (run_id, sample_id, insight_model, prompt_version)
+            DO UPDATE SET
+                insights = EXCLUDED.insights,
+                raw_output = EXCLUDED.raw_output,
+                created_at = EXCLUDED.created_at
+        """
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    query,
+                    {
+                        "run_id": run_id,
+                        "sample_id": sample_id,
+                        "insight_model": insight_model,
+                        "prompt_version": prompt_version,
+                        "insights": Json(insights),
+                        "raw_output": raw_output,
+                        "created_at": datetime.utcnow(),
+                    },
+                )
+            conn.commit()
