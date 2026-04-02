@@ -47,6 +47,14 @@ def _safe_json_loads(raw: str) -> dict[str, Any]:
     }
 
 
+def _json_default(obj: Any) -> Any:
+    if isinstance(obj, datetime):
+        return obj.astimezone(timezone.utc).isoformat() if obj.tzinfo else obj.isoformat()
+    if isinstance(obj, Path):
+        return str(obj)
+    return str(obj)
+
+
 @dataclass
 class TranscriptInsightsExtractor:
     model_name: str
@@ -141,7 +149,10 @@ def run_insights_extract(
         "samples_processed": len(results),
         "results": results,
     }
-    output_path.write_text(json.dumps(artifact, indent=2, ensure_ascii=False), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(artifact, indent=2, ensure_ascii=False, default=_json_default),
+        encoding="utf-8",
+    )
     logger.info("Wrote insights extract artifact: %s", output_path)
     return output_path
 
