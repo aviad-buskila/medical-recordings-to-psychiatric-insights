@@ -1,0 +1,63 @@
+{
+  "command": "insights_extract",
+  "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+  "timestamp_utc": "20260402T182534Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T18:17:42.086202+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 20.938,
+    "avg_elapsed_s_per_sample": 20.922
+  },
+  "results": [
+    {
+      "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"Audrey is a woman who believes she is receiving messages from God, who tells her she is a very clever person and should show her work to others. She has been keeping this secret from her family and her GP. She has been neglecting her work and sleep, and has been sending copies of her work to the Archbishop of Canterbury and the Pope, but has not received replies. She feels that her family is not very clever. She has been feeling fantastic and has a lot of energy from God. She has been showing her work to some people, but not many. She has been feeling physically fine. She has been taking Prozac in the past but stopped. She has been talking to her GP about her work but the GP has not been paying attention to her and has been changing the subject. Audrey is fed up with her GP and wants to talk to the top person, the boss, or the head person. She has been rude to her GP and wants to talk to someone else.\",\n  \"key_points\": [\n    \"Audrey believes she is receiving messages from God.\",\n    \"God tells her she is very clever and should show her work to others.\",\n    \"She has been neglecting her work and sleep.\",\n    \"She has been sending copies of her work to the Archbishop of Canterbury and the Pope.\",\n    \"She has not received replies from the Archbishop or the Pope.\",\n    \"She feels her family is not very clever.\",\n    \"She feels fantastic and has a lot of energy from God.\",\n    \"She has been showing her work to some people but not many.\",\n    \"She has been feeling physically fine.\",\n    \"She has been taking Prozac in the past but stopped.\",\n    \"She has been talking to her GP about her work but the GP has not been paying attention to her.\",",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort",
+      "timing": {
+        "elapsed_s": 20.922,
+        "transcript_char_count": 14497,
+        "transcript_word_count": 2888
+      }
+    }
+  ]
+}

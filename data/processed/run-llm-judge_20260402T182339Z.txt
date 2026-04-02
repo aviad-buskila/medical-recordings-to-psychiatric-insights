@@ -1,0 +1,74 @@
+Command line: /Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-llm-judge --run-id 492718d4-cf10-4919-809f-d5f0e4ac305d --ref-run-id 1273e9f6-672d-439f-9814-a63a4c881d41 --limit 1
+Report path: data/processed/run-llm-judge_20260402T182339Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-llm-judge --run-id 492718d4-cf10-4919-809f-d5f0e4ac305d --ref-run-id 1273e9f6-672d-439f-9814-a63a4c881d41 --limit 1",
+  "report_path": "data/processed/run-llm-judge_20260402T182339Z.txt",
+  "run_metadata": {
+    "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+    "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T18:17:42.086202+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T18:16:47.112265+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 3.0,
+      "details": {
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 6.0,
+          "score_delta": 3.0,
+          "rationale": "The candidate transcript demonstrates a significantly higher degree of accuracy in capturing the nuances and complexities of the dialogue, despite some minor conversational filler. The baseline, while capturing the core information, omits crucial repetitions, phrases, and idiosyncratic speech patterns (e.g., 'free food food for the soul') that are essential for accurately representing the patient's presentation.  The baseline also adds several unnecessary fillers ('yeah, I can imagine', 'Yeah. Okay.') and misrepresents some of the speaker’s intent. These omissions and additions impact the overall clinical fidelity of the transcription. The candidate’s faithfulness to the original greatly enhances the transcript’s diagnostic value. Some minor inaccuracies are present in the candidate transcript, but these are outweighed by its superior overall fidelity."
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "wins_candidate": 1,
+    "wins_baseline": 0,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T182339Z.txt
