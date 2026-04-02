@@ -71,6 +71,11 @@ jupyter notebook analysis/show_alignment_visualizer.ipynb
 ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt jupyter notebook analysis/show_alignment_visualizer.ipynb
 ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt SAMPLE_ID=D0420-S1-T01 MAX_CHUNKS_PER_RUN=6 jupyter notebook analysis/show_alignment_visualizer.ipynb
 
+# --- Gold talk structure: speaker-over-time Gantt (dataset.pickle based) ---
+jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle TRANSCRIPTS_DIR=./data/raw/transcripts jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle SAMPLE_IDS=D0420-S1-T01,D0420-S1-T02 MAX_SAMPLES=10 jupyter notebook analysis/gold_speaker_timeline.ipynb
+
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---
 python -m src.cli.main run-all
 
