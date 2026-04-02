@@ -1,3 +1,74 @@
 Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 9835ed61-9906-449d-bb8b-365cf7b0e70c --ref-run-id 87bac619-f810-4994-8a27-7b883b8f99b7 --limit 1
 Report path: data/processed/run-llm-judge_20260402T151053Z.txt
 === Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 9835ed61-9906-449d-bb8b-365cf7b0e70c --ref-run-id 87bac619-f810-4994-8a27-7b883b8f99b7 --limit 1",
+  "report_path": "data/processed/run-llm-judge_20260402T151053Z.txt",
+  "run_metadata": {
+    "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+    "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T15:05:06.411223+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T15:04:32.187840+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "judge_result": {
+          "winner": "baseline",
+          "candidate_overall_score": 6.0,
+          "baseline_overall_score": 9.0,
+          "score_delta": -3.0,
+          "rationale": "The candidate transcript contains significant inaccuracies and significant departures from the language used in the reference transcript. Many phrases are altered or omitted entirely, distorting the meaning and flow of the conversation. For example, 'I don't bother with names' is not in the reference. The Baseline transcript is more accurate in capturing the content, order, and phrasing of the reference dialogue, demonstrating better fidelity to the original recording. Several filler words and conversational quirks are missing from the candidate transcript, further decreasing its accuracy. "
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "wins_candidate": 0,
+    "wins_baseline": 1,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T151053Z.txt

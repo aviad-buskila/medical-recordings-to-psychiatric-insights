@@ -27,6 +27,10 @@ def ts_utc() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+def now_log_ts() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+
 @dataclass
 class CmdResult:
     command: list[str]
@@ -35,11 +39,11 @@ class CmdResult:
 
 
 def log(msg: str) -> None:
-    print(f"[full-pipeline] {msg}", flush=True)
+    print(f"[{now_log_ts()}] [full-pipeline] {msg}", flush=True)
 
 
 def step(name: str) -> None:
-    print(f"\n=== {name} ===", flush=True)
+    print(f"\n[{now_log_ts()}] === {name} ===", flush=True)
 
 
 def run_cmd(command: list[str], env: dict[str, str] | None = None) -> CmdResult:
