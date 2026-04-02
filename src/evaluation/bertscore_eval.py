@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 def run_bertscore_eval(
     run_id: str | None,
     ref_run_id: str | None,
+    sample_id: str | None,
     limit: int | None,
     model_type: str | None,
     batch_size: int,
@@ -54,6 +55,7 @@ def run_bertscore_eval(
         reporter.set_run_metadata(
             run_id=run_id,
             ref_run_id=ref_run_id,
+            sample_id=sample_id,
             candidate_run_info=analytics.get_stt_run_info(run_id) if run_id else None,
             ref_run_info=analytics.get_stt_run_info(ref_run_id) if ref_run_id else None,
         )
@@ -68,6 +70,8 @@ def run_bertscore_eval(
             candidate_sample_ids = [sid for sid in candidate_sample_ids if sid in ref_run_outputs]
     else:
         candidate_sample_ids = [s.sample_id for s in samples]
+    if sample_id:
+        candidate_sample_ids = [sid for sid in candidate_sample_ids if sid == sample_id]
 
     sample_ids: list[str] = []
     refs: list[str] = []

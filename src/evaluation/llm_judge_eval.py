@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 def run_llm_judge_eval(
     run_id: str,
     ref_run_id: str | None = None,
+    sample_id: str | None = None,
     limit: int | None = None,
     reporter: EvalRunReporter | None = None,
 ) -> None:
@@ -37,6 +38,7 @@ def run_llm_judge_eval(
         reporter.set_run_metadata(
             run_id=run_id,
             ref_run_id=ref_run_id,
+            sample_id=sample_id,
             candidate_run_info=candidate_run_info,
             ref_run_info=baseline_run_info,
         )
@@ -47,6 +49,8 @@ def run_llm_judge_eval(
     sample_ids = list(candidate_outputs.keys())
     if ref_run_id:
         sample_ids = [sid for sid in sample_ids if sid in baseline_outputs]
+    if sample_id:
+        sample_ids = [sid for sid in sample_ids if sid == sample_id]
 
     evaluated = 0
     wins_candidate = 0

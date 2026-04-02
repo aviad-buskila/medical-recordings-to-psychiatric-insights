@@ -1,0 +1,16 @@
+Command line: python -m src.cli.main show-alignment --run-id rid
+Report path: data/processed/run-llm-judge_20260402T130758Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "python -m src.cli.main show-alignment --run-id rid",
+  "report_path": "data/processed/run-llm-judge_20260402T130758Z.txt",
+  "run_metadata": {},
+  "metrics": [],
+  "result_summary": {}
+}
+Eval report written to data/processed/run-llm-judge_20260402T130758Z.txt

@@ -51,12 +51,14 @@ python -m src.cli.main show-alignment --run-id <STT_RUN_UUID> -o alignment_repor
 python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID>
 python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> --limit 10
 python -m src.cli.main run-bertscore --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-bertscore --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> -o bertscore_summary.json
 python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> --batch-size 4 --no-rescale
 
 # --- LLM-as-a-judge (Ollama; configure OLLAMA_* and judge model in .env) ---
 python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID>
 python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID> --limit 3
 
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---

@@ -56,6 +56,7 @@ def test_run_bertscore_empty_samples_returns_zero(
         result = run_bertscore_eval(
             run_id="r1",
             ref_run_id=None,
+            sample_id=None,
             limit=None,
             model_type=None,
             batch_size=4,
@@ -95,6 +96,7 @@ def test_run_bertscore_scores_one_pair(fake_bert_score_module: ModuleType, tmp_p
         result = run_bertscore_eval(
             run_id="run-uuid",
             ref_run_id=None,
+            sample_id=None,
             limit=None,
             model_type="distilbert-base-uncased",
             batch_size=8,
@@ -155,6 +157,7 @@ def test_run_bertscore_with_ref_run_calls_score_twice(
         result = run_bertscore_eval(
             run_id="a",
             ref_run_id="b",
+            sample_id=None,
             limit=None,
             model_type=None,
             batch_size=4,

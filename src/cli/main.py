@@ -223,6 +223,7 @@ def restore_stt_from_generated(run_id: str | None, dry_run: bool) -> None:
 @click.option("--limit", "-n", type=int, default=None, help="Score only N samples.")
 @click.option("--run-id", type=str, default=None, help="STT run_id for hypotheses (recommended).")
 @click.option("--ref-run-id", type=str, default=None, help="Second STT run_id; reports delta vs primary.")
+@click.option("--sample-id", type=str, default=None, help="Score only one sample_id/file stem.")
 @click.option(
     "--model-type",
     type=str,
@@ -247,6 +248,7 @@ def run_bertscore(
     limit: int | None,
     run_id: str | None,
     ref_run_id: str | None,
+    sample_id: str | None,
     model_type: str | None,
     batch_size: int,
     no_rescale: bool,
@@ -274,6 +276,7 @@ def run_bertscore(
         run_bertscore_eval(
             run_id=run_id,
             ref_run_id=ref_run_id,
+            sample_id=sample_id,
             limit=limit,
             model_type=model_type,
             batch_size=batch_size,
@@ -425,8 +428,9 @@ def show_alignment(
 @cli.command("run-llm-judge")
 @click.option("--run-id", type=str, required=True, help="Target STT run_id to evaluate.")
 @click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side comparison.")
+@click.option("--sample-id", type=str, default=None, help="Evaluate only one sample_id/file stem.")
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
-def run_llm_judge(run_id: str, ref_run_id: str | None, limit: int | None) -> None:
+def run_llm_judge(run_id: str, ref_run_id: str | None, sample_id: str | None, limit: int | None) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
     eval_name = "run-llm-judge"
@@ -443,7 +447,13 @@ def run_llm_judge(run_id: str, ref_run_id: str | None, limit: int | None) -> Non
             command_line=command_line,
             report_path=report_path,
         )
-        run_llm_judge_eval(run_id=run_id, ref_run_id=ref_run_id, limit=limit, reporter=reporter)
+        run_llm_judge_eval(
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            sample_id=sample_id,
+            limit=limit,
+            reporter=reporter,
+        )
         click.echo("LLM judge evaluation completed.")
         reporter.write_results_section(file=f)
         click.echo(f"Eval report written to {report_path}")

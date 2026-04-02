@@ -105,6 +105,7 @@ def test_run_bertscore_cli_invokes_eval(mock_eval: MagicMock) -> None:
     mock_eval.assert_called_once()
     kwargs = mock_eval.call_args.kwargs
     assert kwargs["run_id"] == "rid"
+    assert kwargs["sample_id"] is None
     assert kwargs["limit"] == 5
     assert kwargs["rescale_with_baseline"] is False
 
@@ -151,6 +152,26 @@ def test_run_eval_cli_metric_filter_and_auto_workers(mock_eval: MagicMock) -> No
 def test_run_eval_cli_sample_id(mock_eval: MagicMock) -> None:
     runner = CliRunner()
     result = runner.invoke(cli, ["run-eval", "--run-id", "r1", "--sample-id", "D0420-S1-T01"])
+    assert result.exit_code == 0
+    kwargs = mock_eval.call_args.kwargs
+    assert kwargs["run_id"] == "r1"
+    assert kwargs["sample_id"] == "D0420-S1-T01"
+
+
+@patch("src.cli.main.run_bertscore_eval")
+def test_run_bertscore_cli_sample_id(mock_eval: MagicMock) -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run-bertscore", "--run-id", "r1", "--sample-id", "D0420-S1-T01"])
+    assert result.exit_code == 0
+    kwargs = mock_eval.call_args.kwargs
+    assert kwargs["run_id"] == "r1"
+    assert kwargs["sample_id"] == "D0420-S1-T01"
+
+
+@patch("src.cli.main.run_llm_judge_eval")
+def test_run_llm_judge_cli_sample_id(mock_eval: MagicMock) -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run-llm-judge", "--run-id", "r1", "--sample-id", "D0420-S1-T01"])
     assert result.exit_code == 0
     kwargs = mock_eval.call_args.kwargs
     assert kwargs["run_id"] == "r1"
