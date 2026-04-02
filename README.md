@@ -36,8 +36,9 @@ make db-init
 Under `data/raw/`:
 
 - `recordings/` — audio files (often gitignored; large files stay local)
-- `dataset.pickle` — gold transcripts for evaluation
+- `dataset.pickle` — gold transcripts for evaluation (primary reference for WER / BERTScore)
 - Optional: `transcripts/`, `casenotes/` for layout validation
+- Optional: `transcripts/transcribed/<sample_id>.json` — speaker-tagged dialogue for **per-speaker WER and CER** (speakers 1 and 2) and **cpWER** on `run-eval`. Each file is a JSON array of `{ "speaker": 1, "dialogue": ["...", ...] }` objects. Gold text still comes from `dataset.pickle`; the JSON is used to label words/characters by speaker and for concatenated-minimum-permutation WER (see `src/evaluation/cp_wer.py`).
 
 ## CLI
 
@@ -53,11 +54,16 @@ python -m src.cli.main run-stt --profile quality
 python -m src.cli.main run-stt --flavor both --limit 3
 python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback
 
-# WER vs gold (dataset.pickle)
+# WER vs gold (dataset.pickle): wer, cer, mer, wil, cp_wer when transcribed JSON exists
 python -m src.cli.main run-eval
 python -m src.cli.main run-eval --limit 10
 python -m src.cli.main run-eval --run-id <uuid>
 python -m src.cli.main run-eval --run-id <candidate_uuid> --ref-run-id <baseline_uuid>
+
+# BERTScore (semantic P/R/F1; not written to evaluation_metrics)
+python -m src.cli.main run-bertscore --run-id <uuid>
+python -m src.cli.main run-bertscore --run-id <uuid> --ref-run-id <baseline_uuid> --limit 10
+python -m src.cli.main run-bertscore --run-id <uuid> -o bertscore_summary.json
 
 # LLM-as-a-judge (Ollama)
 python -m src.cli.main run-llm-judge --run-id <uuid>
@@ -67,12 +73,35 @@ python -m src.cli.main run-llm-judge --run-id <uuid> --ref-run-id <other_uuid> -
 python -m src.cli.main run-all
 ```
 
+Note: `run-eval`, `run-bertscore`, `run-llm-judge`, and `show-alignment` also write an artifact to `data/processed/<evalname>_<timestamp>.txt` (command line + full output; plus JSON results for the DB-writing evals).
+
+### Word alignment (gold vs hypothesis, S / I / D)
+
+Gold text comes from `dataset.pickle` (same normalization as WER). For each sample, prints `GOLD` / `HYP` / `OP` rows where `=` is match, `S` substitution, `D` deletion, `I` insertion. Long transcripts wrap in chunks of `--chunk-columns` words.
+
+```bash
+python -m src.cli.main show-alignment --run-id <uuid>
+python -m src.cli.main show-alignment --run-id <candidate_uuid> --ref-run-id <baseline_uuid>
+python -m src.cli.main show-alignment --run-id <uuid> --sample-id D0420-S1-T01 --limit 3
+python -m src.cli.main show-alignment --run-id <uuid> -o alignment_report.txt
+```
+
+### BERTScore (`run-bertscore`)
+
+Embedding-based **precision, recall, and F1** between gold and STT text from PostgreSQL. Optional semantic overlap beyond word errors. Logs to the console; `-o` / `--output-json` writes a full summary. Does **not** insert rows into `evaluation_metrics`.
+
+- Pass `--run-id` to score a specific STT run; omit to use the latest STT output per sample.
+- Encoder defaults to `roberta-large`; override with `--model-type` or `BERTSCORE_MODEL` in `.env`.
+- First run downloads encoder weights; `--no-rescale` is faster (scores not comparable to rescaling baselines).
+
+Dependencies: `torch` and `bert-score` are in `requirements.txt`.
+
 ## Makefile shortcuts
 
 - `make venv` / `make install` — create venv and install dependencies
 - `make up` / `make down` — start or stop Postgres
 - `make db-init` — apply SQL migrations
-- `make test` — run pytest
+- `make test` — run pytest (`tests/unit` — metrics and mocks; `tests/integration` — subprocess `python -m src.cli.main`, temp-dir `validate-dataset`, filesystem pickle/loader, evaluation chain; optional Postgres smoke test skips if DB is down)
 - `make run-pipeline` — same as `run-all`
 
 ## Run IDs
@@ -86,4 +115,4 @@ docker compose --env-file .env exec -T postgres sh -lc \
 
 ## Configuration reference
 
-See `.env.example` for `POSTGRES_*`, `OLLAMA_*`, `STT_*`, `HF_TOKEN`, paths, and `GENERATED_TRANSCRIPTS_DIR`.
+See `.env.example` for `POSTGRES_*`, `OLLAMA_*`, `STT_*`, `HF_TOKEN`, `BERTSCORE_MODEL`, paths, and `GENERATED_TRANSCRIPTS_DIR`.

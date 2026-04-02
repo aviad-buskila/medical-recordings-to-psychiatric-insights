@@ -1,13 +1,17 @@
-ollama
-mlx
-mlx-whisper
-huggingface_hub
-psycopg[binary]
-pydantic
-pydantic-settings
-python-dotenv
-click
-rapidfuzz
+# --- Runtime ---
+bert-score==0.3.13
+click==8.3.1
+huggingface_hub==1.8.0
+mlx==0.31.1
+mlx-whisper==0.4.3
+ollama==0.6.1
+psycopg[binary]==3.3.3
+pydantic==2.12.5
+pydantic-settings==2.13.1
+python-dotenv==1.2.2
+rapidfuzz==3.14.3
+torch==2.11.0
 
-pytest
-pytest-cov
+# --- Dev ---
+pytest-cov==7.1.0
+pytest==9.0.2

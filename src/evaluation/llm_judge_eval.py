@@ -6,6 +6,7 @@ from src.config.settings import get_settings
 from src.evaluation.judge import OllamaJudge
 from src.ingestion.dataset_loader import DatasetLoader
 from src.ingestion.pickle_loader import DatasetPickleLoader
+from src.core.eval_run_report import EvalRunReporter
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,9 @@ logger = logging.getLogger(__name__)
 def run_llm_judge_eval(
     run_id: str,
     ref_run_id: str | None = None,
+    sample_id: str | None = None,
     limit: int | None = None,
+    reporter: EvalRunReporter | None = None,
 ) -> None:
     settings = get_settings()
     loader = DatasetLoader(
@@ -31,6 +34,14 @@ def run_llm_judge_eval(
     judge = OllamaJudge()
     candidate_run_info = analytics.get_stt_run_info(run_id)
     baseline_run_info = analytics.get_stt_run_info(ref_run_id) if ref_run_id else None
+    if reporter:
+        reporter.set_run_metadata(
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            sample_id=sample_id,
+            candidate_run_info=candidate_run_info,
+            ref_run_info=baseline_run_info,
+        )
 
     candidate_outputs = analytics.get_stt_outputs_for_run(run_id)
     baseline_outputs = analytics.get_stt_outputs_for_run(ref_run_id) if ref_run_id else {}
@@ -38,6 +49,8 @@ def run_llm_judge_eval(
     sample_ids = list(candidate_outputs.keys())
     if ref_run_id:
         sample_ids = [sid for sid in sample_ids if sid in baseline_outputs]
+    if sample_id:
+        sample_ids = [sid for sid in sample_ids if sid == sample_id]
 
     evaluated = 0
     wins_candidate = 0
@@ -115,12 +128,24 @@ def run_llm_judge_eval(
                 delta_value,
                 rationale or "n/a",
             )
+            details = {
+                "run_id": run_id,
+                "ref_run_id": ref_run_id,
+                "judge_result": result,
+            }
             analytics.insert_eval_metric(
                 sample_id=sample_id,
                 metric_name="llm_judge_compare",
                 metric_value=delta_value,
-                details={"run_id": run_id, "ref_run_id": ref_run_id, "judge_result": result},
+                details=details,
             )
+            if reporter:
+                reporter.add_metric(
+                    sample_id=sample_id,
+                    metric_name="llm_judge_compare",
+                    metric_value=delta_value,
+                    details=details,
+                )
         else:
             result = judge.evaluate_transcript(reference, candidate_text)
             score = float(result.get("overall_score", 0.0) or 0.0)
@@ -134,12 +159,20 @@ def run_llm_judge_eval(
                 result.get("substitution_error_severity", "n/a"),
                 result.get("medical_safety_risk", "n/a"),
             )
+            details = {"run_id": run_id, "judge_result": result}
             analytics.insert_eval_metric(
                 sample_id=sample_id,
                 metric_name="llm_judge_score",
                 metric_value=score,
-                details={"run_id": run_id, "judge_result": result},
+                details=details,
             )
+            if reporter:
+                reporter.add_metric(
+                    sample_id=sample_id,
+                    metric_name="llm_judge_score",
+                    metric_value=score,
+                    details=details,
+                )
         evaluated += 1
 
     if ref_run_id and evaluated > 0:
@@ -160,6 +193,16 @@ def run_llm_judge_eval(
         ref_run_id,
         evaluated,
     )
+
+    if reporter:
+        reporter.set_result_summary(
+            evaluated=evaluated,
+            wins_candidate=wins_candidate if ref_run_id else None,
+            wins_baseline=wins_baseline if ref_run_id else None,
+            ties=ties if ref_run_id else None,
+            parse_failures=parse_failures,
+            wins_candidate_only=wins_candidate if not ref_run_id else None,
+        )
 
 
 def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], transcript_path: Path | None) -> str | None:
