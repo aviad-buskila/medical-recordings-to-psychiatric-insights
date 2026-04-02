@@ -1,5 +1,7 @@
 # Medical Conversation Intelligence Pipeline
 
+> **Wiki — go deeper:** STT models, metrics, LLM judge, insights, Gemma & MedGemma, pipeline — all in **[`wiki/`](wiki/)** ([home](wiki/Home.md) · [push to GitHub Wiki](wiki/Home.md#publishing-to-github-wiki)).
+
 An on-prem/local platform for benchmarking speech-to-text models for clinical use by extracting structured psychiatric insights from patient-doctor conversations. Covers the full behavioral health AI stack: STT evaluation, clinical NLP, reproducible pipelines, and multi-metric model comparison analytics.
 
 Built for Apple Silicon. Local-first by design — no audio leaves the machine.
