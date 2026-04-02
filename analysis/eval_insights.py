@@ -55,19 +55,23 @@ def fetch_eval_rows(
             OR
             (em.details->>'run_id' IN (%(candidate)s, %(baseline)s))
         )
-        AND (%(sample_id)s IS NULL OR em.sample_id = %(sample_id)s)
+        {sample_filter}
         ORDER BY em.created_at ASC, em.id ASC
     """
+    sample_filter = "AND em.sample_id = %(sample_id)s" if sample_id else ""
+    formatted_query = query.format(sample_filter=sample_filter)
+    params: dict[str, Any] = {
+        "candidate": candidate_run_id,
+        "baseline": baseline_run_id,
+    }
+    if sample_id:
+        params["sample_id"] = sample_id
     with _connect() as conn:
-        df = pd.read_sql_query(
-            query,
-            conn,
-            params={
-                "candidate": candidate_run_id,
-                "baseline": baseline_run_id,
-                "sample_id": sample_id,
-            },
-        )
+        with conn.cursor() as cur:
+            cur.execute(formatted_query, params)
+            rows = cur.fetchall()
+            columns = [d.name for d in cur.description] if cur.description else []
+    df = pd.DataFrame(rows, columns=columns)
     if df.empty:
         return df
 
@@ -96,7 +100,11 @@ def fetch_run_meta(*run_ids: str) -> pd.DataFrame:
         ORDER BY run_timestamp ASC
     """
     with _connect() as conn:
-        df = pd.read_sql_query(query, conn, params={"run_ids": list(run_ids)})
+        with conn.cursor() as cur:
+            cur.execute(query, {"run_ids": list(run_ids)})
+            rows = cur.fetchall()
+            columns = [d.name for d in cur.description] if cur.description else []
+    df = pd.DataFrame(rows, columns=columns)
     if df.empty:
         return df
     df["run_timestamp"] = pd.to_datetime(df["run_timestamp"], errors="coerce", utc=True)
@@ -129,6 +137,48 @@ def build_metric_summary(
         .reset_index()
         .sort_values(["metric_name", "run_id"])
     )
+    # If baseline rows are not written as separate metric rows (common in run-eval),
+    # derive synthetic baseline summaries from details.ref_<metric> fields.
+    ref_metric_map = {
+        "wer": "details.ref_wer",
+        "cer": "details.ref_cer",
+        "mer": "details.ref_mer",
+        "wil": "details.ref_wil",
+        "cp_wer": "details.ref_cp_wer",
+    }
+    synthesized: list[pd.DataFrame] = []
+    existing_pairs = {(str(r.metric_name), str(r.run_id)) for r in agg.itertuples(index=False)}
+    for metric_name, ref_col in ref_metric_map.items():
+        if (metric_name, baseline_run_id) in existing_pairs:
+            continue
+        if ref_col not in normalized.columns:
+            continue
+        sub = normalized.loc[
+            (normalized["metric_name"].astype(str).str.replace("-", "_") == metric_name),
+            ["sample_id", ref_col],
+        ].copy()
+        if sub.empty:
+            continue
+        ref_vals = pd.to_numeric(sub[ref_col], errors="coerce").dropna()
+        if ref_vals.empty:
+            continue
+        synthesized.append(
+            pd.DataFrame(
+                [
+                    {
+                        "metric_name": metric_name,
+                        "run_id": baseline_run_id,
+                        "samples": int(ref_vals.shape[0]),
+                        "mean": float(ref_vals.mean()),
+                        "median": float(ref_vals.median()),
+                        "std": float(ref_vals.std()) if ref_vals.shape[0] > 1 else float("nan"),
+                    }
+                ]
+            )
+        )
+
+    if synthesized:
+        agg = pd.concat([agg] + synthesized, ignore_index=True).sort_values(["metric_name", "run_id"])
     return agg
 
 
@@ -142,10 +192,9 @@ def recommend_winner_table(
 
     Lower is better for error metrics, higher is better for score-like metrics.
     """
+    columns = ["metric_name", "candidate_mean", "baseline_mean", "direction", "winner", "relative_delta_pct"]
     if summary_df.empty:
-        return pd.DataFrame(
-            columns=["metric_name", "candidate_mean", "baseline_mean", "direction", "winner", "relative_delta_pct"]
-        )
+        return pd.DataFrame(columns=columns)
 
     lower_better = {
         "wer",
@@ -196,5 +245,33 @@ def recommend_winner_table(
             }
         )
 
-    return pd.DataFrame(rows).sort_values(["winner", "metric_name"])
+    out = pd.DataFrame(rows)
+
+    # Fallback: llm_judge_compare is a signed delta (candidate - baseline).
+    # Even without baseline absolute rows, sign indicates winner.
+    if "llm_judge_compare" in set(summary_df["metric_name"].astype(str)):
+        lj = summary_df[
+            (summary_df["metric_name"] == "llm_judge_compare") & (summary_df["run_id"] == candidate_run_id)
+        ]
+        if not lj.empty:
+            mean_delta = float(lj["mean"].iloc[0])
+            winner = "candidate" if mean_delta > 0 else ("baseline" if mean_delta < 0 else "tie")
+            extra = pd.DataFrame(
+                [
+                    {
+                        "metric_name": "llm_judge_compare",
+                        "candidate_mean": mean_delta,
+                        "baseline_mean": 0.0,
+                        "direction": "higher_is_better",
+                        "winner": winner,
+                        "relative_delta_pct": mean_delta * 10.0,  # scaled hint only
+                    }
+                ]
+            )
+            out = pd.concat([out, extra], ignore_index=True)
+
+    if out.empty:
+        return pd.DataFrame(columns=columns)
+    out = out.drop_duplicates(subset=["metric_name"], keep="first")
+    return out.sort_values(["winner", "metric_name"]).reset_index(drop=True)
 
