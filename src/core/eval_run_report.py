@@ -38,6 +38,13 @@ class _TeeTextIO:
         self._original.flush()
         self._file.flush()
 
+    def isatty(self) -> bool:
+        """Used by libraries like transformers to decide how to format output."""
+        fn = getattr(self._original, "isatty", None)
+        if callable(fn):
+            return bool(fn())
+        return False
+
 
 @contextlib.contextmanager
 def capture_terminal_to_file(report_path: Path, header_lines: list[str]) -> Iterator[TextIO]:

@@ -1,0 +1,5 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id 9d126f1b-3c07-4f5c-a73d-fe812044c8c3 --ref-run-id 22282662-99a4-4901-af84-4374763e9610 --no-rescale
+Report path: data/processed/run-bertscore_20260402T094338Z.txt
+=== Terminal output captured below ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 21614.68it/s]

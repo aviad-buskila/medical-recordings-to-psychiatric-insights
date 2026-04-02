@@ -1,0 +1,16 @@
+Command line: /Users/aviadbuskila/eleos_health/.venv/lib/python3.11/site-packages/pytest/__main__.py tests/ -q
+Report path: data/processed/run-eval_20260402T094459Z.txt
+=== Terminal output captured below ===
+Evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-eval",
+  "command_line": "/Users/aviadbuskila/eleos_health/.venv/lib/python3.11/site-packages/pytest/__main__.py tests/ -q",
+  "report_path": "data/processed/run-eval_20260402T094459Z.txt",
+  "run_metadata": {},
+  "metrics": [],
+  "result_summary": {}
+}
+Eval report written to data/processed/run-eval_20260402T094459Z.txt
