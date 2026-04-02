@@ -46,16 +46,23 @@ def step(name: str) -> None:
     print(f"\n[{now_log_ts()}] === {name} ===", flush=True)
 
 
-def run_cmd(command: list[str], env: dict[str, str] | None = None) -> CmdResult:
+def run_cmd(command: list[str], env: dict[str, str] | None = None, timeout_s: int | None = None) -> CmdResult:
     log(f"Running: {' '.join(command)}")
-    proc = subprocess.run(
-        command,
-        cwd=str(ROOT),
-        env=env,
-        text=True,
-        capture_output=True,
-        check=False,
-    )
+    try:
+        proc = subprocess.run(
+            command,
+            cwd=str(ROOT),
+            env=env,
+            text=True,
+            capture_output=True,
+            check=False,
+            timeout=timeout_s,
+        )
+    except subprocess.TimeoutExpired as e:
+        raise RuntimeError(
+            f"Command timed out after {timeout_s}s: {' '.join(command)}\n\n"
+            f"STDOUT (partial):\n{e.stdout or ''}\n\nSTDERR (partial):\n{e.stderr or ''}"
+        ) from e
     if proc.returncode != 0:
         raise RuntimeError(
             f"Command failed ({proc.returncode}): {' '.join(command)}\n\nSTDOUT:\n{proc.stdout}\n\nSTDERR:\n{proc.stderr}"
@@ -261,6 +268,17 @@ def main() -> None:
     parser.add_argument("--skip-stt", action="store_true", help="Skip STT step and use provided run IDs/state.")
     parser.add_argument("--skip-evals", action="store_true", help="Skip eval commands and reuse latest artifacts.")
     parser.add_argument("--insights-model", type=str, default=None, help="Model override for insights-extract.")
+    parser.add_argument(
+        "--insights-timeout-s",
+        type=int,
+        default=600,
+        help="Timeout in seconds for each insights-extract command (default: 600).",
+    )
+    parser.add_argument(
+        "--continue-on-insights-fail",
+        action="store_true",
+        help="Continue pipeline even if one insights-extract command fails or times out.",
+    )
     args = parser.parse_args()
     if args.limit <= 0:
         raise SystemExit("--limit must be positive")
@@ -420,13 +438,18 @@ def main() -> None:
         ]
         if insights_model:
             ins_candidate_cmd += ["--model", insights_model]
-        ins_candidate_res = run_cmd(ins_candidate_cmd)
-        commands_run.append(" ".join(ins_candidate_cmd))
-        insights_list[0] = parse_insights_artifact_path(ins_candidate_res.stdout)
-        log(f"Candidate insights artifact: {insights_list[0]}")
-        artifacts["insights_extract_artifacts"] = insights_list
-        state.update({"commands": commands_run, "artifacts": artifacts})
-        save_state(state)
+        try:
+            ins_candidate_res = run_cmd(ins_candidate_cmd, timeout_s=args.insights_timeout_s)
+            commands_run.append(" ".join(ins_candidate_cmd))
+            insights_list[0] = parse_insights_artifact_path(ins_candidate_res.stdout)
+            log(f"Candidate insights artifact: {insights_list[0]}")
+            artifacts["insights_extract_artifacts"] = insights_list
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
+        except RuntimeError as e:
+            if not args.continue_on_insights_fail:
+                raise
+            log(f"WARNING: candidate insights failed, continuing: {e}")
     else:
         log(f"Reusing candidate insights artifact: {insights_list[0]}")
 
@@ -443,13 +466,18 @@ def main() -> None:
         ]
         if insights_model:
             ins_baseline_cmd += ["--model", insights_model]
-        ins_baseline_res = run_cmd(ins_baseline_cmd)
-        commands_run.append(" ".join(ins_baseline_cmd))
-        insights_list[1] = parse_insights_artifact_path(ins_baseline_res.stdout)
-        log(f"Baseline insights artifact: {insights_list[1]}")
-        artifacts["insights_extract_artifacts"] = insights_list
-        state.update({"commands": commands_run, "artifacts": artifacts})
-        save_state(state)
+        try:
+            ins_baseline_res = run_cmd(ins_baseline_cmd, timeout_s=args.insights_timeout_s)
+            commands_run.append(" ".join(ins_baseline_cmd))
+            insights_list[1] = parse_insights_artifact_path(ins_baseline_res.stdout)
+            log(f"Baseline insights artifact: {insights_list[1]}")
+            artifacts["insights_extract_artifacts"] = insights_list
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
+        except RuntimeError as e:
+            if not args.continue_on_insights_fail:
+                raise
+            log(f"WARNING: baseline insights failed, continuing: {e}")
     else:
         log(f"Reusing baseline insights artifact: {insights_list[1]}")
 
