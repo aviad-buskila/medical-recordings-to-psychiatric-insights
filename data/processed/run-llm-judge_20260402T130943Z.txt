@@ -1,3 +1,64 @@
 Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 9d126f1b-3c07-4f5c-a73d-fe812044c8c3 --ref-run-id 22282662-99a4-4901-af84-4374763e9610 --sample-id D0420-S1-T01
 Report path: data/processed/run-llm-judge_20260402T130943Z.txt
 === Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 9d126f1b-3c07-4f5c-a73d-fe812044c8c3 --ref-run-id 22282662-99a4-4901-af84-4374763e9610 --sample-id D0420-S1-T01",
+  "report_path": "data/processed/run-llm-judge_20260402T130943Z.txt",
+  "run_metadata": {
+    "run_id": "9d126f1b-3c07-4f5c-a73d-fe812044c8c3",
+    "ref_run_id": "22282662-99a4-4901-af84-4374763e9610",
+    "sample_id": "D0420-S1-T01",
+    "candidate_run_info": {
+      "run_id": "9d126f1b-3c07-4f5c-a73d-fe812044c8c3",
+      "provider": "mlx-whisper",
+      "model_name": "recovered-from-generated-transcripts",
+      "run_scope": "full",
+      "run_timestamp": "2026-04-01T17:27:07+00:00",
+      "run_parameters": {
+        "recovered_from": "data/generated_transcripts/9d126f1b-3c07-4f5c-a73d-fe812044c8c3_20260401T172707Z"
+      }
+    },
+    "ref_run_info": {
+      "run_id": "22282662-99a4-4901-af84-4374763e9610",
+      "provider": "mlx-whisper",
+      "model_name": "recovered-from-generated-transcripts",
+      "run_scope": "full",
+      "run_timestamp": "2026-04-01T18:04:03+00:00",
+      "run_parameters": {
+        "recovered_from": "data/generated_transcripts/22282662-99a4-4901-af84-4374763e9610_20260401T180403Z"
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 3.0,
+      "details": {
+        "run_id": "9d126f1b-3c07-4f5c-a73d-fe812044c8c3",
+        "ref_run_id": "22282662-99a4-4901-af84-4374763e9610",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 6.0,
+          "score_delta": 3.0,
+          "rationale": "The candidate transcript is significantly more accurate and complete than the baseline. The candidate more closely follows the reference dialogue, including key phrases and nuances. The baseline transcript contains numerous errors in transcription, including deletions, additions, and substitutions. The baseline also omits crucial context and demonstrates a significant lack of fidelity to the original dialogue. The candidate, while not perfect, does a superior job of capturing the essence and content of the conversation."
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "wins_candidate": 1,
+    "wins_baseline": 0,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T130943Z.txt
