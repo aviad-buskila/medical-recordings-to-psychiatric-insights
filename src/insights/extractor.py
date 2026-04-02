@@ -55,10 +55,88 @@ def _json_default(obj: Any) -> Any:
     return str(obj)
 
 
+def _norm_text(s: str) -> str:
+    return re.sub(r"\s+", " ", s.strip().lower())
+
+
+def _quote_supported(quote: str, transcript: str) -> bool:
+    q = _norm_text(quote)
+    t = _norm_text(transcript)
+    if len(q) < 8:
+        return False
+    return q in t
+
+
+def _coerce_str_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    out: list[str] = []
+    for item in value:
+        if isinstance(item, str):
+            s = item.strip()
+            if s:
+                out.append(s)
+    return out
+
+
+def _sanitize_with_evidence(payload: dict[str, Any], transcript: str) -> dict[str, Any]:
+    """
+    Content guardrail:
+    Keep only claims that include transcript-grounded evidence quotes.
+    """
+    out = dict(payload)
+    dropped = 0
+    evidence: dict[str, list[dict[str, str]]] = {
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+    }
+    for key in ("risk_flags", "diagnostic_hypotheses", "recommended_followup"):
+        kept_claims: list[str] = []
+        raw_items = payload.get(key, [])
+        if not isinstance(raw_items, list):
+            out[key] = []
+            continue
+        for raw in raw_items:
+            claim = ""
+            quote = ""
+            if isinstance(raw, dict):
+                claim = str(raw.get("claim", "") or raw.get("item", "") or raw.get("text", "")).strip()
+                quote = str(raw.get("evidence_quote", "")).strip()
+            elif isinstance(raw, str):
+                # Backward compatibility: plain strings are unsupported under this guardrail.
+                claim = raw.strip()
+                quote = ""
+            if not claim:
+                continue
+            if _quote_supported(quote, transcript):
+                kept_claims.append(claim)
+                evidence[key].append({"claim": claim, "evidence_quote": quote})
+            else:
+                dropped += 1
+        out[key] = kept_claims
+
+    out["symptoms"] = _coerce_str_list(payload.get("symptoms"))
+    out["clinical_presentation"] = str(payload.get("clinical_presentation", "") or "").strip()
+    try:
+        conf = payload.get("confidence", None)
+        out["confidence"] = None if conf is None else float(conf)
+    except (TypeError, ValueError):
+        out["confidence"] = None
+    if isinstance(out.get("confidence"), float):
+        out["confidence"] = max(0.0, min(1.0, out["confidence"]))
+    out["evidence"] = evidence
+    out["guardrail"] = {
+        "name": "evidence_quote_required_for_claims",
+        "dropped_unsupported_claims": dropped,
+    }
+    return out
+
+
 @dataclass
 class TranscriptInsightsExtractor:
     model_name: str
-    prompt_version: str = "v1"
+    prompt_version: str = "v2"
 
     def __post_init__(self) -> None:
         self.client = OllamaClient()
@@ -69,11 +147,14 @@ class TranscriptInsightsExtractor:
             "Read the transcript and extract psychiatry-focused insights.\n"
             "Return ONLY valid JSON with keys:\n"
             "- clinical_presentation: string\n"
-            "- risk_flags: list[string]\n"
+            "- risk_flags: list[object] where each object has: claim, evidence_quote\n"
             "- symptoms: list[string]\n"
-            "- diagnostic_hypotheses: list[string]\n"
-            "- recommended_followup: list[string]\n"
+            "- diagnostic_hypotheses: list[object] where each object has: claim, evidence_quote\n"
+            "- recommended_followup: list[object] where each object has: claim, evidence_quote\n"
             "- confidence: number (0.0 to 1.0)\n"
+            "Critical guardrail: for risk_flags, diagnostic_hypotheses, and recommended_followup,\n"
+            "ONLY include claims supported by an exact quote from TRANSCRIPT.\n"
+            "If no supporting quote exists, omit the claim.\n"
             "Do not include markdown. Keep items concise and clinically relevant.\n\n"
             f"TRANSCRIPT:\n{transcript}"
         )
@@ -81,7 +162,7 @@ class TranscriptInsightsExtractor:
     def extract(self, transcript: str) -> tuple[dict[str, Any], str]:
         raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name)
         parsed = _safe_json_loads(raw)
-        return parsed, raw
+        return _sanitize_with_evidence(parsed, transcript=transcript), raw
 
 
 def run_insights_extract(
