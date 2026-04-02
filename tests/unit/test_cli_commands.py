@@ -113,4 +113,17 @@ def test_run_eval_cli_invokes_stt_eval(mock_eval: MagicMock) -> None:
     assert kwargs["run_id"] is None
     assert kwargs["ref_run_id"] is None
     assert kwargs["workers"] == 1
+    assert kwargs["skip_cp_wer"] is False
+    assert kwargs["skip_speaker_metrics"] is False
     assert "reporter" in kwargs
+
+
+@patch("src.cli.main.evaluate_stt_against_gold")
+def test_run_eval_cli_skip_flags(mock_eval: MagicMock) -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run-eval", "--skip-cp-wer", "--skip-speaker-metrics", "--workers", "2"])
+    assert result.exit_code == 0
+    kwargs = mock_eval.call_args.kwargs
+    assert kwargs["skip_cp_wer"] is True
+    assert kwargs["skip_speaker_metrics"] is True
+    assert kwargs["workers"] == 2

@@ -1,5 +1,5 @@
 Command line: python -m src.cli.main show-alignment --run-id rid
-Report path: data/processed/run-eval_20260402T112853Z.txt
+Report path: data/processed/run-eval_20260402T120433Z.txt
 === Terminal output captured below ===
 Evaluation completed.
 
@@ -8,9 +8,9 @@ Evaluation completed.
 {
   "eval_name": "run-eval",
   "command_line": "python -m src.cli.main show-alignment --run-id rid",
-  "report_path": "data/processed/run-eval_20260402T112853Z.txt",
+  "report_path": "data/processed/run-eval_20260402T120433Z.txt",
   "run_metadata": {},
   "metrics": [],
   "result_summary": {}
 }
-Eval report written to data/processed/run-eval_20260402T112853Z.txt
+Eval report written to data/processed/run-eval_20260402T120433Z.txt

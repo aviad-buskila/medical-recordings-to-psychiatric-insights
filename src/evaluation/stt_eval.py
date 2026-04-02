@@ -24,6 +24,8 @@ def evaluate_stt_against_gold(
     ref_run_id: str | None = None,
     reporter: EvalRunReporter | None = None,
     workers: int = 1,
+    skip_cp_wer: bool = False,
+    skip_speaker_metrics: bool = False,
 ) -> None:
     """Compare STT outputs against gold: WER, CER, MER, WIL, cpWER; per-speaker when JSON exists.
 
@@ -91,6 +93,8 @@ def evaluate_stt_against_gold(
                 "run_id": run_id,
                 "ref_run_id": ref_run_id,
                 "transcripts_dir": settings.transcripts_dir,
+                "skip_cp_wer": skip_cp_wer,
+                "skip_speaker_metrics": skip_speaker_metrics,
             }
         )
 
@@ -149,7 +153,13 @@ def evaluate_stt_against_gold(
         metric_names: list[str] = ["wer", "cer", "mer", "wil"]
         if any_cp_wer:
             metric_names.append("cp_wer")
-        reporter.set_result_summary(evaluated=evaluated, metric_names=metric_names)
+        reporter.set_result_summary(
+            evaluated=evaluated,
+            metric_names=metric_names,
+            skip_cp_wer=skip_cp_wer,
+            skip_speaker_metrics=skip_speaker_metrics,
+            workers=workers,
+        )
 
 
 def _log_cp_wer_lines(
@@ -270,6 +280,8 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     ref_run_id = job.get("ref_run_id")
     ref_hypothesis = job.get("ref_hypothesis")
     transcripts_dir = str(job["transcripts_dir"])
+    skip_cp_wer = bool(job.get("skip_cp_wer", False))
+    skip_speaker_metrics = bool(job.get("skip_speaker_metrics", False))
 
     breakdown = word_error_breakdown(reference=reference, hypothesis=hypothesis)
     wer = float(breakdown["wer"])
@@ -287,15 +299,19 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     }
 
     json_path = transcribed_json_path(transcripts_dir, sample_id)
-    sp_wer = compute_speaker_wer_for_sample(
-        gold_text=reference,
-        hypothesis_text=hypothesis,
-        transcribed_json_path=json_path,
+    sp_wer = (
+        compute_speaker_wer_for_sample(
+            gold_text=reference,
+            hypothesis_text=hypothesis,
+            transcribed_json_path=json_path,
+        )
+        if not skip_speaker_metrics
+        else None
     )
     if sp_wer:
         details["speaker_wer"] = sp_wer
 
-    cp_payload = cp_wer_breakdown_from_json(hypothesis, json_path)
+    cp_payload = cp_wer_breakdown_from_json(hypothesis, json_path) if not skip_cp_wer else None
     cp_val: float | None = None
     if cp_payload:
         details["cp_wer"] = cp_payload
@@ -319,7 +335,7 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
         ref_wil = float(ref_mer_wil["wil"])
         delta_mer = mer - ref_mer
         delta_wil = wil - ref_wil
-        ref_cp_payload = cp_wer_breakdown_from_json(str(ref_hypothesis), json_path)
+        ref_cp_payload = cp_wer_breakdown_from_json(str(ref_hypothesis), json_path) if not skip_cp_wer else None
         if cp_payload and ref_cp_payload:
             delta_cp = float(cp_payload["cp_wer"]) - float(ref_cp_payload["cp_wer"])
         details.update(
@@ -340,10 +356,14 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
             details["ref_cp_wer"] = ref_cp_payload
         if delta_cp is not None:
             details["delta_cp_wer_vs_ref"] = delta_cp
-        sp_ref = compute_speaker_wer_for_sample(
-            gold_text=reference,
-            hypothesis_text=str(ref_hypothesis),
-            transcribed_json_path=json_path,
+        sp_ref = (
+            compute_speaker_wer_for_sample(
+                gold_text=reference,
+                hypothesis_text=str(ref_hypothesis),
+                transcribed_json_path=json_path,
+            )
+            if not skip_speaker_metrics
+            else None
         )
         if sp_ref:
             details["speaker_wer_ref_run"] = sp_ref

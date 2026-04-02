@@ -140,7 +140,16 @@ def run_bertscore(
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
 @click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side WER comparison.")
 @click.option("--workers", type=int, default=1, show_default=True, help="Parallel workers for per-sample compute.")
-def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None, workers: int) -> None:
+@click.option("--skip-cp-wer", is_flag=True, default=False, help="Skip cpWER computation.")
+@click.option("--skip-speaker-metrics", is_flag=True, default=False, help="Skip per-speaker metrics (WER/CER/MER/WIL).")
+def run_eval(
+    limit: int | None,
+    run_id: str | None,
+    ref_run_id: str | None,
+    workers: int,
+    skip_cp_wer: bool,
+    skip_speaker_metrics: bool,
+) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
     if ref_run_id and not run_id:
@@ -167,6 +176,8 @@ def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None, work
             ref_run_id=ref_run_id,
             reporter=reporter,
             workers=workers,
+            skip_cp_wer=skip_cp_wer,
+            skip_speaker_metrics=skip_speaker_metrics,
         )
         click.echo("Evaluation completed.")
         reporter.write_results_section(file=f)
