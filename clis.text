@@ -86,6 +86,10 @@ DATASET_PICKLE_PATH=./data/raw/dataset.pickle SAMPLE_IDS=D0420-S1-T01,D0420-S1-T
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---
 python -m src.cli.main run-all
 
+# --- End-to-end sampled benchmark pipeline (STT both models + all evals + notebooks + insights + markdown summary) ---
+python run_full_pipeline.py
+python run_full_pipeline.py --limit 5
+
 # --- Makefile (from project root) ---
 make venv
 make install

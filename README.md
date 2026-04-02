@@ -131,6 +131,22 @@ Expected JSON fields per sample:
 - `make test` — run pytest (`tests/unit` — metrics and mocks; `tests/integration` — subprocess `python -m src.cli.main`, temp-dir `validate-dataset`, filesystem pickle/loader, evaluation chain; optional Postgres smoke test skips if DB is down)
 - `make run-pipeline` — same as `run-all`
 
+## Full sampled benchmark script
+
+Use the root script to run an end-to-end benchmark on a small subset (default `5` recordings):
+
+- selects first N recordings from `data/raw/recordings`
+- runs STT with both profiles (`--flavor both`)
+- runs `run-eval`, `run-llm-judge`, `show-alignment`, `run-bertscore`
+- runs `insights-extract` for candidate and baseline runs
+- executes all analysis notebooks in `analysis/`
+- writes one consolidated markdown summary under `data/processed/full_pipeline/`
+
+```bash
+python run_full_pipeline.py
+python run_full_pipeline.py --limit 5
+```
+
 ## Run IDs
 
 Each STT run logs `run_id=...` at start. After `--flavor both`, the CLI prints `default_run_id` and `quality_run_id`. You can also query:
