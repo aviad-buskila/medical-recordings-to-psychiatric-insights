@@ -75,4 +75,8 @@ def test_run_eval_cli_invokes_stt_eval(mock_eval: MagicMock) -> None:
     result = runner.invoke(cli, ["run-eval", "--limit", "3"])
     assert result.exit_code == 0
     assert "Evaluation completed" in result.output
-    mock_eval.assert_called_once_with(limit=3, run_id=None, ref_run_id=None)
+    kwargs = mock_eval.call_args.kwargs
+    assert kwargs["limit"] == 3
+    assert kwargs["run_id"] is None
+    assert kwargs["ref_run_id"] is None
+    assert "reporter" in kwargs

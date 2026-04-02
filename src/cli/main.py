@@ -1,9 +1,11 @@
 from pathlib import Path
+import sys
 
 import click
 
 from src.config.settings import get_settings
 from src.core.logging import configure_logging
+from src.core.eval_run_report import EvalRunReporter, capture_terminal_to_file, make_eval_report_path
 from src.evaluation.alignment_report import run_alignment_report
 from src.evaluation.bertscore_eval import run_bertscore_eval
 from src.evaluation.llm_judge_eval import run_llm_judge_eval
@@ -104,16 +106,33 @@ def run_bertscore(
         raise click.BadParameter("--limit must be a positive integer")
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
-    run_bertscore_eval(
-        run_id=run_id,
-        ref_run_id=ref_run_id,
-        limit=limit,
-        model_type=model_type,
-        batch_size=batch_size,
-        rescale_with_baseline=not no_rescale,
-        output_json=output_json,
-    )
-    click.echo("BERTScore evaluation completed.")
+    eval_name = "run-bertscore"
+    command_line = " ".join(sys.argv)
+    report_path = make_eval_report_path(eval_name)
+    header = [
+        f"Command line: {command_line}",
+        f"Report path: {report_path}",
+        "=== Terminal output captured below ===",
+    ]
+    with capture_terminal_to_file(report_path, header_lines=header) as f:
+        reporter = EvalRunReporter(
+            eval_name=eval_name,
+            command_line=command_line,
+            report_path=report_path,
+        )
+        run_bertscore_eval(
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            limit=limit,
+            model_type=model_type,
+            batch_size=batch_size,
+            rescale_with_baseline=not no_rescale,
+            output_json=output_json,
+            reporter=reporter,
+        )
+        click.echo("BERTScore evaluation completed.")
+        reporter.write_results_section(file=f)
+        click.echo(f"Eval report written to {report_path}")
 
 
 @cli.command("run-eval")
@@ -125,8 +144,24 @@ def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> N
         raise click.BadParameter("--limit must be a positive integer")
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
-    evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id)
-    click.echo("Evaluation completed.")
+    eval_name = "run-eval"
+    command_line = " ".join(sys.argv)
+    report_path = make_eval_report_path(eval_name)
+    header = [
+        f"Command line: {command_line}",
+        f"Report path: {report_path}",
+        "=== Terminal output captured below ===",
+    ]
+    with capture_terminal_to_file(report_path, header_lines=header) as f:
+        reporter = EvalRunReporter(
+            eval_name=eval_name,
+            command_line=command_line,
+            report_path=report_path,
+        )
+        evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id, reporter=reporter)
+        click.echo("Evaluation completed.")
+        reporter.write_results_section(file=f)
+        click.echo(f"Eval report written to {report_path}")
 
 
 @cli.command("run-all")
@@ -196,8 +231,24 @@ def show_alignment(
 def run_llm_judge(run_id: str, ref_run_id: str | None, limit: int | None) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
-    run_llm_judge_eval(run_id=run_id, ref_run_id=ref_run_id, limit=limit)
-    click.echo("LLM judge evaluation completed.")
+    eval_name = "run-llm-judge"
+    command_line = " ".join(sys.argv)
+    report_path = make_eval_report_path(eval_name)
+    header = [
+        f"Command line: {command_line}",
+        f"Report path: {report_path}",
+        "=== Terminal output captured below ===",
+    ]
+    with capture_terminal_to_file(report_path, header_lines=header) as f:
+        reporter = EvalRunReporter(
+            eval_name=eval_name,
+            command_line=command_line,
+            report_path=report_path,
+        )
+        run_llm_judge_eval(run_id=run_id, ref_run_id=ref_run_id, limit=limit, reporter=reporter)
+        click.echo("LLM judge evaluation completed.")
+        reporter.write_results_section(file=f)
+        click.echo(f"Eval report written to {report_path}")
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ from src.config.settings import get_settings
 from src.evaluation.stt_eval import _resolve_gold_reference
 from src.ingestion.dataset_loader import DatasetLoader
 from src.ingestion.pickle_loader import DatasetPickleLoader
+from src.core.eval_run_report import EvalRunReporter
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ def run_bertscore_eval(
     batch_size: int,
     rescale_with_baseline: bool,
     output_json: Path | None,
+    reporter: EvalRunReporter | None = None,
 ) -> dict[str, Any]:
     """Compute BERTScore (P/R/F1) for each aligned (reference, hypothesis) pair.
 
@@ -48,6 +50,13 @@ def run_bertscore_eval(
     pickle_loader = DatasetPickleLoader(settings.dataset_pickle_path)
     gold_transcripts = pickle_loader.load_transcripts()
     analytics = AnalyticsRepository()
+    if reporter:
+        reporter.set_run_metadata(
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            candidate_run_info=analytics.get_stt_run_info(run_id) if run_id else None,
+            ref_run_info=analytics.get_stt_run_info(ref_run_id) if ref_run_id else None,
+        )
     samples = loader.load_samples()
     samples_by_id = {s.sample_id: s for s in samples}
     run_outputs = analytics.get_stt_outputs_for_run(run_id) if run_id else {}
@@ -95,6 +104,8 @@ def run_bertscore_eval(
     if not sample_ids:
         logger.warning("No aligned samples for BERTScore (check run-id / gold / DB).")
         out: dict[str, Any] = {"samples": 0, "model_type": resolved_model}
+        if reporter:
+            reporter.set_result_summary(**out)
         if output_json:
             output_json.write_text(json.dumps(out, indent=2), encoding="utf-8")
         return out
@@ -145,6 +156,22 @@ def run_bertscore_eval(
         ],
     }
 
+    if reporter:
+        for i, sid in enumerate(sample_ids):
+            reporter.add_metric(
+                sample_id=sid,
+                metric_name="bertscore_f1",
+                metric_value=f1_list[i],
+                details={
+                    "precision": p1_list[i],
+                    "recall": r1_list[i],
+                    "run_id": run_id,
+                    "ref_run_id": ref_run_id,
+                    "model_type": resolved_model,
+                    "rescale_with_baseline": rescale_with_baseline,
+                },
+            )
+
     if ref_run_id and len(ref_hyps) == len(sample_ids):
         p2, r2, f2 = bert_score_fn(
             ref_hyps,
@@ -178,6 +205,36 @@ def run_bertscore_eval(
             summary["per_sample"][i]["ref_f1"] = f2_list[i]
             summary["per_sample"][i]["delta_f1_vs_ref"] = f1_list[i] - f2_list[i]
 
+        if reporter:
+            for i, sid in enumerate(sample_ids):
+                delta = f1_list[i] - f2_list[i]
+                reporter.add_metric(
+                    sample_id=sid,
+                    metric_name="bertscore_ref_f1",
+                    metric_value=f2_list[i],
+                    details={
+                        "precision": p2_list[i],
+                        "recall": r2_list[i],
+                        "run_id": run_id,
+                        "ref_run_id": ref_run_id,
+                        "model_type": resolved_model,
+                        "rescale_with_baseline": rescale_with_baseline,
+                    },
+                )
+                reporter.add_metric(
+                    sample_id=sid,
+                    metric_name="bertscore_delta_f1_vs_ref",
+                    metric_value=delta,
+                    details={
+                        "primary_f1": f1_list[i],
+                        "ref_f1": f2_list[i],
+                        "run_id": run_id,
+                        "ref_run_id": ref_run_id,
+                        "model_type": resolved_model,
+                        "rescale_with_baseline": rescale_with_baseline,
+                    },
+                )
+
     logger.info(
         "BERTScore aggregate: n=%s mean_F1=%.4f mean_P=%.4f mean_R=%.4f model=%s",
         len(sample_ids),
@@ -196,5 +253,8 @@ def run_bertscore_eval(
     if output_json:
         output_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
         logger.info("Wrote BERTScore summary to %s", output_json)
+
+    if reporter:
+        reporter.set_result_summary(**summary)
 
     return summary

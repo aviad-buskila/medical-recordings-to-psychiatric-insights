@@ -12,6 +12,7 @@ from src.evaluation.transcribed_json import transcribed_json_path
 from src.evaluation.wer import word_error_breakdown
 from src.ingestion.dataset_loader import DatasetLoader
 from src.ingestion.pickle_loader import DatasetPickleLoader
+from src.core.eval_run_report import EvalRunReporter
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +21,7 @@ def evaluate_stt_against_gold(
     limit: int | None = None,
     run_id: str | None = None,
     ref_run_id: str | None = None,
+    reporter: EvalRunReporter | None = None,
 ) -> None:
     """Compare STT outputs against gold: WER, CER, MER, WIL, cpWER; per-speaker when JSON exists.
 
@@ -36,12 +38,20 @@ def evaluate_stt_against_gold(
     pickle_loader = DatasetPickleLoader(settings.dataset_pickle_path)
     gold_transcripts = pickle_loader.load_transcripts()
     analytics = AnalyticsRepository()
+    if reporter:
+        reporter.set_run_metadata(
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            candidate_run_info=analytics.get_stt_run_info(run_id) if run_id else None,
+            ref_run_info=analytics.get_stt_run_info(ref_run_id) if ref_run_id else None,
+        )
     samples = loader.load_samples()
     samples_by_id = {s.sample_id: s for s in samples}
     run_outputs = analytics.get_stt_outputs_for_run(run_id) if run_id else {}
     ref_run_outputs = analytics.get_stt_outputs_for_run(ref_run_id) if ref_run_id else {}
 
     evaluated = 0
+    any_cp_wer = False
     if run_id:
         candidate_sample_ids = list(run_outputs.keys())
         if ref_run_id:
@@ -206,38 +216,47 @@ def evaluate_stt_against_gold(
                 _log_speaker_metrics_block(sample.sample_id, sp_wer, label="candidate")
             _log_cp_wer_lines(sample.sample_id, cp_payload, None, None)
 
-        analytics.insert_eval_metric(
-            sample_id=sample.sample_id,
-            metric_name="wer",
-            metric_value=wer,
-            details=details,
-        )
-        analytics.insert_eval_metric(
-            sample_id=sample.sample_id,
-            metric_name="cer",
-            metric_value=cer,
-            details=details,
-        )
-        analytics.insert_eval_metric(
-            sample_id=sample.sample_id,
-            metric_name="mer",
-            metric_value=mer,
-            details=details,
-        )
-        analytics.insert_eval_metric(
-            sample_id=sample.sample_id,
-            metric_name="wil",
-            metric_value=wil,
-            details=details,
-        )
+        def _insert_metric(metric_name: str, metric_value: float) -> None:
+            analytics.insert_eval_metric(
+                sample_id=sample.sample_id,
+                metric_name=metric_name,
+                metric_value=metric_value,
+                details=details,
+            )
+            if reporter:
+                reporter.add_metric(
+                    sample_id=sample.sample_id,
+                    metric_name=metric_name,
+                    metric_value=metric_value,
+                    details=details,
+                )
+
+        _insert_metric(metric_name="wer", metric_value=wer)
+        _insert_metric(metric_name="cer", metric_value=cer)
+        _insert_metric(metric_name="mer", metric_value=mer)
+        _insert_metric(metric_name="wil", metric_value=wil)
         if cp_val is not None:
+            any_cp_wer = True
             analytics.insert_eval_metric(
                 sample_id=sample.sample_id,
                 metric_name="cp_wer",
                 metric_value=cp_val,
                 details=details,
             )
+            if reporter:
+                reporter.add_metric(
+                    sample_id=sample.sample_id,
+                    metric_name="cp_wer",
+                    metric_value=cp_val,
+                    details=details,
+                )
         evaluated += 1
+
+    if reporter:
+        metric_names: list[str] = ["wer", "cer", "mer", "wil"]
+        if any_cp_wer:
+            metric_names.append("cp_wer")
+        reporter.set_result_summary(evaluated=evaluated, metric_names=metric_names)
 
 
 def _log_cp_wer_lines(

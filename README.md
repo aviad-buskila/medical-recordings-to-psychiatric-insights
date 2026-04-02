@@ -73,6 +73,8 @@ python -m src.cli.main run-llm-judge --run-id <uuid> --ref-run-id <other_uuid> -
 python -m src.cli.main run-all
 ```
 
+Note: `run-eval`, `run-bertscore`, and `run-llm-judge` also write a full run report (terminal transcript + JSON results) to `data/processed/<evalname>_<timestamp>.txt`.
+
 ### Word alignment (gold vs hypothesis, S / I / D)
 
 Gold text comes from `dataset.pickle` (same normalization as WER). For each sample, prints `GOLD` / `HYP` / `OP` rows where `=` is match, `S` substitution, `D` deletion, `I` insertion. Long transcripts wrap in chunks of `--chunk-columns` words.
