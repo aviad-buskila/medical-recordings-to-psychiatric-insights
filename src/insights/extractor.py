@@ -141,6 +141,7 @@ class TranscriptInsightsExtractor:
 
     def __post_init__(self) -> None:
         self.client = OllamaClient()
+        self.settings = get_settings()
 
     def _prompt(self, transcript: str) -> str:
         return (
@@ -161,7 +162,16 @@ class TranscriptInsightsExtractor:
         )
 
     def extract(self, transcript: str) -> tuple[dict[str, Any], str]:
-        raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name)
+        options = {
+            # Bound generation length for deterministic latency.
+            "num_predict": int(self.settings.ollama_insights_max_tokens),
+            "temperature": 0.1,
+        }
+        try:
+            raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name, options=options)
+        except Exception:
+            # One retry for transient Ollama stalls/timeouts.
+            raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name, options=options)
         parsed = _safe_json_loads(raw)
         return _sanitize_with_evidence(parsed, transcript=transcript), raw
 

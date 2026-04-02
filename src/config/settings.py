@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     ollama_model: str = Field(default="gemma3:12b", alias="OLLAMA_MODEL")
     ollama_judge_model: str = Field(default="gemma3:12b", alias="OLLAMA_JUDGE_MODEL")
     ollama_insights_model: str = Field(default="medaibase/medgemma1.5:4b", alias="OLLAMA_INSIGHTS_MODEL")
+    ollama_timeout_s: int = Field(default=180, alias="OLLAMA_TIMEOUT_S")
+    ollama_insights_max_tokens: int = Field(default=384, alias="OLLAMA_INSIGHTS_MAX_TOKENS")
     hf_token: str = Field(default="", alias="HF_TOKEN")
 
     stt_provider: str = Field(default="mlx-whisper", alias="STT_PROVIDER")
