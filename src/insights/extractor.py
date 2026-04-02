@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+import time
 from typing import Any
 
 from src.analytics.repository import AnalyticsRepository
@@ -189,11 +190,16 @@ def run_insights_extract(
         sample_ids = sample_ids[:limit]
 
     results: list[dict[str, Any]] = []
+    run_started = time.perf_counter()
     for sid in sample_ids:
         transcript = run_outputs.get(sid, "").strip()
         if not transcript:
             continue
+        transcript_char_count = len(transcript)
+        transcript_word_count = len([w for w in transcript.split() if w])
+        sample_started = time.perf_counter()
         parsed, raw = extractor.extract(transcript)
+        elapsed_s = time.perf_counter() - sample_started
         row = {
             "run_id": run_id,
             "sample_id": sid,
@@ -202,6 +208,11 @@ def run_insights_extract(
             "insights": parsed,
             "raw_output": raw,
             "transcript_preview": transcript[:500],
+            "timing": {
+                "elapsed_s": round(elapsed_s, 3),
+                "transcript_char_count": transcript_char_count,
+                "transcript_word_count": transcript_word_count,
+            },
         }
         results.append(row)
         analytics.upsert_transcript_insight(
@@ -212,7 +223,14 @@ def run_insights_extract(
             insights=parsed,
             raw_output=raw,
         )
-        logger.info("Extracted psychiatry insights sample_id=%s model=%s", sid, resolved_model)
+        logger.info(
+            "Extracted psychiatry insights sample_id=%s model=%s elapsed_s=%.3f words=%s chars=%s",
+            sid,
+            resolved_model,
+            elapsed_s,
+            transcript_word_count,
+            transcript_char_count,
+        )
 
     ts = _ts_utc()
     out_dir = Path(settings.insights_extract_dir)
@@ -228,6 +246,13 @@ def run_insights_extract(
         "sample_filter": sample_id,
         "limit": limit,
         "samples_processed": len(results),
+        "timing": {
+            "total_elapsed_s": round(time.perf_counter() - run_started, 3),
+            "avg_elapsed_s_per_sample": round(
+                (sum(float(r.get("timing", {}).get("elapsed_s", 0.0)) for r in results) / len(results)) if results else 0.0,
+                3,
+            ),
+        },
         "results": results,
     }
     output_path.write_text(
