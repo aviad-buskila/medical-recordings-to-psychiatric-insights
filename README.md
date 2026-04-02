@@ -8,6 +8,34 @@ Built for Apple Silicon using local-first tooling (`mlx-whisper`, Ollama, Postgr
 
 ---
 
+## Latest full pipeline benchmark
+
+Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T172054Z.md`** (commands, artifact paths, and raw DB JSON). Current pointer: **`data/processed/full_pipeline/full_pipeline_state_latest.json`**.
+
+| | |
+| --- | --- |
+| Command | `python run_full_pipeline.py --limit 5` |
+| Samples | `D0420-S1-T01` … `D0420-S1-T05` (N=5) |
+| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `22f69385-e088-4e6c-8e63-b148b36f0849` |
+| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `507e804d-4260-406a-b7b5-a97e395ad625` |
+| Insights | MedGemma `medaibase/medgemma1.5:4b` · 5 rows per run |
+
+Mean metrics vs **gold** (`dataset.pickle`), unless noted:
+
+| Metric | Baseline | Candidate | Δ (c−b) |
+| --- | ---: | ---: | ---: |
+| WER | 0.180 | 0.198 | +0.018 |
+| CER | 0.182 | 0.202 | +0.020 |
+| MER | 0.095 | 0.103 | +0.008 |
+| WIL | 0.190 | 0.206 | +0.017 |
+| cpWER | 0.082 | 0.105 | +0.023 |
+| BERTScore F1 (each STT vs gold; `roberta-large`, rescale on) | 0.147 | 0.144 | −0.003 |
+| LLM judge (mean comparative score delta, N=5) | — | — | −0.4 |
+
+Lower is better for WER, CER, MER, WIL, and cpWER. BERTScore F1 is shown for **each model against gold** (not hypothesis-vs-hypothesis). LLM judge delta is exploratory (negative ⇒ baseline favored on average). These are **point estimates over five files**—see `analysis/statistical_significance.ipynb` before drawing firm conclusions.
+
+---
+
 ## What This Demonstrates
 
 - **STT evaluation rigor**: 7 evaluation metrics covering lexical accuracy (WER/CER/MER/WIL/cpWER), semantic fidelity (BERTScore), and comparative quality (LLM-as-judge)
