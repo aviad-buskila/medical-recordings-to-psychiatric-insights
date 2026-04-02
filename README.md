@@ -1,26 +1,33 @@
 # Medical Conversation Intelligence Pipeline
 
-End-to-end local platform for benchmarking clinical speech-to-text models and extracting psychiatry-focused structured insights from patient-therapist conversations. Built to demonstrate the full data science and AI engineering stack relevant to behavioral health CareOps: STT evaluation, clinical NLP, reproducible pipelines, and model comparison analytics.
+An on-prem/local platform for benchmarking speech-to-text models for clinical use by extracting structured psychiatric insights from patient-doctor conversations. Covers the full behavioral health AI stack: STT evaluation, clinical NLP, reproducible pipelines, and multi-metric model comparison analytics.
 
-Gold transcripts come from the [automated medical transcription dataset](https://github.com/nazmulkazi/dataset_automated_medical_transcription?tab=readme-ov-file) (see [Dataset](#dataset)).
-
-Built for Apple Silicon using local-first tooling (`mlx-whisper`, Ollama, PostgreSQL, Jupyter).
+Built for Apple Silicon. Local-first by design — no audio leaves the machine.
 
 ---
 
-## Latest full pipeline benchmark
+## What it does
 
-Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T172054Z.md`** (commands, artifact paths, and raw DB JSON). Current pointer: **`data/processed/full_pipeline/full_pipeline_state_latest.json`**.
+- **Benchmarks two STT models head-to-head** against gold-standard transcripts using 7 complementary metrics — from character-level edit distance to LLM-as-judge comparative scoring
+- **Extracts structured psychiatric insights** from transcripts using MedGemma, with an evidence guardrail that drops any claim not grounded in the actual dialogue
+- **Persists everything to PostgreSQL** with full JSONB payloads for retroactive analysis and metric recomputation without re-running inference
+- **Runs as a resumable pipeline** — because local model inference is slow enough that mid-run failures are a real operational concern
+
+---
+
+## Latest benchmark
+
+Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T172054Z.md`**
 
 | | |
 | --- | --- |
 | Command | `python run_full_pipeline.py --limit 5` |
 | Samples | `D0420-S1-T01` … `D0420-S1-T05` (N=5) |
-| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `22f69385-e088-4e6c-8e63-b148b36f0849` |
-| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `507e804d-4260-406a-b7b5-a97e395ad625` |
+| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `22f69385` |
+| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `507e804d` |
 | Insights | MedGemma `medaibase/medgemma1.5:4b` · 5 rows per run |
 
-Mean metrics vs **gold** (`dataset.pickle`), unless noted:
+Mean metrics vs gold:
 
 | Metric | Baseline | Candidate | Δ (c−b) |
 | --- | ---: | ---: | ---: |
@@ -29,19 +36,10 @@ Mean metrics vs **gold** (`dataset.pickle`), unless noted:
 | MER | 0.095 | 0.103 | +0.008 |
 | WIL | 0.190 | 0.206 | +0.017 |
 | cpWER | 0.082 | 0.105 | +0.023 |
-| BERTScore F1 (each STT vs gold; `roberta-large`, rescale on) | 0.147 | 0.144 | −0.003 |
-| LLM judge (mean comparative score delta, N=5) | — | — | −0.4 |
+| BERTScore F1 (`roberta-large`, rescale on) | 0.147 | 0.144 | −0.003 |
+| LLM judge (mean comparative delta, N=5) | — | — | −0.4 |
 
-Lower is better for WER, CER, MER, WIL, and cpWER. BERTScore F1 is shown for **each model against gold** (not hypothesis-vs-hypothesis). LLM judge delta is exploratory (negative ⇒ baseline favored on average). These are **point estimates over five files**—see `analysis/statistical_significance.ipynb` before drawing firm conclusions.
-
----
-
-## What This Demonstrates
-
-- **STT evaluation rigor**: 7 evaluation metrics covering lexical accuracy (WER/CER/MER/WIL/cpWER), semantic fidelity (BERTScore), and comparative quality (LLM-as-judge)
-- **Clinical NLP**: Evidence-grounded insight extraction with a hallucination guardrail, medical model selection (MedGemma), and speaker-aware metrics
-- **AI engineering**: Resumable multi-step pipeline, two-profile model comparison, reproducible artifact system, local-first architecture for data privacy
-- **Data science**: Multi-metric model benchmarking, run-level analytics in PostgreSQL, notebook-based analysis with alignment visualization and speaker flow exploration
+Lower is better for WER/CER/MER/WIL/cpWER. LLM judge delta negative means baseline was preferred. These are point estimates over five files — see `analysis/statistical_significance.ipynb` before drawing conclusions.
 
 ---
 
@@ -49,74 +47,66 @@ Lower is better for WER, CER, MER, WIL, and cpWER. BERTScore F1 is shown for **e
 
 ```
 Audio files (WAV)
-       |
-       v
+       │
+       ▼
   [Ingestion]  ──── dataset.pickle (gold transcripts)
-       |
-       v
+       │
+       ▼
   [STT Engine]  ──── mlx-whisper
   two profiles: turbo (speed) vs large-v3 (quality)
-       |
-       v                              PostgreSQL
+       │
+       ▼                              PostgreSQL
   [Evaluation] ─────────────────────► stt_runs
   WER · CER · MER · WIL · cpWER      stt_outputs
-  BERTScore · LLM-as-judge            evaluation_metrics
-       |
-       v
+  BERTScore · LLM-as-judge(Gemma3:12b)            evaluation_metrics
+       │
+       ▼
   [Insights Extraction]  ──── Ollama (MedGemma 4B)
   Evidence guardrail                 transcript_insights
-       |
-       v
+       │
+       ▼
   [Analysis Notebooks]
   model comparison · alignment viz · speaker timeline
-       |
-       v
+       │
+       ▼
   [Pipeline Report]  ──── data/processed/full_pipeline/
 ```
 
-**Step-by-step:**
+**Pipeline steps:**
+
 1. **Ingestion** — discovers audio, gold transcripts, optional speaker-tagged JSON, and casenotes from `data/raw/`
-2. **Transcription** — runs STT on both profiles; writes outputs to DB and `data/generated_transcripts/`
-3. **Evaluation** — computes all metrics against gold references; persists results with full JSONB payloads for auditability
-4. **Insights extraction** — uses Ollama + MedGemma to derive structured clinical claims; evidence guardrail drops unsupported claims
-5. **Analysis** — executes Jupyter notebooks that generate model comparison charts, word alignment views, and speaker flow plots
+2. **Transcription** — runs STT on both profiles; writes outputs to postgres DB and `data/generated_transcripts/`
+3. **Evaluation** — computes all metrics against gold references; persists full JSONB payloads for auditability
+4. **Insights extraction** — uses Ollama + MedGemma1.5:4b to derive structured clinical claims; evidence guardrail drops unsupported/unmentioned claims
+5. **Analysis** — executes Jupyter notebooks generating model comparison charts, word alignment views, and speaker flow plots
 6. **Reporting** — writes a consolidated Markdown summary with all artifact paths and DB metric aggregates
 
 ---
 
-## Evaluation Metrics
+## Evaluation metrics
 
 | Metric | What it measures | Range | Notes |
 | --- | --- | --- | --- |
-| WER | Word-level edit distance from reference | 0.0 (perfect) → ∞ | Primary STT quality metric |
-| CER | Character-level edit distance | 0.0 → ∞ | Useful for detecting character-level noise |
-| MER | Match Error Rate: % of reference words matched incorrectly | 0.0 → 1.0 | Complementary to WER |
-| WIL | Word Information Lost: semantic coverage loss | 0.0 → 1.0 | Penalizes insertions differently from WER |
-| cpWER | Chronological Permutation WER | 0.0 → ∞ | WER minimized over speaker block permutations; appropriate for diarized conversations where speaker order may differ from reference |
-| BERTScore F1 | Semantic overlap between each STT hypothesis and the **gold** reference from `dataset.pickle` (not hypothesis-vs-hypothesis). With `--ref-run-id`, both runs are scored vs gold and deltas are reported | 0.0 → 1.0 | Captures paraphrase and domain-appropriate synonyms that WER misses |
-| LLM-judge | Comparative quality score from a language model judge | Varies | Exploratory; model not clinically fine-tuned, results should be interpreted as directional only |
+| WER | Word-level edit distance from reference | 0.0 → ∞ | Primary STT quality metric |
+| CER | Character-level edit distance | 0.0 → ∞ | Catches character-level noise |
+| MER | % of reference words matched incorrectly | 0.0 → 1.0 | Complementary to WER |
+| WIL | Semantic coverage loss | 0.0 → 1.0 | Penalizes insertions differently from WER |
+| cpWER | WER minimized over speaker block permutations | 0.0 → ∞ | Preferred metric when speaker diarization labels are available |
+| BERTScore F1 | Semantic overlap between STT hypothesis and gold reference | 0.0 → 1.0 | Captures paraphrase and domain synonyms that WER misses |
+| LLM-judge | Comparative quality score from a language model | Varies | Exploratory; treat as directional only |
 
-**On WER thresholds for clinical transcription:** General-purpose ASR systems typically achieve WER 5–15% on clean speech. Medical dialogue is harder — drug names, dosages, and clinical acronyms (SSRI, GAD, DSM-5) increase error rates. A WER under 20% on medical dialogue without domain fine-tuning is a reasonable baseline. cpWER is preferred over WER when speaker diarization labels are available.
+**On WER thresholds:** General ASR achieves 5–15% WER on clean speech. Medical dialogue is harder — drug names, dosages, and clinical acronyms (SSRI, GAD, DSM-5) push error rates up. WER under 20% on medical dialogue without domain fine-tuning is a reasonable baseline. cpWER is preferred over WER when diarization labels are available.
 
 ---
 
-## Machine Requirements
+## Quick start
 
-### Minimum (functional)
+### Requirements
 
-- macOS (Apple Silicon required for `mlx-whisper`)
+- macOS with Apple Silicon (required for `mlx-whisper`; evaluation and insights run on any platform)
 - Python 3.11+
-- 16 GB RAM
-- 30 GB+ free disk (models + artifacts + DB)
-- 8+ CPU cores
-
-### Recommended
-
-- Apple M-series (M2 Pro or later)
-- 32–48 GB RAM
-- Fast SSD
-
-### Required software
+- 32–48 GB RAM recommended (16 GB minimum)
+- 30 GB+ free disk
 
 ```bash
 brew install ffmpeg
@@ -124,9 +114,7 @@ brew install --cask docker
 # Install Ollama from https://ollama.com
 ```
 
----
-
-## Quick Start
+### Setup
 
 ```bash
 cp .env.example .env
@@ -137,33 +125,21 @@ docker compose --env-file .env up -d
 make db-init
 ```
 
-Pull required local models:
+Pull models:
 
 ```bash
 ollama pull gemma3:12b                    # LLM judge
 ollama pull medaibase/medgemma1.5:4b      # Insights extraction
 ```
 
-Place dataset under `data/raw/`:
+Place data under `data/raw/`:
 - `dataset.pickle` — gold transcripts (see [Dataset](#dataset))
 - `recordings/*.wav` — audio files
 - `transcripts/transcribed/<sample_id>.json` — optional speaker-tagged dialogue (enables cpWER and per-speaker WER)
 
 ---
 
-## Dataset
-
-**Source:** [nazmulkazi / dataset_automated_medical_transcription](https://github.com/nazmulkazi/dataset_automated_medical_transcription?tab=readme-ov-file) — automated medical transcription benchmark (download and preparation steps are in that repository’s README).
-
-Expected local file: `data/raw/dataset.pickle` (gold reference text for evaluation metrics).
-
-**Dataset limitations:** This dataset contains scripted medical dialogue, not naturalistic psychiatric sessions. It does not include real diarized patient-therapist conversations. The pipeline is built to work with real clinical recordings — this dataset is a proxy for development and benchmarking.
-
----
-
-## Commands Reference
-
-Command cheat sheet (copy-paste examples): [docs/cli.md](docs/cli.md).
+## Commands
 
 Activate environment first:
 
@@ -171,21 +147,15 @@ Activate environment first:
 source .venv/bin/activate
 ```
 
-### Validate dataset
+### STT
 
 ```bash
-python -m src.cli.main validate-dataset
+python -m src.cli.main run-stt --limit 5                       # Speed profile (turbo)
+python -m src.cli.main run-stt --profile quality --limit 5     # Quality profile (large-v3)
+python -m src.cli.main run-stt --flavor both --limit 5         # Both profiles on same files
 ```
 
-### Run STT
-
-```bash
-python -m src.cli.main run-stt --limit 5                      # Speed profile (turbo)
-python -m src.cli.main run-stt --profile quality --limit 5    # Quality profile (large-v3)
-python -m src.cli.main run-stt --flavor both --limit 5        # Both profiles on same files
-```
-
-### Evaluate transcript quality
+### Evaluation
 
 ```bash
 # Lexical metrics (WER/CER/MER/WIL/cpWER)
@@ -203,30 +173,12 @@ python -m src.cli.main run-llm-judge --run-id <CANDIDATE> --ref-run-id <BASELINE
 python -m src.cli.main show-alignment --run-id <UUID> --limit 5
 ```
 
-### Extract psychiatry insights
+### Insights extraction
 
 ```bash
 python -m src.cli.main insights-extract --run-id <UUID> --limit 5
 python -m src.cli.main insights-extract --run-id <UUID> --model medaibase/medgemma1.5:4b
 python -m src.cli.main insights-extract --run-id <UUID> --sample-id D0420-S1-T01
-```
-
-### Analysis notebooks
-
-| Notebook | What it shows |
-| --- | --- |
-| `analysis/model_eval_insights.ipynb` | Side-by-side metric comparison between candidate and baseline runs; per-sample delta plots |
-| `analysis/show_alignment_visualizer.ipynb` | Word-level alignment blocks showing substitution/insertion/deletion patterns per sample |
-| `analysis/gold_speaker_timeline.ipynb` | Speaker turn distribution from gold transcripts — therapist vs patient speech patterns and turn lengths |
-| `analysis/statistical_significance.ipynb` | Paired Wilcoxon signed-rank tests and bootstrap 95% CIs on metric deltas; requires N ≥ 5 samples |
-| `analysis/insights_quality.ipynb` | Guardrail drop-rate (hallucination proxy), schema adherence, claim category distribution, cross-run insight consistency |
-
-```bash
-jupyter notebook analysis/model_eval_insights.ipynb
-jupyter notebook analysis/show_alignment_visualizer.ipynb
-jupyter notebook analysis/gold_speaker_timeline.ipynb
-jupyter notebook analysis/statistical_significance.ipynb
-jupyter notebook analysis/insights_quality.ipynb
 ```
 
 ### Full benchmark pipeline
@@ -245,7 +197,23 @@ Runs both STT profiles → all evaluations → insights extraction → notebook 
 
 ---
 
-## Artifacts and Outputs
+## Analysis notebooks
+
+| Notebook | What it shows |
+| --- | --- |
+| `analysis/model_eval_insights.ipynb` | Side-by-side metric comparison; per-sample delta plots |
+| `analysis/show_alignment_visualizer.ipynb` | Word-level alignment blocks showing substitution/insertion/deletion patterns |
+| `analysis/gold_speaker_timeline.ipynb` | Therapist vs. patient speech patterns and turn lengths |
+| `analysis/statistical_significance.ipynb` | Paired Wilcoxon signed-rank tests and bootstrap 95% CIs on metric deltas |
+| `analysis/insights_quality.ipynb` | Guardrail drop-rate, schema adherence, claim category distribution, cross-run consistency |
+
+```bash
+jupyter notebook analysis/model_eval_insights.ipynb
+```
+
+---
+
+## Artifacts and outputs
 
 | Artifact | Location |
 | --- | --- |
@@ -257,16 +225,16 @@ Runs both STT profiles → all evaluations → insights extraction → notebook 
 
 ---
 
-## Database Schema
+## Database schema
 
-Operational tables under the `clinical_ai` schema:
+All tables live under the `clinical_ai` schema:
 
 | Table | Contents |
 | --- | --- |
 | `stt_runs` | Run-level metadata: model, provider, scope, parameters, timestamp |
 | `stt_outputs` | Transcript text per sample per run |
-| `evaluation_metrics` | Metric rows with full JSONB detail payloads for auditability |
-| `transcript_insights` | Extracted insight JSONB (`prompt_version` duplicated inside the payload for self-contained exports), raw model output, and `prompt_version` / `insight_model` columns |
+| `evaluation_metrics` | Metric rows with full JSONB detail payloads |
+| `transcript_insights` | Extracted insight JSONB, raw model output, `prompt_version`, `insight_model` |
 
 Apply migrations:
 
@@ -274,7 +242,7 @@ Apply migrations:
 make db-init
 ```
 
-Migration files applied in order: `001_init.sql` → `003_stt_runs.sql` → `004_stt_remove_created_at_and_backfill_model.sql` → `005_stt_run_scope.sql` → `006_transcript_insights.sql`.
+Migration order: `001_init.sql` → `003_stt_runs.sql` → `004_stt_remove_created_at_and_backfill_model.sql` → `005_stt_run_scope.sql` → `006_transcript_insights.sql`
 
 ---
 
@@ -306,25 +274,35 @@ Unit tests cover each metric module (WER, CER, MER, WIL, cpWER, BERTScore, align
 
 ---
 
-## Known Limitations
+## Dataset
 
-- **Dataset is synthetic**: Gold transcripts are scripted medical dialogue, not naturalistic psychiatric sessions. Clinical audio with real speech patterns, crosstalk, and domain-specific jargon would produce different benchmarks.
-- **Whisper struggles with medical terminology**: Drug names, dosages, and acronyms (SSRI, DSM-5, GAD, PTSD) have elevated error rates without domain fine-tuning. These are the highest-value terms in psychiatric transcription.
-- **BERTScore encoder is general-purpose**: `roberta-large` was not trained on clinical text. A biomedical encoder (BioBERT, SciBERT) would produce more meaningful semantic similarity scores for this domain.
-- **Insights confidence is model self-reported**: The `confidence` field comes from the LLM's own output — it is not a calibrated probability.
-- **Apple Silicon only for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run on any platform.
-- **Sequential pipeline**: Steps run sequentially. Production-scale deployment would require async execution, batching, and a job queue.
-- **Small-sample benchmarks**: Point estimates without statistical significance tests are directional only. Use `analysis/statistical_significance.ipynb` (or larger `run_full_pipeline.py --limit`) before drawing conclusions about model differences.
+**Source:** [nazmulkazi / dataset_automated_medical_transcription](https://github.com/nazmulkazi/dataset_automated_medical_transcription) — automated medical transcription benchmark.
+
+Expected local path: `data/raw/dataset.pickle`
+
+**Note:** This dataset contains scripted medical dialogue, not naturalistic psychiatric sessions. The pipeline is designed to work with real clinical recordings — this dataset is a development and benchmarking proxy.
 
 ---
 
-## Design Decisions
+## Design decisions
 
 | Decision | Rationale |
 | --- | --- |
-| Local-first (no cloud APIs) | Data privacy: clinical audio should not leave the machine during development |
-| Two STT profiles | Controlled comparison of speed/quality tradeoff against a shared gold reference |
-| Evidence guardrail on insights | Clinical risk: the system should only surface claims grounded in what was actually said |
-| PostgreSQL with JSONB details | Full payload storage enables retroactive analysis and metric recomputation without re-running STT |
-| Resumable pipeline state | Local model inference is slow enough that mid-run failures on small samples are a real operational concern |
-| ProcessPoolExecutor for eval | Each sample evaluation is CPU-bound and independent — process-level parallelism bypasses the Python GIL |
+| Local-first (no cloud APIs) | Clinical audio should not leave the machine during development |
+| Two STT profiles | Controlled speed/quality tradeoff comparison against a shared gold reference |
+| Evidence guardrail on insights | The system should only surface claims grounded in what was actually said |
+| PostgreSQL with JSONB details | Full payload storage enables retroactive analysis without re-running STT |
+| Resumable pipeline state | Local model inference is slow enough that mid-run failures are a real operational concern |
+| ProcessPoolExecutor for eval | Each sample evaluation is CPU-bound and independent — process parallelism bypasses the GIL |
+
+---
+
+## Known limitations
+
+- **Synthetic dataset**: Gold transcripts are scripted dialogue, not naturalistic psychiatric sessions. Real clinical audio would produce different benchmarks.
+- **Whisper struggles with medical terminology**: Drug names, dosages, and acronyms (SSRI, DSM-5, GAD, PTSD) have elevated error rates without domain fine-tuning — precisely the highest-value terms in psychiatric transcription.
+- **General-purpose BERTScore encoder**: `roberta-large` wasn't trained on clinical text. A biomedical encoder (BioBERT, SciBERT) would produce more meaningful semantic similarity scores.
+- **Self-reported confidence**: The `confidence` field in insights comes from the LLM's own output — it is not a calibrated probability.
+- **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
+- **Sequential pipeline**: Steps run sequentially. Production deployment would require async execution, batching, and a job queue.
+- **Small-sample benchmarks**: Point estimates over five files are directional only. Run `analysis/statistical_significance.ipynb` (or increase `--limit`) before drawing conclusions about model differences.
