@@ -1,0 +1,16 @@
+{
+  "timestamp_utc": "20260402T150431Z",
+  "limit": 1,
+  "selected_recordings": [
+    "D0420-S1-T01"
+  ],
+  "baseline_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+  "candidate_run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+  "commands": [
+    "python -m src.cli.main run-stt --flavor both --limit 1",
+    "python -m src.cli.main run-eval --run-id 9835ed61-9906-449d-bb8b-365cf7b0e70c --ref-run-id 87bac619-f810-4994-8a27-7b883b8f99b7 --limit 1 --workers auto"
+  ],
+  "artifacts": {
+    "run_eval_report": "data/processed/run-eval_20260402T150713Z.txt"
+  }
+}
