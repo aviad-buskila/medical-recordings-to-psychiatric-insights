@@ -1,0 +1,166 @@
+# CLI command reference
+
+Project root. Activate the virtual environment first: `source .venv/bin/activate`.
+
+CLI entry: `python -m src.cli.main <command>`
+
+## Dataset
+
+```bash
+python -m src.cli.main validate-dataset
+```
+
+## Speech-to-text (MLX Whisper; writes PostgreSQL + `data/generated_transcripts/`)
+
+```bash
+python -m src.cli.main run-stt
+python -m src.cli.main run-stt --limit 5
+python -m src.cli.main run-stt --profile default
+python -m src.cli.main run-stt --profile quality
+python -m src.cli.main run-stt --flavor both
+python -m src.cli.main run-stt --flavor both --limit 3
+python -m src.cli.main run-stt --flavor both --limit 3 --no-fallback
+python -m src.cli.main run-stt --profile quality --no-fallback
+python -m src.cli.main restore-stt-from-generated --dry-run
+python -m src.cli.main restore-stt-from-generated
+python -m src.cli.main restore-stt-from-generated --run-id <STT_RUN_UUID>
+```
+
+## WER evaluation vs gold (`dataset.pickle`)
+
+```bash
+python -m src.cli.main run-eval
+python -m src.cli.main run-eval --limit 10
+python -m src.cli.main run-eval --workers auto
+python -m src.cli.main run-eval --limit 10 --workers 2
+python -m src.cli.main run-eval --metric wer
+python -m src.cli.main run-eval --metric cp-wer
+python -m src.cli.main run-eval --metric wer --metric cer --workers auto
+python -m src.cli.main run-eval --skip-cp-wer
+python -m src.cli.main run-eval --skip-speaker-metrics
+python -m src.cli.main run-eval --skip-cp-wer --skip-speaker-metrics --workers 2
+python -m src.cli.main run-eval --run-id <STT_RUN_UUID>
+python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
+python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --workers auto
+python -m src.cli.main run-eval --run-id <RUN_UUID> --limit 5
+```
+
+## Word alignment (GOLD/HYP/OP; same normalization as WER)
+
+```bash
+python -m src.cli.main show-alignment --run-id <STT_RUN_UUID>
+python -m src.cli.main show-alignment --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main show-alignment --run-id <STT_RUN_UUID> --sample-id D0420-S1-T01 --limit 3
+python -m src.cli.main show-alignment --run-id <STT_RUN_UUID> -o alignment_report.txt
+```
+
+## Eval reports / artifacts (`run-eval` / `run-bertscore` / `run-llm-judge` / `show-alignment`)
+
+Each command captures full terminal stdout+stderr and writes an artifact to:
+
+`data/processed/<evalname>_<timestamp>.txt`
+
+- `run-eval` / `run-llm-judge`: also mirror the DB metric rows into a JSON section
+- `run-bertscore`: includes a JSON summary (does not write to `evaluation_metrics`)
+- `show-alignment`: includes the alignment text output (no DB metrics)
+
+## BERTScore vs gold (separate from `run-eval`; logs only, optional JSON; `torch` + `bert-score` in `requirements.txt`)
+
+```bash
+python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID>
+python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> --limit 10
+python -m src.cli.main run-bertscore --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-bertscore --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
+python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> -o bertscore_summary.json
+python -m src.cli.main run-bertscore --run-id <STT_RUN_UUID> --batch-size 4 --no-rescale
+```
+
+## LLM-as-a-judge (Ollama; configure `OLLAMA_*` and judge model in `.env`)
+
+```bash
+python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID>
+python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
+python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID> --limit 3
+```
+
+## Psychiatry insights extraction (Ollama med-gemma over STT transcripts)
+
+```bash
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID>
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --sample-id D0420-S1-T01
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --limit 10
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> --model medaibase/medgemma1.5:4b
+python -m src.cli.main insights-extract --run-id <STT_RUN_UUID> -o data/processed/insights_extract/custom.json
+```
+
+## Analysis notebooks
+
+```bash
+jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> SAMPLE_ID=D0420-S1-T01 jupyter notebook analysis/model_eval_insights.ipynb
+```
+
+### Visualize `show-alignment` artifacts
+
+```bash
+jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt SAMPLE_ID=D0420-S1-T01 MAX_CHUNKS_PER_RUN=6 jupyter notebook analysis/show_alignment_visualizer.ipynb
+```
+
+### Gold talk structure: speaker-over-time Gantt (`dataset.pickle` based)
+
+```bash
+jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle TRANSCRIPTS_DIR=./data/raw/transcripts jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle SAMPLE_IDS=D0420-S1-T01,D0420-S1-T02 MAX_SAMPLES=10 jupyter notebook analysis/gold_speaker_timeline.ipynb
+```
+
+## Full pipeline
+
+```bash
+python -m src.cli.main run-all
+```
+
+## End-to-end sampled benchmark pipeline
+
+```bash
+python run_full_pipeline.py
+python run_full_pipeline.py --limit 5
+python run_full_pipeline.py --skip-stt --skip-evals --baseline-run-id <BASELINE_RUN_UUID> --candidate-run-id <CANDIDATE_RUN_UUID> --limit 5
+```
+
+## Makefile (from project root)
+
+```bash
+make venv
+make install
+make up
+make down
+make db-init
+make test
+make lint
+make run-pipeline
+```
+
+## Docker Compose (Postgres)
+
+```bash
+docker compose --env-file .env up -d
+docker compose --env-file .env down
+```
+
+## List recent STT run IDs (UUIDs for `--run-id` / `--ref-run-id`)
+
+```bash
+docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT run_id, model_name, run_scope, run_timestamp FROM clinical_ai.stt_runs ORDER BY run_timestamp DESC LIMIT 20;"'
+```
+
+## Empty analytics tables (fresh start; keep schema)
+
+```bash
+docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "TRUNCATE TABLE clinical_ai.evaluation_metrics, clinical_ai.stt_outputs, clinical_ai.stt_runs RESTART IDENTITY CASCADE;"'
+```

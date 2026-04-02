@@ -2,51 +2,9 @@
 
 End-to-end local platform for benchmarking clinical speech-to-text models and extracting psychiatry-focused structured insights from patient-therapist conversations. Built to demonstrate the full data science and AI engineering stack relevant to behavioral health CareOps: STT evaluation, clinical NLP, reproducible pipelines, and model comparison analytics.
 
+Gold transcripts come from the [automated medical transcription dataset](https://github.com/nazmulkazi/dataset_automated_medical_transcription?tab=readme-ov-file) (see [Dataset](#dataset)).
+
 Built for Apple Silicon using local-first tooling (`mlx-whisper`, Ollama, PostgreSQL, Jupyter).
-
----
-
-## Key Results
-
-Results from a benchmark run on sample `D0420-S1-T01` (N=1) comparing `whisper-large-v3-turbo` (speed-optimized baseline) against `whisper-large-v3` (quality candidate) on medical dialogue transcription:
-
-| Metric | Baseline (turbo) | Candidate (large-v3) | Delta | Winner |
-| --- | --- | --- | --- | --- |
-| WER | 0.288 | 0.298 | +0.010 | baseline |
-| CER | 0.259 | 0.265 | +0.005 | baseline |
-| MER | 0.158 | 0.163 | +0.004 | baseline |
-| WIL | 0.316 | 0.325 | +0.009 | baseline |
-| cpWER | 0.062 | 0.079 | +0.017 | baseline |
-| BERTScore F1\* | 0.011 | 0.005 | −0.006 | baseline |
-| LLM judge | — | — | −3.0 | baseline |
-
-\* BERTScore here compares the two model outputs against each other (inter-system agreement), not against a gold reference. Values near zero reflect that the two transcripts differ significantly despite both being plausible renderings of the same audio.
-
-> **N=1 limitation:** These are single-sample results. Point estimates without confidence intervals or significance tests are directional only — do not draw model selection conclusions from N=1. Run `python run_full_pipeline.py --limit 10` to generate results at a larger scale.
-
-**Finding:** On this sample, the turbo (faster) model outperforms large-v3 on all lexical metrics. This is not unusual at N=1 — real audio characteristics, transcript length, and domain vocabulary all affect individual sample outcomes. The cpWER gap (0.062 vs 0.079) is particularly notable: both models benefit from speaker-block reordering, but turbo's disfluency pattern aligns better with the gold speaker segmentation on this recording.
-
-### Sample insight extraction (MedGemma 4B, real output)
-
-Input: psychiatric intake session — patient presenting with grandiosity, decreased need for sleep, divine communications (probable manic episode).
-
-```json
-{
-  "clinical_presentation": "Patient presents to emergency clinic following referral from GP. Patient reports feeling full of energy, having lots of bright ideas, and feeling fantastic about herself due to divine intervention. Patient has been working intensely on a 'cure for world hunger' for the past week. Patient reports receiving instructions from God, who speaks directly into her ears. Patient reports being unable to sleep due to enthusiasm, having no need for sleep.",
-  "risk_flags": [],
-  "symptoms": [],
-  "diagnostic_hypotheses": [],
-  "recommended_followup": [],
-  "guardrail": {
-    "name": "evidence_quote_required_for_claims",
-    "dropped_unsupported_claims": 0
-  }
-}
-```
-
-**Note on this output:** The model returned a clinically accurate `clinical_presentation` but used non-standard keys (`assessment`, `plan`) instead of the structured schema fields (`risk_flags`, `diagnostic_hypotheses`, `recommended_followup` with `evidence_quote`). The guardrail correctly left those fields empty rather than surfacing unverifiable claims. This illustrates a known limitation: small (4B) instruction-tuned medical models have inconsistent prompt adherence on structured output schemas. Production use would require either a larger model, JSON schema enforcement (e.g., via Ollama's `format` parameter), or a validation retry loop.
-
-All claims in `risk_flags`, `diagnostic_hypotheses`, and `recommended_followup` require a verbatim transcript quote to pass the evidence guardrail. Claims without grounded quotes are dropped before persistence.
 
 ---
 
@@ -107,7 +65,7 @@ Audio files (WAV)
 | MER | Match Error Rate: % of reference words matched incorrectly | 0.0 → 1.0 | Complementary to WER |
 | WIL | Word Information Lost: semantic coverage loss | 0.0 → 1.0 | Penalizes insertions differently from WER |
 | cpWER | Chronological Permutation WER | 0.0 → ∞ | WER minimized over speaker block permutations; appropriate for diarized conversations where speaker order may differ from reference |
-| BERTScore F1 | Semantic overlap between hypothesis and reference using contextual embeddings | 0.0 → 1.0 | Captures paraphrase and domain-appropriate synonyms that WER misses |
+| BERTScore F1 | Semantic overlap between each STT hypothesis and the **gold** reference from `dataset.pickle` (not hypothesis-vs-hypothesis). With `--ref-run-id`, both runs are scored vs gold and deltas are reported | 0.0 → 1.0 | Captures paraphrase and domain-appropriate synonyms that WER misses |
 | LLM-judge | Comparative quality score from a language model judge | Varies | Exploratory; model not clinically fine-tuned, results should be interpreted as directional only |
 
 **On WER thresholds for clinical transcription:** General-purpose ASR systems typically achieve WER 5–15% on clean speech. Medical dialogue is harder — drug names, dosages, and clinical acronyms (SSRI, GAD, DSM-5) increase error rates. A WER under 20% on medical dialogue without domain fine-tuning is a reasonable baseline. cpWER is preferred over WER when speaker diarization labels are available.
@@ -167,16 +125,17 @@ Place dataset under `data/raw/`:
 
 ## Dataset
 
-Gold transcripts from:
-- [automated medical transcription dataset](https://github.com/nazmulkazi/dataset_automated_medical_transcription)
+**Source:** [nazmulkazi / dataset_automated_medical_transcription](https://github.com/nazmulkazi/dataset_automated_medical_transcription?tab=readme-ov-file) — automated medical transcription benchmark (download and preparation steps are in that repository’s README).
 
-Expected local file: `data/raw/dataset.pickle`
+Expected local file: `data/raw/dataset.pickle` (gold reference text for evaluation metrics).
 
 **Dataset limitations:** This dataset contains scripted medical dialogue, not naturalistic psychiatric sessions. It does not include real diarized patient-therapist conversations. The pipeline is built to work with real clinical recordings — this dataset is a proxy for development and benchmarking.
 
 ---
 
 ## Commands Reference
+
+Command cheat sheet (copy-paste examples): [docs/cli.md](docs/cli.md).
 
 Activate environment first:
 
@@ -279,7 +238,7 @@ Operational tables under the `clinical_ai` schema:
 | `stt_runs` | Run-level metadata: model, provider, scope, parameters, timestamp |
 | `stt_outputs` | Transcript text per sample per run |
 | `evaluation_metrics` | Metric rows with full JSONB detail payloads for auditability |
-| `transcript_insights` | Extracted insight payloads with prompt version and model name |
+| `transcript_insights` | Extracted insight JSONB (`prompt_version` duplicated inside the payload for self-contained exports), raw model output, and `prompt_version` / `insight_model` columns |
 
 Apply migrations:
 
@@ -327,7 +286,7 @@ Unit tests cover each metric module (WER, CER, MER, WIL, cpWER, BERTScore, align
 - **Insights confidence is model self-reported**: The `confidence` field comes from the LLM's own output — it is not a calibrated probability.
 - **Apple Silicon only for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run on any platform.
 - **Sequential pipeline**: Steps run sequentially. Production-scale deployment would require async execution, batching, and a job queue.
-- **N=5 sample benchmark**: Point estimates without statistical significance tests are directional only. Confidence intervals and paired tests are required before drawing conclusions about model differences.
+- **Small-sample benchmarks**: Point estimates without statistical significance tests are directional only. Use `analysis/statistical_significance.ipynb` (or larger `run_full_pipeline.py --limit`) before drawing conclusions about model differences.
 
 ---
 
