@@ -99,7 +99,7 @@ class EvalRunReporter:
 
     def write_results_section(self, file: TextIO) -> None:
         file.write("\n\n===== EVAL REPORT RESULTS (mirrors DB rows) =====\n")
-        file.write(json.dumps(self.to_dict(), indent=2, ensure_ascii=False))
+        file.write(json.dumps(self.to_dict(), indent=2, ensure_ascii=False, default=_json_default))
         file.write("\n")
 
     def to_dict(self) -> dict[str, Any]:
@@ -111,4 +111,14 @@ class EvalRunReporter:
             "metrics": self.metrics,
             "result_summary": self.result_summary,
         }
+
+
+def _json_default(obj: Any) -> Any:
+    """Best-effort JSON serialization for common runtime objects."""
+    if isinstance(obj, (datetime,)):
+        # ISO-8601 string is readable and stable.
+        return obj.astimezone(timezone.utc).isoformat() if obj.tzinfo else obj.isoformat()
+    if isinstance(obj, Path):
+        return str(obj)
+    return str(obj)
 

@@ -1,3 +1,0 @@
-Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id 9d126f1b-3c07-4f5c-a73d-fe812044c8c3 --limit 1 --no-rescale
-Report path: data/processed/run-bertscore_20260402T094441Z.txt
-=== Terminal output captured below ===
