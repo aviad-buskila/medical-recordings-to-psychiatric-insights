@@ -34,7 +34,16 @@ class CmdResult:
     stderr: str
 
 
+def log(msg: str) -> None:
+    print(f"[full-pipeline] {msg}", flush=True)
+
+
+def step(name: str) -> None:
+    print(f"\n=== {name} ===", flush=True)
+
+
 def run_cmd(command: list[str], env: dict[str, str] | None = None) -> CmdResult:
+    log(f"Running: {' '.join(command)}")
     proc = subprocess.run(
         command,
         cwd=str(ROOT),
@@ -47,6 +56,7 @@ def run_cmd(command: list[str], env: dict[str, str] | None = None) -> CmdResult:
         raise RuntimeError(
             f"Command failed ({proc.returncode}): {' '.join(command)}\n\nSTDOUT:\n{proc.stdout}\n\nSTDERR:\n{proc.stderr}"
         )
+    log(f"Done: {' '.join(command)}")
     return CmdResult(command=command, stdout=proc.stdout, stderr=proc.stderr)
 
 
@@ -82,6 +92,7 @@ def latest_processed_artifact(prefix: str) -> str | None:
 def save_state(state: dict[str, Any]) -> None:
     PIPELINE_OUT_DIR.mkdir(parents=True, exist_ok=True)
     STATE_LATEST.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+    log(f"State saved: {STATE_LATEST}")
 
 
 def load_state(path: Path | None) -> dict[str, Any]:
@@ -112,6 +123,7 @@ def resolve_insights_model(requested: str | None) -> str | None:
 
 def run_notebook(input_nb: Path, output_nb: Path, env: dict[str, str] | None = None) -> None:
     output_nb.parent.mkdir(parents=True, exist_ok=True)
+    log(f"Executing notebook: {input_nb.name}")
     run_cmd(
         [
             "python",
@@ -248,6 +260,7 @@ def main() -> None:
     args = parser.parse_args()
     if args.limit <= 0:
         raise SystemExit("--limit must be positive")
+    step("Initialize")
 
     state = load_state(Path(args.resume_state) if args.resume_state else None)
     stamp = state.get("timestamp_utc") or ts_utc()
@@ -258,18 +271,21 @@ def main() -> None:
     if not selected:
         raise SystemExit("No recordings found under data/raw/recordings")
     sample_for_single = selected[0]
+    log(f"Selected recordings ({len(selected)}): {', '.join(selected)}")
 
     commands_run: list[str] = state.get("commands", [])
     baseline_run_id = args.baseline_run_id or state.get("baseline_run_id")
     candidate_run_id = args.candidate_run_id or state.get("candidate_run_id")
     artifacts = state.get("artifacts", {})
 
+    step("STT Runs")
     # 1) run both STT models on first N recordings (or reuse provided IDs)
     if not (args.skip_stt or (baseline_run_id and candidate_run_id)):
         stt_cmd = ["python", "-m", "src.cli.main", "run-stt", "--flavor", "both", "--limit", str(args.limit)]
         stt_res = run_cmd(stt_cmd)
         commands_run.append(" ".join(stt_cmd))
         baseline_run_id, candidate_run_id = parse_stt_run_ids(stt_res.stdout)
+        log(f"Parsed run IDs: baseline={baseline_run_id} candidate={candidate_run_id}")
         state.update(
             {
                 "timestamp_utc": stamp,
@@ -282,10 +298,13 @@ def main() -> None:
             }
         )
         save_state(state)
+    else:
+        log(f"Skipping STT. baseline={baseline_run_id} candidate={candidate_run_id}")
 
     if not (baseline_run_id and candidate_run_id):
         raise SystemExit("Missing run IDs. Provide --baseline-run-id and --candidate-run-id, or run without --skip-stt.")
 
+    step("Evaluations")
     # 2-5) evals
     if not args.skip_evals:
         if not artifacts.get("run_eval_report"):
@@ -306,6 +325,7 @@ def main() -> None:
             eval_res = run_cmd(eval_cmd)
             commands_run.append(" ".join(eval_cmd))
             artifacts["run_eval_report"] = parse_eval_report_path(eval_res.stdout)
+            log(f"run-eval artifact: {artifacts['run_eval_report']}")
             state.update({"commands": commands_run, "artifacts": artifacts})
             save_state(state)
 
@@ -325,6 +345,7 @@ def main() -> None:
             llm_res = run_cmd(llm_cmd)
             commands_run.append(" ".join(llm_cmd))
             artifacts["run_llm_judge_report"] = parse_eval_report_path(llm_res.stdout)
+            log(f"run-llm-judge artifact: {artifacts['run_llm_judge_report']}")
             state.update({"commands": commands_run, "artifacts": artifacts})
             save_state(state)
 
@@ -344,6 +365,7 @@ def main() -> None:
             align_res = run_cmd(align_cmd)
             commands_run.append(" ".join(align_cmd))
             artifacts["show_alignment_report"] = parse_eval_report_path(align_res.stdout)
+            log(f"show-alignment artifact: {artifacts['show_alignment_report']}")
             state.update({"commands": commands_run, "artifacts": artifacts})
             save_state(state)
 
@@ -363,6 +385,7 @@ def main() -> None:
             bert_res = run_cmd(bert_cmd)
             commands_run.append(" ".join(bert_cmd))
             artifacts["run_bertscore_report"] = parse_eval_report_path(bert_res.stdout)
+            log(f"run-bertscore artifact: {artifacts['run_bertscore_report']}")
             state.update({"commands": commands_run, "artifacts": artifacts})
             save_state(state)
     else:
@@ -370,9 +393,12 @@ def main() -> None:
         artifacts.setdefault("run_llm_judge_report", latest_processed_artifact("run-llm-judge"))
         artifacts.setdefault("show_alignment_report", latest_processed_artifact("show-alignment"))
         artifacts.setdefault("run_bertscore_report", latest_processed_artifact("run-bertscore"))
+        log("Skipped evals; reused latest eval artifacts from data/processed")
 
+    step("Insights Extraction")
     # 6) insights for both runs (resume-friendly + model fallback)
     insights_model = resolve_insights_model(args.insights_model)
+    log(f"Insights model: {insights_model or 'default from CLI/env'}")
     insights_list = artifacts.get("insights_extract_artifacts", [])
     if len(insights_list) < 2:
         insights_list = [None, None]
@@ -393,9 +419,12 @@ def main() -> None:
         ins_candidate_res = run_cmd(ins_candidate_cmd)
         commands_run.append(" ".join(ins_candidate_cmd))
         insights_list[0] = parse_insights_artifact_path(ins_candidate_res.stdout)
+        log(f"Candidate insights artifact: {insights_list[0]}")
         artifacts["insights_extract_artifacts"] = insights_list
         state.update({"commands": commands_run, "artifacts": artifacts})
         save_state(state)
+    else:
+        log(f"Reusing candidate insights artifact: {insights_list[0]}")
 
     if not insights_list[1]:
         ins_baseline_cmd = [
@@ -413,10 +442,14 @@ def main() -> None:
         ins_baseline_res = run_cmd(ins_baseline_cmd)
         commands_run.append(" ".join(ins_baseline_cmd))
         insights_list[1] = parse_insights_artifact_path(ins_baseline_res.stdout)
+        log(f"Baseline insights artifact: {insights_list[1]}")
         artifacts["insights_extract_artifacts"] = insights_list
         state.update({"commands": commands_run, "artifacts": artifacts})
         save_state(state)
+    else:
+        log(f"Reusing baseline insights artifact: {insights_list[1]}")
 
+    step("Analysis Notebooks")
     # 7) execute all analysis notebooks
     nb_model_out = ANALYSIS_OUT_DIR / f"model_eval_insights_{stamp}.ipynb"
     env_model = {
@@ -427,6 +460,8 @@ def main() -> None:
     }
     if not nb_model_out.exists():
         run_notebook(ROOT / "analysis" / "model_eval_insights.ipynb", nb_model_out, env=env_model)
+    else:
+        log(f"Reusing notebook output: {nb_model_out}")
 
     nb_align_out = ANALYSIS_OUT_DIR / f"show_alignment_visualizer_{stamp}.ipynb"
     env_align = {
@@ -437,11 +472,16 @@ def main() -> None:
     }
     if not nb_align_out.exists():
         run_notebook(ROOT / "analysis" / "show_alignment_visualizer.ipynb", nb_align_out, env=env_align)
+    else:
+        log(f"Reusing notebook output: {nb_align_out}")
 
     nb_timeline_out = ANALYSIS_OUT_DIR / f"gold_speaker_timeline_{stamp}.ipynb"
     if not nb_timeline_out.exists():
         run_notebook(ROOT / "analysis" / "gold_speaker_timeline.ipynb", nb_timeline_out)
+    else:
+        log(f"Reusing notebook output: {nb_timeline_out}")
 
+    step("DB Summary + Final Report")
     db_summary = fetch_db_summary(candidate_run_id=candidate_run_id, baseline_run_id=baseline_run_id)
 
     summary_payload = {
@@ -465,7 +505,7 @@ def main() -> None:
     write_markdown_summary(summary_md, summary_payload)
     state.update(summary_payload)
     save_state(state)
-    print(f"Full pipeline completed. Summary: {summary_md}")
+    log(f"Full pipeline completed. Summary: {summary_md}")
 
 
 if __name__ == "__main__":
