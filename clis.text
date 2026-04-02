@@ -61,6 +61,11 @@ python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id 
 python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID> --limit 3
 
+# --- Analysis notebook (compare 2 runs with visuals + recommendation) ---
+jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> SAMPLE_ID=D0420-S1-T01 jupyter notebook analysis/model_eval_insights.ipynb
+
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---
 python -m src.cli.main run-all
 
