@@ -1,0 +1,191 @@
+{
+  "command": "insights_extract",
+  "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+  "timestamp_utc": "20260402T173646Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T17:22:41.614635+00:00",
+    "run_parameters": {
+      "limit": 5,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 5
+    }
+  },
+  "sample_filter": null,
+  "limit": 5,
+  "samples_processed": 5,
+  "timing": {
+    "total_elapsed_s": 91.703,
+    "avg_elapsed_s_per_sample": 18.323
+  },
+  "results": [
+    {
+      "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents to the emergency clinic following a referral from her GP. She reports feeling 'bonkers' and 'not very clever' after her sister, Libby, suggested she seek psychiatric help. She describes a recent, intense period of work on a 'cure for world hunger' involving number-based calculations and interpreting information from newspapers and books, which she believes is guided by God. She reports feeling full of energy and having many bright ideas, attributing this to God's guidance. She has been sleeping poorly due to her enthusiasm. She has been showing copies of her work to the Pope and the Archbishop of Canterbury, receiving no replies. She describes God as a 'big guy with a big beard' who talks to her in her ears, telling her she is 'fantastic' and 'doing a really good job'. She has been showing her work to people in public spaces. She has been working intensely for the past week, having previously had a different job as a part-time potter with her sister. She has been ignoring her sister's advice and her GP's referral. She has been highly critical of her sister and her GP, describing them as 'thick' and 'not very clever'. She has been highly agitated and has been refusing to engage in the consultation, stating she wants to talk to her 'boss' or 'top person' and is 'fed up with talking'.\",\n  \"risk_flags\": [\n    {\n      \"claim\": \"Patient has been highly agitated and has been refusing to engage in the consultation, stating she wants to talk to her 'boss' or 'top person' and is 'fed up with talking'.\",\n      \"evidence_quote\": \"I want to talk to the boss. I'm fed up with talking. I want to talk to the head person. I'm fed up with",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort",
+      "timing": {
+        "elapsed_s": 24.005,
+        "transcript_char_count": 14519,
+        "transcript_word_count": 2793
+      }
+    },
+    {
+      "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+      "sample_id": "D0420-S1-T02",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n\"clinical_presentation\": \"Patient presents with concerns from nutritionist and mother regarding eating habits and exercise. Patient reports running 9 miles daily for training. Patient denies feeling sad or depressed, stating they are busy and tired of being nagged about diet and exercise. Patient expresses anger and frustration towards mother and nutritionist. Patient feels they are the smartest in class and a top runner, implying pressure and stress related to these achievements. Patient states they are only here to keep their mother off their back.\",\n\"risk_flags\": [\n{\n\"claim\": \"Patient is angry.\",\n\"evidence_quote\": \"Meg, how are classes going? 21 credits. I am at the top of my class. Can we get this done? I need to get back. How often and far do you run for training now? You are 20, correct? Yes. I run 9 miles every day. Your blood pressure is 100 over 50. Your pulse is 52. Meg, how much have you been eating? I have been eating fine. I talked to the nutritionist about this earlier. Let's have you stand up and face me. And I will back you onto the scale. Eyes on me please. Thank you. And now for a high. Ok, looks like 5'5\\\". Go ahead and have a seat. How much? Can I please see what the scale says? I'm fat. Please sit up and I will listen to your heart and lungs. Fine. You know that this is not a positive part of your treatment. We have discussed this before. You are here today because your nutritionist and your mom are both very concerned about you. You're very angry. Right? We have discussed this before. You are here today because your nutritionist and your mom are both very concerned about you. You're very",
+      "transcript_preview": "Please have a seat, Meg. Thank you for coming in today. Your nutritionist referred you. It seems that she and your mother have some concerns. Can you sit down and we will take your blood pressure and do some vitals? I guess. I do need to get back to my dorm to study. I have a track meet coming up also that I'm training for. I am a runner. How many credits are you taking? And how are classes going? 21 credits. I am at the top of my class. Can we get this done? I need to get back. How often and fa",
+      "timing": {
+        "elapsed_s": 15.561,
+        "transcript_char_count": 2679,
+        "transcript_word_count": 539
+      }
+    },
+    {
+      "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+      "sample_id": "D0420-S1-T03",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents with a history of multiple suicide attempts (fifth attempt), overdose (Tylenol), and recent emergency room visit following an ambulance call. Patient expresses feelings of hopelessness, worthlessness, and anger towards family members and her boyfriend (Carl). She reports feeling abandoned and unsupported, particularly regarding her children.\",\n  \"risk_flags\": [\n    {\n      \"claim\": \"Patient expresses suicidal ideation.\",\n      \"evidence_quote\": \"I never was. I need to get out of here. I need to see Carl.\"\n    },\n    {\n      \"claim\": \"Patient expresses hopelessness and worthlessness.\",\n      \"evidence_quote\": \"Nobody cares. Oh, God. I can't believe he is gone. I hate him. I need him to come back because I love him. Jack the jerk was before him. Bill left me, too. They all leave. Everybody leaves me. I hate them.\"\n    },\n    {\n      \"claim\": \"Patient expresses anger and rage.\",\n      \"evidence_quote\": \"I hate him. I need him to come back because I love him. Jack the jerk was before him. Bill left me, too. They all leave. Everybody leaves me. I hate them. Carl was different. He said he loved me. But, well, if he loved me, he would be here now. Carl made the 911 call for the ambulance. According to your file, you've attempted suicide before. This was your fifth attempt. I've been in to have my arms stitched up and my stomach pumped a few times. Nobody cares. I wish someone would help me. Maybe you're the one. I'm here to help you. Can you tell me about your past medical history? Your family history? I have four",
+      "transcript_preview": "Hi, I'm one of the psychiatrists who work here in the Department of Psychological Medicine, and I'm seeing you today because you were referred up for the emergency room. I understand that you were brought in by ambulance last night after cutting your arms and overdosing on Tylenol. It looks like you were bandaged up. Are you feeling suicidal today? I never was. I need to get out of here. I need to see Carl. Is Carl your boyfriend? Yeah. How long have you been together? A couple of months. We've ",
+      "timing": {
+        "elapsed_s": 16.277,
+        "transcript_char_count": 4655,
+        "transcript_word_count": 907
+      }
+    },
+    {
+      "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+      "sample_id": "D0420-S1-T04",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents with significant anxiety and fear related to germs and intruders, leading to compulsive behaviors including excessive handwashing (60 times/day), checking (locks, lights, windows), and counting. These rituals consume a significant amount of time, interfere with daily functioning (job lateness), cause physical discomfort (contact dermatitis), and negatively impact family life and relationships. The patient reports a long history of these behaviors, starting around age 12, and attributes them to childhood fears of being attacked. The patient expresses a desire to stop the behaviors but feels overwhelmed and yields to them due to fear of negative consequences. The patient also reports sleep disturbances due to checking behaviors. The patient is currently taking a multivitamin and Tylenol/Advil PRN.\",\n  \"risk_flags\": [\n    {\n      \"claim\": \"Patient reports fear of being attacked by intruders.\",\n      \"evidence_quote\": \"I feel that if I don't do certain things each day, that bad things will happen. Would you like to tell me about your troubles with cleaning, checking and counting, and what you feel will happen if you don't do these? If you have questions or don't understand something at any point during this interview, please feel free to ask for clarification. Are you comfortable telling me about your troubles specifically? Yes, I would like to get your help because I can't seem to get through the day without these rituals, taking so much time out of my day. They are getting worse. I am afraid that I will get some bad germs that will get into my body, and if I don't lock the door, then someone will come and attack me and my family. If I don't check the doors and the windows and lock everything three times, I just feel that something bad will happen. Then I am",
+      "transcript_preview": "Hi, I'm one of the psychiatrists who work here in the Department of Psychological Medicine, and you are? Elizabeth, but everyone calls me Liz. I have spoken with your physician, Dr. Green, and have read his reports, and know some of the things about why you are here today. However, I would like to hear from you and why you have come to see me today. I am having trouble with fear of germs and fear of intruders coming to attack my family. I feel that if I don't do certain things each day, that bad",
+      "timing": {
+        "elapsed_s": 17.239,
+        "transcript_char_count": 8181,
+        "transcript_word_count": 1565
+      }
+    },
+    {
+      "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+      "sample_id": "D0420-S1-T05",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents with recurrent episodes of rapid heart rate, chest pain, and shortness of breath, occurring in stressful situations (work stress, hot weather). Patient experiences significant fear of having a heart attack during these episodes. Symptoms have been occurring for approximately six months.\",\n  \"risk_flags\": [\n    {\n      \"claim\": \"Patient experiences significant fear of having a heart attack during episodes.\",\n      \"evidence_quote\": \"And I get very afraid that I'm going to have a heart attack. Right.\"\n    },\n    {\n      \"claim\": \"Patient avoids situations that trigger symptoms.\",\n      \"evidence_quote\": \"So, you know, I started to try and avoid situations where I might get like that, basically. Right. So what kind of things are you finding yourself avoiding?\"\n    },\n    {\n      \"claim\": \"Patient avoids exercise and sex due to fear of triggering symptoms.\",\n      \"evidence_quote\": \"I can't get into town now without my husband taking me, because my husband has to take me to and from work. And I also thought I shouldn't do anything to put any strain on my heart at all. So I don't do much exercise or anything at the moment. And other things as well. And other things? What sort of other things are you not doing? Well, just some personal things. Personal things. Okay. I guess I'm wondering if you're talking about your sex life. Yeah, right. I just feel that I shouldn't, you know, do anything like that because it might put too much strain on me. Right. So you're avoiding sex in the case that it puts your heart rate up? Yeah. Yeah. Okay, okay. How's that affecting things between you and your husband",
+      "transcript_preview": "Hello there. I'm one of the new physicians in the practice. First of all, what would you like me to call you? Oh, June's fine. Yeah. Okay, right. So what is it about that brought you to see me today? Well, it's the same thing that I've seen Dr. Jones about. It's my heart. Yeah, yeah. I understand that you've been in to see him a few times over the last few months. Would you mind if I asked you to go over again what the problem is, perhaps in your own words, so that I can get an understanding of ",
+      "timing": {
+        "elapsed_s": 18.534,
+        "transcript_char_count": 12202,
+        "transcript_word_count": 2334
+      }
+    }
+  ]
+}

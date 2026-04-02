@@ -1,0 +1,125 @@
+{
+  "timestamp_utc": "20260402T172054Z",
+  "limit": 5,
+  "selected_recordings": [
+    "D0420-S1-T01",
+    "D0420-S1-T02",
+    "D0420-S1-T03",
+    "D0420-S1-T04",
+    "D0420-S1-T05"
+  ],
+  "baseline_run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
+  "candidate_run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+  "commands": [
+    "python -m src.cli.main run-stt --flavor both --limit 5",
+    "python -m src.cli.main run-eval --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5 --workers auto",
+    "python -m src.cli.main run-llm-judge --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
+    "python -m src.cli.main show-alignment --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
+    "python -m src.cli.main run-bertscore --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
+    "python -m src.cli.main insights-extract --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --limit 5 --model medaibase/medgemma1.5:4b",
+    "python -m src.cli.main insights-extract --run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5 --model medaibase/medgemma1.5:4b"
+  ],
+  "artifacts": {
+    "run_eval_report": "data/processed/run-eval_20260402T172813Z.txt",
+    "run_llm_judge_report": "data/processed/run-llm-judge_20260402T173133Z.txt",
+    "show_alignment_report": "data/processed/show-alignment_20260402T173503Z.txt",
+    "run_bertscore_report": "data/processed/run-bertscore_20260402T173503Z.txt",
+    "insights_extract_artifacts": [
+      "data/processed/insights_extract/insights_extract_507e804d-4260-406a-b7b5-a97e395ad625_20260402T173646Z.json",
+      "data/processed/insights_extract/insights_extract_22f69385-e088-4e6c-8e63-b148b36f0849_20260402T173804Z.json"
+    ],
+    "analysis_notebooks": [
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/model_eval_insights_20260402T172054Z.ipynb",
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/show_alignment_visualizer_20260402T172054Z.ipynb",
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T172054Z.ipynb"
+    ]
+  },
+  "db_summary": {
+    "stt_runs": [
+      {
+        "run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-turbo",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T17:20:54.865871+00:00",
+        "run_parameters": {
+          "limit": 5,
+          "profile": "default",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 5
+        }
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-mlx",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T17:22:41.614635+00:00",
+        "run_parameters": {
+          "limit": 5,
+          "profile": "quality",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 5
+        }
+      }
+    ],
+    "stt_outputs_count_by_run": {
+      "22f69385-e088-4e6c-8e63-b148b36f0849": 5,
+      "507e804d-4260-406a-b7b5-a97e395ad625": 5
+    },
+    "evaluation_metrics": [
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "cer",
+        "rows": 5,
+        "avg_metric_value": 0.20167790988943932
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "cp_wer",
+        "rows": 5,
+        "avg_metric_value": 0.10507201380390589
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "llm_judge_compare",
+        "rows": 5,
+        "avg_metric_value": -0.4
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "mer",
+        "rows": 5,
+        "avg_metric_value": 0.103146417548898
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "wer",
+        "rows": 5,
+        "avg_metric_value": 0.19753893588328658
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "metric_name": "wil",
+        "rows": 5,
+        "avg_metric_value": 0.20629283509779603
+      }
+    ],
+    "insights_count_by_run_model": [
+      {
+        "run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 5
+      },
+      {
+        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 5
+      }
+    ]
+  }
+}
