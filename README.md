@@ -1,4 +1,4 @@
-# Psychiatry Conversation Intelligence Pipeline
+# Medical Conversation Intelligence Pipeline
 
 End-to-end local platform for benchmarking clinical speech-to-text models and extracting psychiatry-focused structured insights from patient-therapist conversations. Built to demonstrate the full data science and AI engineering stack relevant to behavioral health CareOps: STT evaluation, clinical NLP, reproducible pipelines, and model comparison analytics.
 
