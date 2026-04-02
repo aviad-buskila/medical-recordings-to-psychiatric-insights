@@ -1,3 +1,0 @@
-Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-eval --run-id 9d126f1b-3c07-4f5c-a73d-fe812044c8c3 --ref-run-id 22282662-99a4-4901-af84-4374763e9610 --workers 8 --skip-cp-wer
-Report path: data/processed/run-eval_20260402T121333Z.txt
-=== Terminal output captured below ===
