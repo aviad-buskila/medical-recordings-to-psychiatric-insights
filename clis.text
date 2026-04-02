@@ -66,6 +66,11 @@ jupyter notebook analysis/model_eval_insights.ipynb
 CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> jupyter notebook analysis/model_eval_insights.ipynb
 CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> SAMPLE_ID=D0420-S1-T01 jupyter notebook analysis/model_eval_insights.ipynb
 
+# --- Visualize show-alignment artifacts ---
+jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt SAMPLE_ID=D0420-S1-T01 MAX_CHUNKS_PER_RUN=6 jupyter notebook analysis/show_alignment_visualizer.ipynb
+
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---
 python -m src.cli.main run-all
 
