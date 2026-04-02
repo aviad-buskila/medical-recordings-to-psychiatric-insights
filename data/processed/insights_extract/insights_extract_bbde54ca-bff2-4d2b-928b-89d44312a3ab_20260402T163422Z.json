@@ -1,0 +1,62 @@
+{
+  "command": "insights_extract",
+  "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+  "timestamp_utc": "20260402T163422Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T16:26:18.995998+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 22.983,
+    "avg_elapsed_s_per_sample": 22.964
+  },
+  "results": [
+    {
+      "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "_Please note: The following is a summary of the provided text and does not constitute medical advice. If you or someone you know is experiencing mental health challenges, please seek professional help._\n\n**Summary of the Text:**\n\nThe text describes a conversation between a patient, Audrey, and a doctor. Audrey is experiencing a significant mental health crisis, characterized by intense energy, vivid hallucinations (seeing connections with numbers and \"monkeys\"), and a strong belief in her own intellectual superiority. She feels a divine connection to God, who has given her a mission to share her \"clever ideas\" with the world, particularly religious figures like the Pope and the Archbishop of Canterbury, who have not responded.\n\nAudrey expresses frustration with her GP's letter and her current doctor, whom she perceives as incompetent and dismissive (\"old nag rag\"). She feels unheard and wants to speak with the \"top person\" or \"top boss\" of the facility. She describes her energy as \"tons of it\" and her thoughts as \"going fast\" and filled with \"bright ideas.\"\n\nShe mentions past experiences of feeling \"low\" but emphasizes that this current state is different and driven by God's divine inspiration. She denies taking other medications besides Prozac long ago, which she believes was ineffective.\n\nAudrey's sister is mentioned as having called her \"rude\" and suggesting she might not be well, which Audrey dismisses.\n\nThe doctor attempts to engage Audrey in a discussion about her current state and the potential need for further assessment or intervention, but Audrey becomes increasingly agitated, refuses to engage, and demands to speak with the \"top boss,\" stating she is \"fed up\" with talking to the current doctor and wants to leave. The conversation ends with Audrey expressing her desire to talk to the \"top person\" and the doctor's inability to facilitate this, leaving the situation unresolved.\n\n**Key Points",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort",
+      "timing": {
+        "elapsed_s": 22.964,
+        "transcript_char_count": 14555,
+        "transcript_word_count": 2904
+      }
+    }
+  ]
+}

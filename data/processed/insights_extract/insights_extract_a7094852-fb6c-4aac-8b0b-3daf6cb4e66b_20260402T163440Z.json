@@ -1,0 +1,62 @@
+{
+  "command": "insights_extract",
+  "run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+  "timestamp_utc": "20260402T163440Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-turbo",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T16:25:44.893788+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "default",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 17.98,
+    "avg_elapsed_s_per_sample": 17.964
+  },
+  "results": [
+    {
+      "run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"Patient presents with a history of a 'cure for world hunger' involving number-based calculations and a belief that God communicates with her, providing instructions and praise. She reports spending significant time on this task, neglecting sleep and other activities. She has been showing her work to religious figures (Pope, Archbishop of Canterbury) with no response. She has a part-time business with her sister. She has a history of feeling 'low' and taking Prozac in the past, but denies current medication use. She has a strong belief in her own intellectual superiority over her family. She has experienced a recent conflict with her sister, who called her 'bonkers' and suggested she was unwell. She has been showing her work to colleagues, who she perceives as 'thick'. She has been experiencing auditory hallucinations ('God talks to me'). She has been experiencing delusions of grandeur ('I'm doing a really good job', 'I'm fantastic', 'I'm great'). She has been experiencing delusions of reference ('God came to me one day'). She has been experiencing persecutory delusions related to her sister's comments ('She said rude things'). She has been experiencing somatic delusions ('I'm fine. I'm absolutely fine'). She has been experiencing grandiose delusions ('I'm more clever than perhaps other people'). She has been experiencing delusions of control ('I want to talk to the boss', 'I want to talk to the top person', 'I want to talk to the engineer', 'I want to talk to the driver of this unit'). She has been experiencing auditory hallucinations ('He's a big guy with a big beard', 'He's a big guy', 'He's a big guy', 'He's a big guy'). She has been experiencing delusions of reference ('He talks to me with his mouth because he'",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said, come and see a trick cyclist, because then you'll be all right. Come and see a trick cyclist? A psychiatrist? Yeah. He not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to this, you see, he won't let me talk about this. He sort of listens to it sometimes, but ",
+      "timing": {
+        "elapsed_s": 17.964,
+        "transcript_char_count": 13312,
+        "transcript_word_count": 2626
+      }
+    }
+  ]
+}

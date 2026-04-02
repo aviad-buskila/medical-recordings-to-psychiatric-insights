@@ -1,0 +1,62 @@
+{
+  "command": "insights_extract",
+  "run_id": "73fccfc8-d61a-4075-ab5c-c72d093b4cad",
+  "timestamp_utc": "20260402T161841Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "73fccfc8-d61a-4075-ab5c-c72d093b4cad",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T16:11:12.291492+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 23.102,
+    "avg_elapsed_s_per_sample": 23.084
+  },
+  "results": [
+    {
+      "run_id": "73fccfc8-d61a-4075-ab5c-c72d093b4cad",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"Patient presents with a history of a 'cure for world hunger' involving complex calculations with numbers found in newspapers and other sources, guided by a voice they believe is God. This has been ongoing for 'ages' and significantly impacts their daily life, including work and sleep. They have been showing their work to religious figures (Pope, Archbishop of Canterbury) with no response. They describe themselves as 'fantastic' and 'clever', believing God is their source of energy and inspiration. They have no significant past psychiatric history, including recent depression or medication use (except Prozac long ago). They have no family history of psychiatric illness. They report being physically well. They have been rude and dismissive towards the clinician, refusing to discuss the 'cure' and demanding to speak to the 'boss' (the clinician).\",\n  \"assessment\": \"The patient presents with symptoms suggestive of a psychotic disorder, possibly schizophrenia or a related condition. Key features include: delusions (belief in a 'cure for world hunger', divine guidance, being 'fantastic' and 'clever', God's voice), disorganized thinking (complex calculations, difficulty engaging in conversation), negative symptoms (lack of sleep, lack of motivation for conventional work), and potentially hallucinations (hearing God's voice). The patient's belief system is highly developed and integrated into their self-perception and daily functioning. The patient's refusal to engage with the clinical assessment and demand to speak to the 'boss' is characteristic of psychotic symptoms, particularly delusions of grandeur or control.\",\n  \"differential_diagnosis\": [\n    \"Schizophrenia\",\n    \"Schizoaffective disorder\",\n    \"Delusional disorder (persecutory or grandiose)\",\n    \"Bipolar disorder with psychotic features\",\n    \"Substance-induced psychotic disorder (less likely given history)\",\n    ",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort",
+      "timing": {
+        "elapsed_s": 23.084,
+        "transcript_char_count": 13516,
+        "transcript_word_count": 2646
+      }
+    }
+  ]
+}

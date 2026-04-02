@@ -1,0 +1,148 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id bbde54ca-bff2-4d2b-928b-89d44312a3ab --ref-run-id a7094852-fb6c-4aac-8b0b-3daf6cb4e66b --limit 1
+Report path: data/processed/run-bertscore_20260402T163350Z.txt
+=== Terminal output captured below ===
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 8535.58it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+lm_head.layer_norm.bias         | UNEXPECTED | 
+lm_head.layer_norm.weight       | UNEXPECTED | 
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+pooler.dense.bias               | MISSING    | 
+pooler.dense.weight             | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 19747.34it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+lm_head.layer_norm.bias         | UNEXPECTED | 
+lm_head.layer_norm.weight       | UNEXPECTED | 
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+pooler.dense.bias               | MISSING    | 
+pooler.dense.weight             | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+BERTScore evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-bertscore",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id bbde54ca-bff2-4d2b-928b-89d44312a3ab --ref-run-id a7094852-fb6c-4aac-8b0b-3daf6cb4e66b --limit 1",
+  "report_path": "data/processed/run-bertscore_20260402T163350Z.txt",
+  "run_metadata": {
+    "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+    "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T16:26:18.995998+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T16:25:44.893788+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.025679465383291245,
+      "details": {
+        "precision": 0.20572592318058014,
+        "recall": -0.14512532949447632,
+        "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+        "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.0110352523624897,
+      "details": {
+        "precision": 0.1910170316696167,
+        "recall": -0.1597224622964859,
+        "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+        "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": 0.014644213020801544,
+      "details": {
+        "primary_f1": 0.025679465383291245,
+        "ref_f1": 0.0110352523624897,
+        "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+        "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    }
+  ],
+  "result_summary": {
+    "metric": "bertscore",
+    "model_type": "roberta-large",
+    "rescale_with_baseline": true,
+    "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+    "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+    "samples": 1,
+    "mean_precision": 0.20572592318058014,
+    "mean_recall": -0.14512532949447632,
+    "mean_f1": 0.025679465383291245,
+    "per_sample": [
+      {
+        "sample_id": "D0420-S1-T01",
+        "precision": 0.20572592318058014,
+        "recall": -0.14512532949447632,
+        "f1": 0.025679465383291245,
+        "ref_precision": 0.1910170316696167,
+        "ref_recall": -0.1597224622964859,
+        "ref_f1": 0.0110352523624897,
+        "delta_f1_vs_ref": 0.014644213020801544
+      }
+    ],
+    "ref_mean_precision": 0.1910170316696167,
+    "ref_mean_recall": -0.1597224622964859,
+    "ref_mean_f1": 0.0110352523624897,
+    "mean_delta_f1_vs_ref": 0.014644213020801544
+  }
+}
+Eval report written to data/processed/run-bertscore_20260402T163350Z.txt
