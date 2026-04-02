@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Literal
 
 from ollama import Client
 
@@ -16,10 +16,14 @@ class OllamaClient:
         prompt: str,
         model: str | None = None,
         options: dict[str, Any] | None = None,
+        *,
+        response_format: Literal["json"] | None = None,
     ) -> str:
+        fmt: str | None = "json" if response_format == "json" else None
         response = self.client.chat(
             model=model or self.model,
             messages=[{"role": "user", "content": prompt}],
             options=options or {},
+            format=fmt,
         )
         return response["message"]["content"]

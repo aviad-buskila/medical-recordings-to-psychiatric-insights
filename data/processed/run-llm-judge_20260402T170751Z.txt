@@ -1,0 +1,74 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 8f26feb4-f19b-46b8-bd13-91019370dd4c --ref-run-id 6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7 --limit 1
+Report path: data/processed/run-llm-judge_20260402T170751Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id 8f26feb4-f19b-46b8-bd13-91019370dd4c --ref-run-id 6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7 --limit 1",
+  "report_path": "data/processed/run-llm-judge_20260402T170751Z.txt",
+  "run_metadata": {
+    "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+    "ref_run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T17:02:14.459939+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T17:01:40.328938+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+        "ref_run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 8.0,
+          "baseline_overall_score": 6.0,
+          "score_delta": 2.0,
+          "rationale": "The candidate transcript maintains a higher degree of fidelity to the reference dialogue. While both transcripts introduce some minor paraphrasing, the candidate's alterations are generally more accurate and retain the original meaning better. For instance, the candidate's phrasing like \"Yeah. I have a small business with my sister selling pottery\" is a clearer articulation of the speaker’s business than the baseline's 'Yeah, I have a small business with my sister selling pottery'. The candidate also handles the disjointed nature of the speakers dialogue better, while the baseline occasionally misses some more complex or rambling sentence structures."
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "wins_candidate": 1,
+    "wins_baseline": 0,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T170751Z.txt

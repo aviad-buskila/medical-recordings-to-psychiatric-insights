@@ -20,8 +20,7 @@ class OllamaJudge:
             "Scores are 1-5 where higher is better except hallucination_risk where lower is better.\n\n"
             f"Summary:\n{generated_summary}\n\nContext:\n{retrieved_context}"
         )
-        response = self.client.generate(prompt=prompt, model=self.model)
-        # TODO: add robust schema validation and retry parsing.
+        response = self.client.generate(prompt=prompt, model=self.model, response_format="json")
         try:
             return json.loads(response)
         except json.JSONDecodeError:
@@ -46,7 +45,7 @@ class OllamaJudge:
             "Scoring: higher overall_score is better; higher severities/risks are worse.\n\n"
             f"REFERENCE:\n{reference_text}\n\nPREDICTED:\n{predicted_text}"
         )
-        response = self.client.generate(prompt=prompt, model=self.model)
+        response = self.client.generate(prompt=prompt, model=self.model, response_format="json")
         return self._safe_parse(response)
 
     def compare_transcripts(self, reference_text: str, candidate_text: str, baseline_text: str) -> dict:
@@ -63,7 +62,7 @@ class OllamaJudge:
             f"CANDIDATE:\n{candidate_text}\n\n"
             f"BASELINE:\n{baseline_text}"
         )
-        response = self.client.generate(prompt=prompt, model=self.model)
+        response = self.client.generate(prompt=prompt, model=self.model, response_format="json")
         return self._safe_parse(response)
 
     @staticmethod

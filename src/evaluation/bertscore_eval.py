@@ -1,4 +1,9 @@
-"""Standalone BERTScore evaluation: gold reference vs STT hypothesis (not wired into run-eval)."""
+"""Standalone BERTScore evaluation: STT hypothesis vs gold reference from dataset.pickle.
+
+Each ``bert_score`` call uses (candidates=hypothesis, references=gold). When ``ref_run_id``
+is set, the tool scores *both* runs against the same gold and adds comparative deltas;
+it does **not** score one hypothesis against the other.
+"""
 
 from __future__ import annotations
 
@@ -146,6 +151,8 @@ def run_bertscore_eval(
 
     summary: dict[str, Any] = {
         "metric": "bertscore",
+        "reference_source": "dataset.pickle",
+        "primary_scores": "stt_hypothesis_vs_gold",
         "model_type": resolved_model,
         "rescale_with_baseline": rescale_with_baseline,
         "run_id": run_id,

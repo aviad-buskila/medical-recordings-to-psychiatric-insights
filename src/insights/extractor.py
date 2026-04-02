@@ -168,10 +168,20 @@ class TranscriptInsightsExtractor:
             "temperature": 0.1,
         }
         try:
-            raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name, options=options)
+            raw = self.client.generate(
+                prompt=self._prompt(transcript),
+                model=self.model_name,
+                options=options,
+                response_format="json",
+            )
         except Exception:
             # One retry for transient Ollama stalls/timeouts.
-            raw = self.client.generate(prompt=self._prompt(transcript), model=self.model_name, options=options)
+            raw = self.client.generate(
+                prompt=self._prompt(transcript),
+                model=self.model_name,
+                options=options,
+                response_format="json",
+            )
         parsed = _safe_json_loads(raw)
         return _sanitize_with_evidence(parsed, transcript=transcript), raw
 
@@ -209,13 +219,14 @@ def run_insights_extract(
         transcript_word_count = len([w for w in transcript.split() if w])
         sample_started = time.perf_counter()
         parsed, raw = extractor.extract(transcript)
+        insights_payload = {**parsed, "prompt_version": extractor.prompt_version}
         elapsed_s = time.perf_counter() - sample_started
         row = {
             "run_id": run_id,
             "sample_id": sid,
             "insight_model": resolved_model,
             "prompt_version": extractor.prompt_version,
-            "insights": parsed,
+            "insights": insights_payload,
             "raw_output": raw,
             "transcript_preview": transcript[:500],
             "timing": {
@@ -230,7 +241,7 @@ def run_insights_extract(
             sample_id=sid,
             insight_model=resolved_model,
             prompt_version=extractor.prompt_version,
-            insights=parsed,
+            insights=insights_payload,
             raw_output=raw,
         )
         logger.info(

@@ -1,0 +1,74 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id bbde54ca-bff2-4d2b-928b-89d44312a3ab --ref-run-id a7094852-fb6c-4aac-8b0b-3daf6cb4e66b --limit 1
+Report path: data/processed/run-llm-judge_20260402T163240Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id bbde54ca-bff2-4d2b-928b-89d44312a3ab --ref-run-id a7094852-fb6c-4aac-8b0b-3daf6cb4e66b --limit 1",
+  "report_path": "data/processed/run-llm-judge_20260402T163240Z.txt",
+  "run_metadata": {
+    "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+    "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T16:26:18.995998+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T16:25:44.893788+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "bbde54ca-bff2-4d2b-928b-89d44312a3ab",
+        "ref_run_id": "a7094852-fb6c-4aac-8b0b-3daf6cb4e66b",
+        "judge_result": {
+          "winner": "baseline",
+          "candidate_overall_score": 6.0,
+          "baseline_overall_score": 9.0,
+          "score_delta": -3.0,
+          "rationale": "The candidate transcript is missing significant portions of the dialogue, exhibiting a pattern of truncated sentences and missing key phrases. It's riddled with omissions that drastically alter the meaning and flow of the conversation.  The baseline transcript, while containing some minor imperfections, preserves the majority of the information and accurately represents the tone and content of the interaction. It maintains context and demonstrates a greater fidelity to the reference dialogue. The candidate's numerous omissions and fragmented phrases significantly detract from its overall quality, making the baseline transcript the clear winner."
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "wins_candidate": 0,
+    "wins_baseline": 1,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T163240Z.txt

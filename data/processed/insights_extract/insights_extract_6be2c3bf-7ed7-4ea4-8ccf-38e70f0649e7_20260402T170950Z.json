@@ -1,0 +1,63 @@
+{
+  "command": "insights_extract",
+  "run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+  "timestamp_utc": "20260402T170950Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-turbo",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T17:01:40.328938+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "default",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 18.107,
+    "avg_elapsed_s_per_sample": 18.088
+  },
+  "results": [
+    {
+      "run_id": "6be2c3bf-7ed7-4ea4-8ccf-38e70f0649e7",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents to the emergency clinic following a referral from their GP. Patient reports feeling 'bonkers' and 'not very clever' due to a perceived lack of time from their GP to listen to their concerns. Patient describes a delusion of grandeur, believing they have a 'cure for world hunger' and are 'fantastic' and 'doing a really good job'. Patient reports receiving voice commands from a 'big guy with a big beard' (God) who tells them they are 'fantastic' and 'doing a really good job', and that they should 'show it to people'. Patient reports sending copies of their work to the Pope and Archbishop of Canterbury with no response. Patient reports feeling 'tons of energy' and 'lots of bright ideas'. Patient reports feeling 'fantastic' about themselves and their work. Patient reports having 'no time to sleep' and 'no time to sleep'. Patient reports having 'tons of energy'. Patient reports having 'lots of bright ideas'. Patient reports feeling 'fantastic' about themselves and their work. Patient reports having 'no time to sleep' and 'no time to sleep'. Patient reports having 'tons of energy'. Patient reports having 'lots of bright ideas'. Patient reports feeling 'fantastic' about themselves and their work. Patient reports having 'no time to sleep' and 'no time to sleep'. Patient reports having 'tons of energy'. Patient reports having 'lots of bright ideas'. Patient reports feeling 'fantastic' about themselves and their work. Patient reports having 'no time to sleep' and 'no time to sleep'. Patient reports having 'tons of energy'. Patient reports having 'lots of bright ideas'. Patient reports feeling 'fantastic' about themselves and their work. Patient reports having 'no time to sleep' and 'no time to sleep'. Patient reports having 'tons of energy'. Patient reports having 'lots of bright ideas'. Patient",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said, come and see a trick cyclist, because then you'll be all right. Come and see a trick cyclist? A psychiatrist? Yeah. He not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to this, you see, he won't let me talk about this. He sort of listens to it sometimes, but ",
+      "timing": {
+        "elapsed_s": 18.088,
+        "transcript_char_count": 13312,
+        "transcript_word_count": 2626
+      }
+    }
+  ]
+}
