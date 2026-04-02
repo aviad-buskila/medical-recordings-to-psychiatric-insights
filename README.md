@@ -5,8 +5,9 @@ Local pipeline for medical speech-to-text on Apple Silicon (**mlx-whisper**), pe
 ## What is included
 
 - **STT:** **mlx-whisper**; default `mlx-community/whisper-large-v3-turbo`, quality profile `mlx-community/whisper-large-v3-mlx`
-- **Storage:** PostgreSQL tables `stt_runs`, `stt_outputs`, `evaluation_metrics`
+- **Storage:** PostgreSQL tables `stt_runs`, `stt_outputs`, `evaluation_metrics`, `transcript_insights`
 - **Files:** Per-run transcripts under `data/generated_transcripts/<run_id>_<timestamp>/`
+- **Insights:** Psychiatry-oriented extraction from STT transcripts via Ollama (`med-gemma1.5:4b` by default)
 - **Gold eval:** `dataset.pickle` from the [automated medical transcription dataset](https://github.com/nazmulkazi/dataset_automated_medical_transcription)
 - **LLM judge:** Ollama (default model `gemma3:12b`, configurable)
 
@@ -15,7 +16,9 @@ Local pipeline for medical speech-to-text on Apple Silicon (**mlx-whisper**), pe
 - Python 3.11+
 - `ffmpeg` on PATH (e.g. `brew install ffmpeg`)
 - Docker (for PostgreSQL)
-- Ollama with your judge model pulled (e.g. `ollama pull gemma3:12b`)
+- Ollama with required models pulled:
+  - Judge model (e.g. `ollama pull gemma3:12b`)
+  - Insights model (default: `ollama pull med-gemma1.5:4b`)
 - Hugging Face token in `.env` if your chosen MLX model requires it (`HF_TOKEN`)
 
 ## Setup
@@ -29,7 +32,7 @@ docker compose --env-file .env up -d
 make db-init
 ```
 
-`make db-init` applies SQL in order: `001_init.sql`, `003_stt_runs.sql`, `004_stt_remove_created_at_and_backfill_model.sql`, `005_stt_run_scope.sql`.
+`make db-init` applies SQL in order: `001_init.sql`, `003_stt_runs.sql`, `004_stt_remove_created_at_and_backfill_model.sql`, `005_stt_run_scope.sql`, `006_transcript_insights.sql`.
 
 ## Dataset layout
 
@@ -69,11 +72,17 @@ python -m src.cli.main run-bertscore --run-id <uuid> -o bertscore_summary.json
 python -m src.cli.main run-llm-judge --run-id <uuid>
 python -m src.cli.main run-llm-judge --run-id <uuid> --ref-run-id <other_uuid> --limit 3
 
+# Psychiatry insights extraction (Ollama med-gemma1.5:4b by default)
+python -m src.cli.main insights-extract --run-id <uuid>
+python -m src.cli.main insights-extract --run-id <uuid> --sample-id D0420-S1-T01
+python -m src.cli.main insights-extract --run-id <uuid> --limit 10
+python -m src.cli.main insights-extract --run-id <uuid> --model med-gemma1.5:4b
+
 # Full pass: validate → STT (default profile) → WER eval
 python -m src.cli.main run-all
 ```
 
-Note: `run-eval`, `run-bertscore`, `run-llm-judge`, and `show-alignment` also write an artifact to `data/processed/<evalname>_<timestamp>.txt` (command line + full output; plus JSON results for the DB-writing evals).
+Note: `run-eval`, `run-bertscore`, `run-llm-judge`, and `show-alignment` also write an artifact to `data/processed/<evalname>_<timestamp>.txt` (command line + full output; plus JSON results for the DB-writing evals). `insights-extract` writes JSON artifacts under `data/processed/insights_extract/`.
 
 ### Word alignment (gold vs hypothesis, S / I / D)
 
@@ -96,6 +105,24 @@ Embedding-based **precision, recall, and F1** between gold and STT text from Pos
 
 Dependencies: `torch` and `bert-score` are in `requirements.txt`.
 
+### Insights extraction (`insights-extract`)
+
+Extract psychiatry-focused structured insights from STT outputs of a given `run_id` using Ollama.
+
+- Default model is `med-gemma1.5:4b` (`OLLAMA_INSIGHTS_MODEL` in `.env`).
+- Reads transcript text from `clinical_ai.stt_outputs` for the selected run.
+- Stores/upserts results in `clinical_ai.transcript_insights` keyed by `(run_id, sample_id, insight_model, prompt_version)`.
+- Writes a run artifact JSON to `data/processed/insights_extract/insights_extract_<run_id>_<timestamp>.json` (or `-o` path if provided).
+
+Expected JSON fields per sample:
+
+- `clinical_presentation`
+- `risk_flags`
+- `symptoms`
+- `diagnostic_hypotheses`
+- `recommended_followup`
+- `confidence`
+
 ## Makefile shortcuts
 
 - `make venv` / `make install` — create venv and install dependencies
@@ -115,4 +142,4 @@ docker compose --env-file .env exec -T postgres sh -lc \
 
 ## Configuration reference
 
-See `.env.example` for `POSTGRES_*`, `OLLAMA_*`, `STT_*`, `HF_TOKEN`, `BERTSCORE_MODEL`, paths, and `GENERATED_TRANSCRIPTS_DIR`.
+See `.env.example` for `POSTGRES_*`, `OLLAMA_*`, `STT_*`, `HF_TOKEN`, `BERTSCORE_MODEL`, `OLLAMA_INSIGHTS_MODEL`, paths, `GENERATED_TRANSCRIPTS_DIR`, and `INSIGHTS_EXTRACT_DIR`.
