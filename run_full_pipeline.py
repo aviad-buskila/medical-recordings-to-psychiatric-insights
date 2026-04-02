@@ -46,13 +46,34 @@ def step(name: str) -> None:
     print(f"\n[{now_log_ts()}] === {name} ===", flush=True)
 
 
+def load_dotenv_file(path: Path) -> dict[str, str]:
+    out: dict[str, str] = {}
+    if not path.exists():
+        return out
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key:
+            out[key] = value
+    return out
+
+
 def run_cmd(command: list[str], env: dict[str, str] | None = None, timeout_s: int | None = None) -> CmdResult:
     log(f"Running: {' '.join(command)}")
+    effective_env = {
+        **os.environ,
+        **load_dotenv_file(ROOT / ".env"),
+        **(env or {}),
+    }
     try:
         proc = subprocess.run(
             command,
             cwd=str(ROOT),
-            env=env,
+            env=effective_env,
             text=True,
             capture_output=True,
             check=False,

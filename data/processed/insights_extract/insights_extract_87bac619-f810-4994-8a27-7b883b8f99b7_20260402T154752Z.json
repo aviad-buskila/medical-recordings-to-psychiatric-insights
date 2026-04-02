@@ -1,0 +1,62 @@
+{
+  "command": "insights_extract",
+  "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+  "timestamp_utc": "20260402T154752Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-turbo",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T15:04:32.187840+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "default",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 18.113,
+    "avg_elapsed_s_per_sample": 18.098
+  },
+  "results": [
+    {
+      "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"Patient presents with a history of a long-standing, highly detailed, and elaborate delusion involving a 'cure for world hunger' and a 'God' who communicates through voice, providing instructions and validation. The patient reports significant functional impairment, including neglecting work, sleep, and social interactions. There is a history of previous psychiatric treatment (Prozac) which was ineffective. The patient exhibits significant distress and anger, particularly towards the psychiatrist, whom they perceive as incompetent and rude. The patient has a strong belief in their own intellectual superiority and feels misunderstood by their family.\",\n  \"risk_flags\": [\n    {\n      \"claim\": \"Patient has a delusion.\",\n      \"evidence_quote\": \"Well, it's, I've got my various bits and pieces here I find in the papers. Like, you know, the football results. Right. They need adding together. Okay. And then I have found some other information on this page. There are some stuff. So who have you been showing it to? Well, okay. Who have I been showing? I, I've, er, I've sent copies of stuff to the Pope, right? And the Archbishop of Canterbury. And none of them have written back. You'd think they would, you know? So no replies yet. Cause they're close to God. They probably know him. They probably met him and stuff. Yeah. Well, I mean the Pope, he claims to have met him. Right. I mean, you, you don't know. Yeah. I would assume the Pope knows God. Right. He knows he's got his address, his telephone number, everything like that. But then, you know, or see the Arch, Archbishop of Canterbury. I think he's just rude. Cause he'",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said, come and see a trick cyclist, because then you'll be all right. Come and see a trick cyclist? A psychiatrist? Yeah. He not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to this, you see, he won't let me talk about this. He sort of listens to it sometimes, but ",
+      "timing": {
+        "elapsed_s": 18.098,
+        "transcript_char_count": 13312,
+        "transcript_word_count": 2626
+      }
+    }
+  ]
+}
