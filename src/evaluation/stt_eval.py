@@ -22,6 +22,7 @@ def evaluate_stt_against_gold(
     limit: int | None = None,
     run_id: str | None = None,
     ref_run_id: str | None = None,
+    sample_id: str | None = None,
     reporter: EvalRunReporter | None = None,
     workers: int = 1,
     metrics: set[str] | None = None,
@@ -47,6 +48,7 @@ def evaluate_stt_against_gold(
         reporter.set_run_metadata(
             run_id=run_id,
             ref_run_id=ref_run_id,
+            sample_id=sample_id,
             candidate_run_info=analytics.get_stt_run_info(run_id) if run_id else None,
             ref_run_info=analytics.get_stt_run_info(ref_run_id) if ref_run_id else None,
             workers=workers,
@@ -69,6 +71,8 @@ def evaluate_stt_against_gold(
             candidate_sample_ids = [sid for sid in candidate_sample_ids if sid in ref_run_outputs]
     else:
         candidate_sample_ids = [s.sample_id for s in samples]
+    if sample_id:
+        candidate_sample_ids = [sid for sid in candidate_sample_ids if sid == sample_id]
 
     jobs: list[dict[str, Any]] = []
     for sample_id in candidate_sample_ids:

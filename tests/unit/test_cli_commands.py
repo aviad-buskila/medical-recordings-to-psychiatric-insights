@@ -119,6 +119,7 @@ def test_run_eval_cli_invokes_stt_eval(mock_eval: MagicMock) -> None:
     assert kwargs["limit"] == 3
     assert kwargs["run_id"] is None
     assert kwargs["ref_run_id"] is None
+    assert kwargs["sample_id"] is None
     assert kwargs["workers"] >= 1
     assert kwargs["skip_cp_wer"] is False
     assert kwargs["skip_speaker_metrics"] is False
@@ -144,6 +145,16 @@ def test_run_eval_cli_metric_filter_and_auto_workers(mock_eval: MagicMock) -> No
     kwargs = mock_eval.call_args.kwargs
     assert kwargs["metrics"] == {"cp_wer"}
     assert kwargs["workers"] >= 1
+
+
+@patch("src.cli.main.evaluate_stt_against_gold")
+def test_run_eval_cli_sample_id(mock_eval: MagicMock) -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run-eval", "--run-id", "r1", "--sample-id", "D0420-S1-T01"])
+    assert result.exit_code == 0
+    kwargs = mock_eval.call_args.kwargs
+    assert kwargs["run_id"] == "r1"
+    assert kwargs["sample_id"] == "D0420-S1-T01"
 
 
 def test_restore_stt_from_generated_dry_run_empty() -> None:

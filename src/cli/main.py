@@ -290,6 +290,7 @@ def run_bertscore(
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
 @click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side WER comparison.")
+@click.option("--sample-id", type=str, default=None, help="Evaluate only one sample_id/file stem.")
 @click.option("--workers", type=str, default="auto", show_default=True, help="Parallel workers count or 'auto'.")
 @click.option(
     "--metric",
@@ -304,6 +305,7 @@ def run_eval(
     limit: int | None,
     run_id: str | None,
     ref_run_id: str | None,
+    sample_id: str | None,
     workers: str,
     metrics: tuple[str, ...],
     skip_cp_wer: bool,
@@ -333,6 +335,7 @@ def run_eval(
             limit=limit,
             run_id=run_id,
             ref_run_id=ref_run_id,
+            sample_id=sample_id,
             reporter=reporter,
             workers=resolved_workers,
             metrics=metric_set,

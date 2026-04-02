@@ -30,6 +30,7 @@ python -m src.cli.main run-eval --skip-speaker-metrics
 python -m src.cli.main run-eval --skip-cp-wer --skip-speaker-metrics --workers 2
 python -m src.cli.main run-eval --run-id <STT_RUN_UUID>
 python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID>
+python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-eval --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --workers auto
 python -m src.cli.main run-eval --run-id <RUN_UUID> --limit 5
 
