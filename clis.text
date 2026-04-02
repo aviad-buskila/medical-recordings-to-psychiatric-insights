@@ -61,6 +61,21 @@ python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id 
 python -m src.cli.main run-llm-judge --run-id <CANDIDATE_RUN_UUID> --ref-run-id <BASELINE_RUN_UUID> --sample-id D0420-S1-T01
 python -m src.cli.main run-llm-judge --run-id <STT_RUN_UUID> --limit 3
 
+# --- Analysis notebook (compare 2 runs with visuals + recommendation) ---
+jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> jupyter notebook analysis/model_eval_insights.ipynb
+CANDIDATE_RUN_ID=<CANDIDATE_RUN_UUID> BASELINE_RUN_ID=<BASELINE_RUN_UUID> SAMPLE_ID=D0420-S1-T01 jupyter notebook analysis/model_eval_insights.ipynb
+
+# --- Visualize show-alignment artifacts ---
+jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt jupyter notebook analysis/show_alignment_visualizer.ipynb
+ALIGNMENT_REPORT_PATH=data/processed/show-alignment_20260402T101843Z.txt SAMPLE_ID=D0420-S1-T01 MAX_CHUNKS_PER_RUN=6 jupyter notebook analysis/show_alignment_visualizer.ipynb
+
+# --- Gold talk structure: speaker-over-time Gantt (dataset.pickle based) ---
+jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle TRANSCRIPTS_DIR=./data/raw/transcripts jupyter notebook analysis/gold_speaker_timeline.ipynb
+DATASET_PICKLE_PATH=./data/raw/dataset.pickle SAMPLE_IDS=D0420-S1-T01,D0420-S1-T02 MAX_SAMPLES=10 jupyter notebook analysis/gold_speaker_timeline.ipynb
+
 # --- Full pipeline: validate → STT (default, all recordings) → WER eval ---
 python -m src.cli.main run-all
 

@@ -13,5 +13,9 @@ rapidfuzz==3.14.3
 torch==2.11.0
 
 # --- Dev ---
+jupyter==1.1.1
+matplotlib==3.10.7
+pandas==2.3.3
 pytest-cov==7.1.0
 pytest==9.0.2
+seaborn==0.13.2
