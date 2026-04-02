@@ -167,6 +167,8 @@ jupyter notebook analysis/gold_speaker_timeline.ipynb
 ```bash
 python run_full_pipeline.py
 python run_full_pipeline.py --limit 5
+# Resume after partial failure (skip STT/evals and continue remaining steps)
+python run_full_pipeline.py --skip-stt --skip-evals --baseline-run-id <BASELINE_UUID> --candidate-run-id <CANDIDATE_UUID> --limit 5
 ```
 
 This script runs STT-both + all evals + insights + notebook execution and writes a consolidated markdown report to `data/processed/full_pipeline/`.

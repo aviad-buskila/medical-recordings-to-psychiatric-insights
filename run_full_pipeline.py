@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent
 PROCESSED_DIR = ROOT / "data" / "processed"
 PIPELINE_OUT_DIR = PROCESSED_DIR / "full_pipeline"
 ANALYSIS_OUT_DIR = PROCESSED_DIR / "analysis_notebooks"
+STATE_LATEST = PIPELINE_OUT_DIR / "full_pipeline_state_latest.json"
 
 
 def ts_utc() -> str:
@@ -71,6 +72,42 @@ def parse_eval_report_path(stdout: str) -> str | None:
 def parse_insights_artifact_path(stdout: str) -> str | None:
     m = re.search(r"Artifact:\s+(.+)$", stdout, re.MULTILINE)
     return m.group(1).strip() if m else None
+
+
+def latest_processed_artifact(prefix: str) -> str | None:
+    files = sorted(PROCESSED_DIR.glob(f"{prefix}_*.txt"), key=lambda p: p.stat().st_mtime, reverse=True)
+    return str(files[0]) if files else None
+
+
+def save_state(state: dict[str, Any]) -> None:
+    PIPELINE_OUT_DIR.mkdir(parents=True, exist_ok=True)
+    STATE_LATEST.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_state(path: Path | None) -> dict[str, Any]:
+    p = path or STATE_LATEST
+    if p.exists():
+        return json.loads(p.read_text(encoding="utf-8"))
+    return {}
+
+
+def resolve_insights_model(requested: str | None) -> str | None:
+    if requested:
+        return requested
+    # Prefer explicit env override.
+    env_model = os.environ.get("OLLAMA_INSIGHTS_MODEL", "").strip()
+    if env_model:
+        return env_model
+    # Auto-fallback for common model naming mismatch.
+    try:
+        out = run_cmd(["ollama", "list"]).stdout.lower()
+        if "medaibase/medgemma1.5:4b" in out:
+            return "medaibase/medgemma1.5:4b"
+        if "med-gemma1.5:4b" in out:
+            return "med-gemma1.5:4b"
+    except Exception:
+        pass
+    return None
 
 
 def run_notebook(input_nb: Path, output_nb: Path, env: dict[str, str] | None = None) -> None:
@@ -202,125 +239,183 @@ def write_markdown_summary(path: Path, payload: dict[str, Any]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run full local STT eval+analysis pipeline on a small sample.")
     parser.add_argument("--limit", type=int, default=5, help="Number of recordings to process (default: 5).")
+    parser.add_argument("--resume-state", type=str, default=None, help="Resume from a saved pipeline state JSON.")
+    parser.add_argument("--candidate-run-id", type=str, default=None, help="Reuse existing candidate run_id (skip STT).")
+    parser.add_argument("--baseline-run-id", type=str, default=None, help="Reuse existing baseline run_id (skip STT).")
+    parser.add_argument("--skip-stt", action="store_true", help="Skip STT step and use provided run IDs/state.")
+    parser.add_argument("--skip-evals", action="store_true", help="Skip eval commands and reuse latest artifacts.")
+    parser.add_argument("--insights-model", type=str, default=None, help="Model override for insights-extract.")
     args = parser.parse_args()
     if args.limit <= 0:
         raise SystemExit("--limit must be positive")
 
-    stamp = ts_utc()
+    state = load_state(Path(args.resume_state) if args.resume_state else None)
+    stamp = state.get("timestamp_utc") or ts_utc()
     PIPELINE_OUT_DIR.mkdir(parents=True, exist_ok=True)
     ANALYSIS_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    selected = select_recordings(limit=args.limit)
+    selected = state.get("selected_recordings") or select_recordings(limit=args.limit)
     if not selected:
         raise SystemExit("No recordings found under data/raw/recordings")
     sample_for_single = selected[0]
 
-    commands_run: list[str] = []
+    commands_run: list[str] = state.get("commands", [])
+    baseline_run_id = args.baseline_run_id or state.get("baseline_run_id")
+    candidate_run_id = args.candidate_run_id or state.get("candidate_run_id")
+    artifacts = state.get("artifacts", {})
 
-    # 1) run both STT models on first N recordings
-    stt_cmd = ["python", "-m", "src.cli.main", "run-stt", "--flavor", "both", "--limit", str(args.limit)]
-    stt_res = run_cmd(stt_cmd)
-    commands_run.append(" ".join(stt_cmd))
-    baseline_run_id, candidate_run_id = parse_stt_run_ids(stt_res.stdout)
+    # 1) run both STT models on first N recordings (or reuse provided IDs)
+    if not (args.skip_stt or (baseline_run_id and candidate_run_id)):
+        stt_cmd = ["python", "-m", "src.cli.main", "run-stt", "--flavor", "both", "--limit", str(args.limit)]
+        stt_res = run_cmd(stt_cmd)
+        commands_run.append(" ".join(stt_cmd))
+        baseline_run_id, candidate_run_id = parse_stt_run_ids(stt_res.stdout)
+        state.update(
+            {
+                "timestamp_utc": stamp,
+                "limit": args.limit,
+                "selected_recordings": selected,
+                "baseline_run_id": baseline_run_id,
+                "candidate_run_id": candidate_run_id,
+                "commands": commands_run,
+                "artifacts": artifacts,
+            }
+        )
+        save_state(state)
 
-    # 2) full eval compare
-    eval_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "run-eval",
-        "--run-id",
-        candidate_run_id,
-        "--ref-run-id",
-        baseline_run_id,
-        "--limit",
-        str(args.limit),
-        "--workers",
-        "auto",
-    ]
-    eval_res = run_cmd(eval_cmd)
-    commands_run.append(" ".join(eval_cmd))
-    eval_report = parse_eval_report_path(eval_res.stdout)
+    if not (baseline_run_id and candidate_run_id):
+        raise SystemExit("Missing run IDs. Provide --baseline-run-id and --candidate-run-id, or run without --skip-stt.")
 
-    # 3) llm judge compare
-    llm_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "run-llm-judge",
-        "--run-id",
-        candidate_run_id,
-        "--ref-run-id",
-        baseline_run_id,
-        "--limit",
-        str(args.limit),
-    ]
-    llm_res = run_cmd(llm_cmd)
-    commands_run.append(" ".join(llm_cmd))
-    llm_report = parse_eval_report_path(llm_res.stdout)
+    # 2-5) evals
+    if not args.skip_evals:
+        if not artifacts.get("run_eval_report"):
+            eval_cmd = [
+                "python",
+                "-m",
+                "src.cli.main",
+                "run-eval",
+                "--run-id",
+                candidate_run_id,
+                "--ref-run-id",
+                baseline_run_id,
+                "--limit",
+                str(args.limit),
+                "--workers",
+                "auto",
+            ]
+            eval_res = run_cmd(eval_cmd)
+            commands_run.append(" ".join(eval_cmd))
+            artifacts["run_eval_report"] = parse_eval_report_path(eval_res.stdout)
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
 
-    # 4) show alignment compare
-    align_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "show-alignment",
-        "--run-id",
-        candidate_run_id,
-        "--ref-run-id",
-        baseline_run_id,
-        "--limit",
-        str(args.limit),
-    ]
-    align_res = run_cmd(align_cmd)
-    commands_run.append(" ".join(align_cmd))
-    align_report = parse_eval_report_path(align_res.stdout)
+        if not artifacts.get("run_llm_judge_report"):
+            llm_cmd = [
+                "python",
+                "-m",
+                "src.cli.main",
+                "run-llm-judge",
+                "--run-id",
+                candidate_run_id,
+                "--ref-run-id",
+                baseline_run_id,
+                "--limit",
+                str(args.limit),
+            ]
+            llm_res = run_cmd(llm_cmd)
+            commands_run.append(" ".join(llm_cmd))
+            artifacts["run_llm_judge_report"] = parse_eval_report_path(llm_res.stdout)
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
 
-    # 5) bertscore compare
-    bert_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "run-bertscore",
-        "--run-id",
-        candidate_run_id,
-        "--ref-run-id",
-        baseline_run_id,
-        "--limit",
-        str(args.limit),
-    ]
-    bert_res = run_cmd(bert_cmd)
-    commands_run.append(" ".join(bert_cmd))
-    bert_report = parse_eval_report_path(bert_res.stdout)
+        if not artifacts.get("show_alignment_report"):
+            align_cmd = [
+                "python",
+                "-m",
+                "src.cli.main",
+                "show-alignment",
+                "--run-id",
+                candidate_run_id,
+                "--ref-run-id",
+                baseline_run_id,
+                "--limit",
+                str(args.limit),
+            ]
+            align_res = run_cmd(align_cmd)
+            commands_run.append(" ".join(align_cmd))
+            artifacts["show_alignment_report"] = parse_eval_report_path(align_res.stdout)
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
 
-    # 6) insights for both runs
-    ins_candidate_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "insights-extract",
-        "--run-id",
-        candidate_run_id,
-        "--limit",
-        str(args.limit),
-    ]
-    ins_candidate_res = run_cmd(ins_candidate_cmd)
-    commands_run.append(" ".join(ins_candidate_cmd))
-    insights_candidate_artifact = parse_insights_artifact_path(ins_candidate_res.stdout)
+        if not artifacts.get("run_bertscore_report"):
+            bert_cmd = [
+                "python",
+                "-m",
+                "src.cli.main",
+                "run-bertscore",
+                "--run-id",
+                candidate_run_id,
+                "--ref-run-id",
+                baseline_run_id,
+                "--limit",
+                str(args.limit),
+            ]
+            bert_res = run_cmd(bert_cmd)
+            commands_run.append(" ".join(bert_cmd))
+            artifacts["run_bertscore_report"] = parse_eval_report_path(bert_res.stdout)
+            state.update({"commands": commands_run, "artifacts": artifacts})
+            save_state(state)
+    else:
+        artifacts.setdefault("run_eval_report", latest_processed_artifact("run-eval"))
+        artifacts.setdefault("run_llm_judge_report", latest_processed_artifact("run-llm-judge"))
+        artifacts.setdefault("show_alignment_report", latest_processed_artifact("show-alignment"))
+        artifacts.setdefault("run_bertscore_report", latest_processed_artifact("run-bertscore"))
 
-    ins_baseline_cmd = [
-        "python",
-        "-m",
-        "src.cli.main",
-        "insights-extract",
-        "--run-id",
-        baseline_run_id,
-        "--limit",
-        str(args.limit),
-    ]
-    ins_baseline_res = run_cmd(ins_baseline_cmd)
-    commands_run.append(" ".join(ins_baseline_cmd))
-    insights_baseline_artifact = parse_insights_artifact_path(ins_baseline_res.stdout)
+    # 6) insights for both runs (resume-friendly + model fallback)
+    insights_model = resolve_insights_model(args.insights_model)
+    insights_list = artifacts.get("insights_extract_artifacts", [])
+    if len(insights_list) < 2:
+        insights_list = [None, None]
+
+    if not insights_list[0]:
+        ins_candidate_cmd = [
+            "python",
+            "-m",
+            "src.cli.main",
+            "insights-extract",
+            "--run-id",
+            candidate_run_id,
+            "--limit",
+            str(args.limit),
+        ]
+        if insights_model:
+            ins_candidate_cmd += ["--model", insights_model]
+        ins_candidate_res = run_cmd(ins_candidate_cmd)
+        commands_run.append(" ".join(ins_candidate_cmd))
+        insights_list[0] = parse_insights_artifact_path(ins_candidate_res.stdout)
+        artifacts["insights_extract_artifacts"] = insights_list
+        state.update({"commands": commands_run, "artifacts": artifacts})
+        save_state(state)
+
+    if not insights_list[1]:
+        ins_baseline_cmd = [
+            "python",
+            "-m",
+            "src.cli.main",
+            "insights-extract",
+            "--run-id",
+            baseline_run_id,
+            "--limit",
+            str(args.limit),
+        ]
+        if insights_model:
+            ins_baseline_cmd += ["--model", insights_model]
+        ins_baseline_res = run_cmd(ins_baseline_cmd)
+        commands_run.append(" ".join(ins_baseline_cmd))
+        insights_list[1] = parse_insights_artifact_path(ins_baseline_res.stdout)
+        artifacts["insights_extract_artifacts"] = insights_list
+        state.update({"commands": commands_run, "artifacts": artifacts})
+        save_state(state)
 
     # 7) execute all analysis notebooks
     nb_model_out = ANALYSIS_OUT_DIR / f"model_eval_insights_{stamp}.ipynb"
@@ -330,19 +425,22 @@ def main() -> None:
         "BASELINE_RUN_ID": baseline_run_id,
         "SAMPLE_ID": sample_for_single,
     }
-    run_notebook(ROOT / "analysis" / "model_eval_insights.ipynb", nb_model_out, env=env_model)
+    if not nb_model_out.exists():
+        run_notebook(ROOT / "analysis" / "model_eval_insights.ipynb", nb_model_out, env=env_model)
 
     nb_align_out = ANALYSIS_OUT_DIR / f"show_alignment_visualizer_{stamp}.ipynb"
     env_align = {
         **os.environ,
-        "ALIGNMENT_REPORT_PATH": align_report or "",
+        "ALIGNMENT_REPORT_PATH": artifacts.get("show_alignment_report") or "",
         "SAMPLE_ID": sample_for_single,
         "MAX_CHUNKS_PER_RUN": "6",
     }
-    run_notebook(ROOT / "analysis" / "show_alignment_visualizer.ipynb", nb_align_out, env=env_align)
+    if not nb_align_out.exists():
+        run_notebook(ROOT / "analysis" / "show_alignment_visualizer.ipynb", nb_align_out, env=env_align)
 
     nb_timeline_out = ANALYSIS_OUT_DIR / f"gold_speaker_timeline_{stamp}.ipynb"
-    run_notebook(ROOT / "analysis" / "gold_speaker_timeline.ipynb", nb_timeline_out)
+    if not nb_timeline_out.exists():
+        run_notebook(ROOT / "analysis" / "gold_speaker_timeline.ipynb", nb_timeline_out)
 
     db_summary = fetch_db_summary(candidate_run_id=candidate_run_id, baseline_run_id=baseline_run_id)
 
@@ -353,11 +451,11 @@ def main() -> None:
         "baseline_run_id": baseline_run_id,
         "candidate_run_id": candidate_run_id,
         "artifacts": {
-            "run_eval_report": eval_report,
-            "run_llm_judge_report": llm_report,
-            "show_alignment_report": align_report,
-            "run_bertscore_report": bert_report,
-            "insights_extract_artifacts": [insights_candidate_artifact, insights_baseline_artifact],
+            "run_eval_report": artifacts.get("run_eval_report"),
+            "run_llm_judge_report": artifacts.get("run_llm_judge_report"),
+            "show_alignment_report": artifacts.get("show_alignment_report"),
+            "run_bertscore_report": artifacts.get("run_bertscore_report"),
+            "insights_extract_artifacts": artifacts.get("insights_extract_artifacts", []),
             "analysis_notebooks": [str(nb_model_out), str(nb_align_out), str(nb_timeline_out)],
         },
         "db_summary": db_summary,
@@ -365,6 +463,8 @@ def main() -> None:
     }
     summary_md = PIPELINE_OUT_DIR / f"full_pipeline_{stamp}.md"
     write_markdown_summary(summary_md, summary_payload)
+    state.update(summary_payload)
+    save_state(state)
     print(f"Full pipeline completed. Summary: {summary_md}")
 
 
