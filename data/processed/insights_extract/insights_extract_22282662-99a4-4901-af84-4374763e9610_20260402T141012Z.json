@@ -1,0 +1,55 @@
+{
+  "command": "insights_extract",
+  "run_id": "22282662-99a4-4901-af84-4374763e9610",
+  "timestamp_utc": "20260402T141012Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v1",
+  "stt_run_info": {
+    "run_id": "22282662-99a4-4901-af84-4374763e9610",
+    "provider": "mlx-whisper",
+    "model_name": "recovered-from-generated-transcripts",
+    "run_scope": "full",
+    "run_timestamp": "2026-04-01T18:04:03+00:00",
+    "run_parameters": {
+      "recovered_from": "data/generated_transcripts/22282662-99a4-4901-af84-4374763e9610_20260401T180403Z"
+    }
+  },
+  "sample_filter": "D0420-S1-T01",
+  "limit": null,
+  "samples_processed": 1,
+  "results": [
+    {
+      "run_id": "22282662-99a4-4901-af84-4374763e9610",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v1",
+      "insights": {
+        "clinical_presentation": "Patient presents with a history of a perceived 'cure for world hunger' involving number-based calculations derived from newspapers and charts. Patient reports receiving guidance from a 'God' figure, leading to significant disruption of personal life (business, social interactions) and neglect of basic needs (sleep, food). Patient has a history of depression treated with Prozac, which was ineffective. Patient expresses hostility towards her sister, attributing her concern to intellectual inadequacy ('thick as shit'). Patient exhibits grandiose delusions ('God's telling me I'm fantastic', 'I'm doing a really good job') and persecutory delusions ('God talks to me', 'God told me to go get help', 'God told me to get the fuck away from her'). Patient has significant functional impairment, including disruption of work, social isolation, and neglect of self-care. Patient is currently refusing further engagement with the clinician, expressing a desire to speak to 'the boss' or 'top person'.",
+        "risk_flags": [
+          "Delusions (grandiosity, religious),",
+          "Persecutory delusions",
+          "Psychotic break/functional impairment",
+          "History of depression",
+          "Neglect of self-care",
+          "Social withdrawal/isolation",
+          "Hostility/paranoia"
+        ],
+        "diagnosis_considerations": [
+          "Schizophrenia",
+          "Brief psychotic disorder",
+          "Schizoaffective disorder",
+          "Delusional disorder (possibly with psychotic features)"
+        ],
+        "further_steps": [
+          "Comprehensive psychiatric assessment",
+          "Psychological testing",
+          "Neuroimaging (CT/MRI)",
+          "Consideration for inpatient admission for safety and treatment",
+          "Referral for psychiatric consultation"
+        ]
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"Patient presents with a history of a perceived 'cure for world hunger' involving number-based calculations derived from newspapers and charts. Patient reports receiving guidance from a 'God' figure, leading to significant disruption of personal life (business, social interactions) and neglect of basic needs (sleep, food). Patient has a history of depression treated with Prozac, which was ineffective. Patient expresses hostility towards her sister, attributing her concern to intellectual inadequacy ('thick as shit'). Patient exhibits grandiose delusions ('God's telling me I'm fantastic', 'I'm doing a really good job') and persecutory delusions ('God talks to me', 'God told me to go get help', 'God told me to get the fuck away from her'). Patient has significant functional impairment, including disruption of work, social isolation, and neglect of self-care. Patient is currently refusing further engagement with the clinician, expressing a desire to speak to 'the boss' or 'top person'.\",\n  \"risk_flags\": [\n    \"Delusions (grandiosity, religious),\",\n    \"Persecutory delusions\",\n    \"Psychotic break/functional impairment\",\n    \"History of depression\",\n    \"Neglect of self-care\",\n    \"Social withdrawal/isolation\",\n    \"Hostility/paranoia\"\n  ],\n  \"diagnosis_considerations\": [\n    \"Schizophrenia\",\n    \"Brief psychotic disorder\",\n    \"Schizoaffective disorder\",\n    \"Delusional disorder (possibly with psychotic features)\"\n  ],\n  \"further_steps\": [\n    \"Comprehensive psychiatric assessment\",\n    \"Psychological testing\",\n    \"Neuroimaging (CT/MRI)\",\n    \"Consideration for inpatient admission for safety and treatment\",\n    \"Referral for psychiatric consultation\"\n  ]\n}\n```",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort"
+    }
+  ]
+}

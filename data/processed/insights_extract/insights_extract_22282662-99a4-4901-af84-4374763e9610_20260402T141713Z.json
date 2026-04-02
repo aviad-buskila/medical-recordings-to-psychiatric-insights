@@ -1,0 +1,66 @@
+{
+  "command": "insights_extract",
+  "run_id": "22282662-99a4-4901-af84-4374763e9610",
+  "timestamp_utc": "20260402T141713Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "22282662-99a4-4901-af84-4374763e9610",
+    "provider": "mlx-whisper",
+    "model_name": "recovered-from-generated-transcripts",
+    "run_scope": "full",
+    "run_timestamp": "2026-04-01T18:04:03+00:00",
+    "run_parameters": {
+      "recovered_from": "data/generated_transcripts/22282662-99a4-4901-af84-4374763e9610_20260401T180403Z"
+    }
+  },
+  "sample_filter": "D0420-S1-T01",
+  "limit": null,
+  "samples_processed": 1,
+  "results": [
+    {
+      "run_id": "22282662-99a4-4901-af84-4374763e9610",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "A 35-year-old female patient presents to the emergency clinic accompanied by her GP. The patient reports feeling full of energy, having numerous bright ideas, and feeling fantastic due to divine intervention. She claims to have a unique cure for world hunger, which involves adding and subtracting numbers found in newspapers and referencing a chart at home. She reports that God talks to her daily, providing guidance and reassurance about her work. She has been neglecting sleep and basic needs due to her work. She has been showing her work to figures like the Pope and Archbishop of Canterbury with no response. She has a part-time business with her sister selling pottery. She feels more clever than others, particularly her family. She has a history of taking Prozac long ago, which did not help. She has no known family history of psychiatric illness. She denies physical health problems and has not taken any prescribed medication besides the past Prozac. She reports being verbally abused by her sister, who suggested she was not well. The patient becomes agitated and refuses to continue the conversation, stating she wants to talk to her boss, the head person, the top boss, top dog, and is fed up with the current clinician.",
+        "assessment": "The patient presents with symptoms suggestive of a psychotic disorder, potentially schizophrenia or a related condition, given her reported delusions (divine communication, cure for world hunger), grandiose beliefs (feeling fantastic, more clever than others), and disorganized thinking (refusing to continue the conversation, talking about her boss). Her elevated energy and ideas could also be part of a manic or hypomanic episode, although the context of divine communication points more towards psychosis. The history of Prozac use, although long ago, might be relevant, but it's unclear if it was effective or if it was a true antidepressant or antipsychotic. The sister's comments about her not being well raise concerns about potential external stressors or social factors, but the patient's internal experience of divine communication and grandiose ideas suggests a primary psychiatric issue. The refusal to engage further is a significant red flag for potential psychosis or severe agitation.",
+        "differential_diagnosis": [
+          "Schizophrenia",
+          "Schizoaffective disorder",
+          "Bipolar disorder, manic or hypomanic episode with psychotic features",
+          "Delusional disorder, persecutory type (potentially related to the sister's comments)",
+          "Substance-induced psychotic disorder (less likely given history)",
+          "Psychotic disorder due to another medical condition (less likely given lack of physical symptoms)"
+        ],
+        "plan": [
+          "Conduct a thorough mental status examination, including assessment of thought process, thought content, mood, affect, and insight.",
+          "Consider admitting the patient for further evaluation and management due to the potential severity of her symptoms and refusal to engage.",
+          "Initiate a course of antipsychotic medication.",
+          "Monitor for improvement in psychotic symptoms and overall functioning.",
+          "Assess for potential underlying medical causes, although less likely given the presentation.",
+          "Explore potential stressors, including the relationship with her sister, but prioritize addressing the acute psychotic symptoms.",
+          "Provide supportive care and ensure safety.",
+          "Refer for potential long-term psychiatric follow-up and management."
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"A 35-year-old female patient presents to the emergency clinic accompanied by her GP. The patient reports feeling full of energy, having numerous bright ideas, and feeling fantastic due to divine intervention. She claims to have a unique cure for world hunger, which involves adding and subtracting numbers found in newspapers and referencing a chart at home. She reports that God talks to her daily, providing guidance and reassurance about her work. She has been neglecting sleep and basic needs due to her work. She has been showing her work to figures like the Pope and Archbishop of Canterbury with no response. She has a part-time business with her sister selling pottery. She feels more clever than others, particularly her family. She has a history of taking Prozac long ago, which did not help. She has no known family history of psychiatric illness. She denies physical health problems and has not taken any prescribed medication besides the past Prozac. She reports being verbally abused by her sister, who suggested she was not well. The patient becomes agitated and refuses to continue the conversation, stating she wants to talk to her boss, the head person, the top boss, top dog, and is fed up with the current clinician.\",\n  \"assessment\": \"The patient presents with symptoms suggestive of a psychotic disorder, potentially schizophrenia or a related condition, given her reported delusions (divine communication, cure for world hunger), grandiose beliefs (feeling fantastic, more clever than others), and disorganized thinking (refusing to continue the conversation, talking about her boss). Her elevated energy and ideas could also be part of a manic or hypomanic episode, although the context of divine communication points more towards psychosis. The history of Prozac use, although long ago, might be relevant, but it's unclear if it was effective or if it was a true antidepressant or antipsychotic. The sister's comments about her not being well raise concerns about potential external stressors or social factors, but the patient's internal experience of divine communication and grandiose ideas suggests a primary psychiatric issue. The refusal to engage further is a significant red flag for potential psychosis or severe agitation.\",\n  \"differential_diagnosis\": [\n    \"Schizophrenia\",\n    \"Schizoaffective disorder\",\n    \"Bipolar disorder, manic or hypomanic episode with psychotic features\",\n    \"Delusional disorder, persecutory type (potentially related to the sister's comments)\",\n    \"Substance-induced psychotic disorder (less likely given history)\",\n    \"Psychotic disorder due to another medical condition (less likely given lack of physical symptoms)\"\n  ],\n  \"plan\": [\n    \"Conduct a thorough mental status examination, including assessment of thought process, thought content, mood, affect, and insight.\",\n    \"Consider admitting the patient for further evaluation and management due to the potential severity of her symptoms and refusal to engage.\",\n    \"Initiate a course of antipsychotic medication.\",\n    \"Monitor for improvement in psychotic symptoms and overall functioning.\",\n    \"Assess for potential underlying medical causes, although less likely given the presentation.\",\n    \"Explore potential stressors, including the relationship with her sister, but prioritize addressing the acute psychotic symptoms.\",\n    \"Provide supportive care and ensure safety.\",\n    \"Refer for potential long-term psychiatric follow-up and management.\"\n  ]\n}\n```",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort"
+    }
+  ]
+}

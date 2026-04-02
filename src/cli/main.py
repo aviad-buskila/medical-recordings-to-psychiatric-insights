@@ -15,6 +15,7 @@ from src.evaluation.bertscore_eval import run_bertscore_eval
 from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
+from src.insights.extractor import run_insights_extract
 from src.stt.pipeline import run_stt_both_profiles, run_stt_pipeline
 
 
@@ -457,6 +458,37 @@ def run_llm_judge(run_id: str, ref_run_id: str | None, sample_id: str | None, li
         click.echo("LLM judge evaluation completed.")
         reporter.write_results_section(file=f)
         click.echo(f"Eval report written to {report_path}")
+
+
+@cli.command("insights-extract")
+@click.option("--run-id", type=str, required=True, help="STT run_id to analyze.")
+@click.option("--sample-id", type=str, default=None, help="Extract insights for one sample_id only.")
+@click.option("--limit", "-n", type=int, default=None, help="Extract only first N samples.")
+@click.option("--model", type=str, default=None, help="Override Ollama model (default: OLLAMA_INSIGHTS_MODEL).")
+@click.option(
+    "--output-json",
+    "-o",
+    type=click.Path(path_type=Path, writable=True),
+    default=None,
+    help="Optional output artifact path. Default: data/processed/insights_extract/...",
+)
+def insights_extract(
+    run_id: str,
+    sample_id: str | None,
+    limit: int | None,
+    model: str | None,
+    output_json: Path | None,
+) -> None:
+    if limit is not None and limit <= 0:
+        raise click.BadParameter("--limit must be a positive integer")
+    output_path = run_insights_extract(
+        run_id=run_id,
+        sample_id=sample_id,
+        limit=limit,
+        model_name=model,
+        output_json=output_json,
+    )
+    click.echo(f"Insights extraction completed. Artifact: {output_path}")
 
 
 if __name__ == "__main__":

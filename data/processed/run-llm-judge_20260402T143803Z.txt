@@ -1,0 +1,138 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id dbde8299-91e6-46c5-b457-ada56f832b8d --ref-run-id cd5b6883-2b2c-45fb-aaea-4cd419cad7c3 --limit 5
+Report path: data/processed/run-llm-judge_20260402T143803Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-llm-judge --run-id dbde8299-91e6-46c5-b457-ada56f832b8d --ref-run-id cd5b6883-2b2c-45fb-aaea-4cd419cad7c3 --limit 5",
+  "report_path": "data/processed/run-llm-judge_20260402T143803Z.txt",
+  "run_metadata": {
+    "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+    "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T14:27:59.565439+00:00",
+      "run_parameters": {
+        "limit": 5,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 5
+      }
+    },
+    "ref_run_info": {
+      "run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T14:26:18.842387+00:00",
+      "run_parameters": {
+        "limit": 5,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 5
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 3.0,
+      "details": {
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 6.0,
+          "score_delta": 3.0,
+          "rationale": "The candidate transcript demonstrates a better adherence to the original dialogue. While both transcripts contain inaccuracies and embellishments, the candidate's transcript captures the core meaning and sequence of events more accurately than the baseline. The baseline exhibits more substantial deviations, including numerous insertions and altered phrases that distort the original content. For example, the baseline unnecessarily adds repetition and extra, unnecessary sentences."
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "judge_result": {
+          "winner": "baseline",
+          "candidate_overall_score": 6.0,
+          "baseline_overall_score": 9.0,
+          "score_delta": -3.0,
+          "rationale": "The candidate transcript has several significant errors and additions not present in the baseline or reference. It includes repetitive and nonsensical phrases (\"By having a relationship. repeated multiple times\") which drastically alter the meaning and flow. The candidate also inserts phrases like 'I am a successful runner. Now, how can you tell how successful you are?' and changes dialog to 'I am nagging me'. The baseline is much closer to the reference dialogue, accurately capturing the key phrases and intent of the conversation. While it has some slight imperfections in punctuation and word choice, it maintains the overall integrity of the dialogue far better than the candidate."
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -2.0,
+      "details": {
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "judge_result": {
+          "winner": "baseline",
+          "candidate_overall_score": 7.0,
+          "baseline_overall_score": 9.0,
+          "score_delta": -2.0,
+          "rationale": "The candidate transcript demonstrates several inaccuracies and deviations from the reference, impacting its clinical accuracy. The candidate incorrectly states that the patient had attempted suicide five times, when the reference states it was the first attempt.  Furthermore, the candidate adds extra phrases and conversational fillers ('Oh, my God.', 'Never said I didn't.') not present in either the reference or baseline. The baseline transcript is significantly more accurate and adheres more closely to the reference dialogue while removing or correcting minor inaccuracies. While both are good, the baseline's adherence to the documented dialogue makes it superior."
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "judge_result": {
+          "winner": "baseline",
+          "candidate_overall_score": 6.0,
+          "baseline_overall_score": 9.0,
+          "score_delta": -3.0,
+          "rationale": "The candidate transcript exhibits significant issues with repetition and phrasing that are not present in the baseline. Several sentences are repeated verbatim ('I'm not sure if I can do them all at once, but I'm sure I can do them all at once.' and similar), indicating potential transcription errors or a misunderstanding of the speaker's intent.  The language in the candidate transcript is often more verbose and less precise than the baseline. For example, the phrasing is clunkier and the flow is less natural. The baseline demonstrates better adherence to the original dialogue's phrasing and sentence structure. While the candidate captures most of the content, the quality and accuracy of the transcription significantly lag behind the baseline."
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 7.0,
+          "score_delta": 2.0,
+          "rationale": "The candidate transcript is remarkably accurate and flows naturally, closely mirroring the reference dialogue while maintaining readability. It makes minor adjustments that improve comprehension without altering the meaning. The baseline transcript contains several noticeable deviations: excessive interjections ('yeah,' 'right'), awkward phrasing, and altered sentence structures that detract from clarity and professional tone. The baseline transcript also missed or misinterpretted some of the doctors explanations towards the end of the dialogue. While conveying similar information, the baseline lacks the polish and fidelity of the candidate, and shows some areas for improvement, reducing its overall score."
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 5,
+    "wins_candidate": 2,
+    "wins_baseline": 3,
+    "ties": 0,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260402T143803Z.txt

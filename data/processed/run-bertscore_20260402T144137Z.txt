@@ -1,0 +1,345 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id dbde8299-91e6-46c5-b457-ada56f832b8d --ref-run-id cd5b6883-2b2c-45fb-aaea-4cd419cad7c3 --limit 5
+Report path: data/processed/run-bertscore_20260402T144137Z.txt
+=== Terminal output captured below ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 9237.14it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+lm_head.layer_norm.weight       | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.layer_norm.bias         | UNEXPECTED | 
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+pooler.dense.bias               | MISSING    | 
+pooler.dense.weight             | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 26968.78it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+lm_head.layer_norm.weight       | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.layer_norm.bias         | UNEXPECTED | 
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+pooler.dense.bias               | MISSING    | 
+pooler.dense.weight             | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+BERTScore evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-bertscore",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id dbde8299-91e6-46c5-b457-ada56f832b8d --ref-run-id cd5b6883-2b2c-45fb-aaea-4cd419cad7c3 --limit 5",
+  "report_path": "data/processed/run-bertscore_20260402T144137Z.txt",
+  "run_metadata": {
+    "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+    "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T14:27:59.565439+00:00",
+      "run_parameters": {
+        "limit": 5,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 5
+      }
+    },
+    "ref_run_info": {
+      "run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T14:26:18.842387+00:00",
+      "run_parameters": {
+        "limit": 5,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 5
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.012732901610434055,
+      "details": {
+        "precision": 0.18719972670078278,
+        "recall": -0.15322844684123993,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T02",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.06313476711511612,
+      "details": {
+        "precision": 0.23217467963695526,
+        "recall": -0.09803894907236099,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T03",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.1577090620994568,
+      "details": {
+        "precision": 0.33148476481437683,
+        "recall": -0.007517350371927023,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T04",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.32918792963027954,
+      "details": {
+        "precision": 0.4470188319683075,
+        "recall": 0.2143261879682541,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T05",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.10516951233148575,
+      "details": {
+        "precision": 0.29837560653686523,
+        "recall": -0.0769704207777977,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.0110352523624897,
+      "details": {
+        "precision": 0.1910170316696167,
+        "recall": -0.1597224622964859,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": 0.001697649247944355,
+      "details": {
+        "primary_f1": 0.012732901610434055,
+        "ref_f1": 0.0110352523624897,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T02",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.08521974831819534,
+      "details": {
+        "precision": 0.28648966550827026,
+        "recall": -0.10385134816169739,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T02",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": -0.022084981203079224,
+      "details": {
+        "primary_f1": 0.06313476711511612,
+        "ref_f1": 0.08521974831819534,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T03",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.16208615899085999,
+      "details": {
+        "precision": 0.3351842761039734,
+        "recall": -0.0025439856108278036,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T03",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": -0.004377096891403198,
+      "details": {
+        "primary_f1": 0.1577090620994568,
+        "ref_f1": 0.16208615899085999,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T04",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.36862656474113464,
+      "details": {
+        "precision": 0.5062774419784546,
+        "recall": 0.2358255535364151,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T04",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": -0.0394386351108551,
+      "details": {
+        "primary_f1": 0.32918792963027954,
+        "ref_f1": 0.36862656474113464,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T05",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.10616543143987656,
+      "details": {
+        "precision": 0.2993696630001068,
+        "recall": -0.07597150653600693,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T05",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": -0.000995919108390808,
+      "details": {
+        "primary_f1": 0.10516951233148575,
+        "ref_f1": 0.10616543143987656,
+        "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+        "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    }
+  ],
+  "result_summary": {
+    "metric": "bertscore",
+    "model_type": "roberta-large",
+    "rescale_with_baseline": true,
+    "run_id": "dbde8299-91e6-46c5-b457-ada56f832b8d",
+    "ref_run_id": "cd5b6883-2b2c-45fb-aaea-4cd419cad7c3",
+    "samples": 5,
+    "mean_precision": 0.2992507219314575,
+    "mean_recall": -0.02428579581901431,
+    "mean_f1": 0.13358683455735446,
+    "per_sample": [
+      {
+        "sample_id": "D0420-S1-T01",
+        "precision": 0.18719972670078278,
+        "recall": -0.15322844684123993,
+        "f1": 0.012732901610434055,
+        "ref_precision": 0.1910170316696167,
+        "ref_recall": -0.1597224622964859,
+        "ref_f1": 0.0110352523624897,
+        "delta_f1_vs_ref": 0.001697649247944355
+      },
+      {
+        "sample_id": "D0420-S1-T02",
+        "precision": 0.23217467963695526,
+        "recall": -0.09803894907236099,
+        "f1": 0.06313476711511612,
+        "ref_precision": 0.28648966550827026,
+        "ref_recall": -0.10385134816169739,
+        "ref_f1": 0.08521974831819534,
+        "delta_f1_vs_ref": -0.022084981203079224
+      },
+      {
+        "sample_id": "D0420-S1-T03",
+        "precision": 0.33148476481437683,
+        "recall": -0.007517350371927023,
+        "f1": 0.1577090620994568,
+        "ref_precision": 0.3351842761039734,
+        "ref_recall": -0.0025439856108278036,
+        "ref_f1": 0.16208615899085999,
+        "delta_f1_vs_ref": -0.004377096891403198
+      },
+      {
+        "sample_id": "D0420-S1-T04",
+        "precision": 0.4470188319683075,
+        "recall": 0.2143261879682541,
+        "f1": 0.32918792963027954,
+        "ref_precision": 0.5062774419784546,
+        "ref_recall": 0.2358255535364151,
+        "ref_f1": 0.36862656474113464,
+        "delta_f1_vs_ref": -0.0394386351108551
+      },
+      {
+        "sample_id": "D0420-S1-T05",
+        "precision": 0.29837560653686523,
+        "recall": -0.0769704207777977,
+        "f1": 0.10516951233148575,
+        "ref_precision": 0.2993696630001068,
+        "ref_recall": -0.07597150653600693,
+        "ref_f1": 0.10616543143987656,
+        "delta_f1_vs_ref": -0.000995919108390808
+      }
+    ],
+    "ref_mean_precision": 0.32366761565208435,
+    "ref_mean_recall": -0.021252749813720585,
+    "ref_mean_f1": 0.14662663117051125,
+    "mean_delta_f1_vs_ref": -0.013039796613156796
+  }
+}
+Eval report written to data/processed/run-bertscore_20260402T144137Z.txt

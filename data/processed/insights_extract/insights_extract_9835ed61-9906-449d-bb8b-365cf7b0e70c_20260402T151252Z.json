@@ -1,0 +1,65 @@
+{
+  "command": "insights_extract",
+  "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+  "timestamp_utc": "20260402T151252Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T15:05:06.411223+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "results": [
+    {
+      "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "Patient presents to emergency clinic following referral from GP. Patient reports feeling full of energy, having lots of bright ideas, and feeling fantastic about herself due to divine intervention ('God'). Patient has been working intensely on a 'cure for world hunger' for the past week, involving adding and subtracting numbers found in newspapers and other sources, referencing a large chart at home. Patient reports receiving instructions from God, who speaks directly into her ears, telling her she is fantastic and should show this work to others. Patient has been showing copies of her work to the Pope and Archbishop of Canterbury, receiving no replies. Patient reports being unable to sleep due to enthusiasm, having no need for sleep, and feeling full of energy. Patient reports feeling more clever than others, particularly at work. Patient reports feeling sad and low in the past, but not currently. Patient reports no family history of similar conditions. Patient denies taking any medications. Patient reports her sister called her 'rude' and suggested she was not well, which patient denies. Patient states she wants to talk to the 'boss', 'head person', or 'top dog', expressing frustration with the current clinician ('old nag rag').",
+        "assessment": "Patient presents with symptoms suggestive of mania or hypomania, including elevated mood, grandiosity, decreased need for sleep, increased energy, racing thoughts, and pressured speech (implied by intensity of description). The patient's belief in divine intervention ('God') speaking directly into her ears and receiving instructions is a significant feature. The patient's work on the 'cure for world hunger' and belief in its importance, along with her desire to share it with prominent figures, aligns with grandiosity and potentially delusions of grandeur. The patient's frustration with the current clinician and desire to speak to the 'boss' may indicate poor insight or resistance to treatment. Differential diagnosis includes bipolar disorder (manic or hypomanic episode), psychotic disorder, or potentially a substance-induced mood disorder, although the patient denies medication use. The patient's description of feeling 'fantastic' and 'full of energy' warrants further investigation for mood disorders.",
+        "plan": [
+          "Assess for acute safety risks. Ensure patient is safe.",
+          "Further history taking focusing on detailed timeline of symptoms, severity, impact on functioning, and any potential triggers.",
+          "Conduct a thorough mental status examination, including assessment of mood, affect, thought process, thought content, insight, and judgment.",
+          "Consider screening for substance use.",
+          "Consider blood tests (e.g., TSH, electrolytes, CBC) to rule out medical causes.",
+          "Consider referral for urgent psychiatric assessment/evaluation.",
+          "Provide supportive care and ensure patient safety.",
+          "If indicated, consider initiation of mood stabilizer or antipsychotic medication.",
+          "Provide psychoeducation about potential diagnoses (e.g., bipolar disorder) and treatment options.",
+          "Consider involving family members if appropriate and patient consents."
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        }
+      },
+      "raw_output": "```json\n{\n  \"clinical_presentation\": \"Patient presents to emergency clinic following referral from GP. Patient reports feeling full of energy, having lots of bright ideas, and feeling fantastic about herself due to divine intervention ('God'). Patient has been working intensely on a 'cure for world hunger' for the past week, involving adding and subtracting numbers found in newspapers and other sources, referencing a large chart at home. Patient reports receiving instructions from God, who speaks directly into her ears, telling her she is fantastic and should show this work to others. Patient has been showing copies of her work to the Pope and Archbishop of Canterbury, receiving no replies. Patient reports being unable to sleep due to enthusiasm, having no need for sleep, and feeling full of energy. Patient reports feeling more clever than others, particularly at work. Patient reports feeling sad and low in the past, but not currently. Patient reports no family history of similar conditions. Patient denies taking any medications. Patient reports her sister called her 'rude' and suggested she was not well, which patient denies. Patient states she wants to talk to the 'boss', 'head person', or 'top dog', expressing frustration with the current clinician ('old nag rag').\",\n  \"assessment\": \"Patient presents with symptoms suggestive of mania or hypomania, including elevated mood, grandiosity, decreased need for sleep, increased energy, racing thoughts, and pressured speech (implied by intensity of description). The patient's belief in divine intervention ('God') speaking directly into her ears and receiving instructions is a significant feature. The patient's work on the 'cure for world hunger' and belief in its importance, along with her desire to share it with prominent figures, aligns with grandiosity and potentially delusions of grandeur. The patient's frustration with the current clinician and desire to speak to the 'boss' may indicate poor insight or resistance to treatment. Differential diagnosis includes bipolar disorder (manic or hypomanic episode), psychotic disorder, or potentially a substance-induced mood disorder, although the patient denies medication use. The patient's description of feeling 'fantastic' and 'full of energy' warrants further investigation for mood disorders.\",\n  \"plan\": [\n    \"Assess for acute safety risks. Ensure patient is safe.\",\n    \"Further history taking focusing on detailed timeline of symptoms, severity, impact on functioning, and any potential triggers.\",\n    \"Conduct a thorough mental status examination, including assessment of mood, affect, thought process, thought content, insight, and judgment.\",\n    \"Consider screening for substance use.\",\n    \"Consider blood tests (e.g., TSH, electrolytes, CBC) to rule out medical causes.\",\n    \"Consider referral for urgent psychiatric assessment/evaluation.\",\n    \"Provide supportive care and ensure patient safety.\",\n    \"If indicated, consider initiation of mood stabilizer or antipsychotic medication.\",\n    \"Provide psychoeducation about potential diagnoses (e.g., bipolar disorder) and treatment options.\",\n    \"Consider involving family members if appropriate and patient consents.\"\n  ]\n}\n```",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort"
+    }
+  ]
+}

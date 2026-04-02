@@ -1,0 +1,149 @@
+Command line: /Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id 9835ed61-9906-449d-bb8b-365cf7b0e70c --ref-run-id 87bac619-f810-4994-8a27-7b883b8f99b7 --limit 1
+Report path: data/processed/run-bertscore_20260402T151207Z.txt
+=== Terminal output captured below ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 8603.77it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+lm_head.layer_norm.weight       | UNEXPECTED | 
+lm_head.layer_norm.bias         | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+pooler.dense.weight             | MISSING    | 
+pooler.dense.bias               | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights: 100%|##########| 389/389 [00:00<00:00, 21598.94it/s]
+[1mRobertaModel LOAD REPORT[0m from: roberta-large
+Key                             | Status     | 
+--------------------------------+------------+-
+roberta.embeddings.position_ids | UNEXPECTED | 
+lm_head.dense.weight            | UNEXPECTED | 
+lm_head.layer_norm.weight       | UNEXPECTED | 
+lm_head.layer_norm.bias         | UNEXPECTED | 
+lm_head.dense.bias              | UNEXPECTED | 
+lm_head.bias                    | UNEXPECTED | 
+pooler.dense.weight             | MISSING    | 
+pooler.dense.bias               | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+BERTScore evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-bertscore",
+  "command_line": "/Users/aviadbuskila/eleos_health/src/cli/main.py run-bertscore --run-id 9835ed61-9906-449d-bb8b-365cf7b0e70c --ref-run-id 87bac619-f810-4994-8a27-7b883b8f99b7 --limit 1",
+  "report_path": "data/processed/run-bertscore_20260402T151207Z.txt",
+  "run_metadata": {
+    "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+    "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T15:05:06.411223+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T15:04:32.187840+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_f1",
+      "metric_value": 0.005086238496005535,
+      "details": {
+        "precision": 0.1778402477502823,
+        "recall": -0.15938855707645416,
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_ref_f1",
+      "metric_value": 0.0110352523624897,
+      "details": {
+        "precision": 0.1910170316696167,
+        "recall": -0.1597224622964859,
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "bertscore_delta_f1_vs_ref",
+      "metric_value": -0.005949013866484165,
+      "details": {
+        "primary_f1": 0.005086238496005535,
+        "ref_f1": 0.0110352523624897,
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "model_type": "roberta-large",
+        "rescale_with_baseline": true
+      }
+    }
+  ],
+  "result_summary": {
+    "metric": "bertscore",
+    "model_type": "roberta-large",
+    "rescale_with_baseline": true,
+    "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+    "ref_run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+    "samples": 1,
+    "mean_precision": 0.1778402477502823,
+    "mean_recall": -0.15938855707645416,
+    "mean_f1": 0.005086238496005535,
+    "per_sample": [
+      {
+        "sample_id": "D0420-S1-T01",
+        "precision": 0.1778402477502823,
+        "recall": -0.15938855707645416,
+        "f1": 0.005086238496005535,
+        "ref_precision": 0.1910170316696167,
+        "ref_recall": -0.1597224622964859,
+        "ref_f1": 0.0110352523624897,
+        "delta_f1_vs_ref": -0.005949013866484165
+      }
+    ],
+    "ref_mean_precision": 0.1910170316696167,
+    "ref_mean_recall": -0.1597224622964859,
+    "ref_mean_f1": 0.0110352523624897,
+    "mean_delta_f1_vs_ref": -0.005949013866484165
+  }
+}
+Eval report written to data/processed/run-bertscore_20260402T151207Z.txt
