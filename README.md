@@ -41,6 +41,8 @@ Mean metrics vs gold:
 
 Lower is better for WER/CER/MER/WIL/cpWER. LLM judge delta negative means baseline was preferred. These are point estimates over five files — see `analysis/statistical_significance.ipynb` before drawing conclusions.
 
+BERTScore figures above used the code default encoder (`roberta-large` via `BERTSCORE_MODEL` unset). If you copy `.env.example` to `.env`, `BERTSCORE_MODEL` is set to a biomedical encoder instead — rerun evals to compare under that setting.
+
 ---
 
 ## Architecture
@@ -162,7 +164,7 @@ python -m src.cli.main run-stt --flavor both --limit 5         # Both profiles o
 python -m src.cli.main run-eval --run-id <UUID> --workers auto
 python -m src.cli.main run-eval --run-id <CANDIDATE> --ref-run-id <BASELINE> --workers auto
 
-# Semantic metric (BERTScore)
+# Semantic metric (BERTScore; see BERTSCORE_MODEL in Configuration)
 python -m src.cli.main run-bertscore --run-id <UUID>
 python -m src.cli.main run-bertscore --run-id <CANDIDATE> --ref-run-id <BASELINE>
 
@@ -260,7 +262,7 @@ See `.env.example`. Key variables:
 | `OLLAMA_JUDGE_MODEL` | Model for LLM-as-judge evaluation |
 | `OLLAMA_INSIGHTS_MODEL` | Model for clinical insight extraction |
 | `DATASET_PICKLE_PATH` | Gold transcript source |
-| `BERTSCORE_MODEL` | Encoder for BERTScore (default: `roberta-large`) |
+| `BERTSCORE_MODEL` | Encoder for BERTScore. **Code default** (no env var): `roberta-large`. **`.env.example`** sets `dmis-lab/biobert-base-cased-v1.2` so a copied `.env` uses BioBERT unless you change it. |
 
 ---
 
@@ -301,7 +303,7 @@ Expected local path: `data/raw/dataset.pickle`
 
 - **Synthetic dataset**: Gold transcripts are scripted dialogue, not naturalistic psychiatric sessions. Real clinical audio would produce different benchmarks.
 - **Whisper struggles with medical terminology**: Drug names, dosages, and acronyms (SSRI, DSM-5, GAD, PTSD) have elevated error rates without domain fine-tuning — precisely the highest-value terms in psychiatric transcription.
-- **General-purpose BERTScore encoder**: `roberta-large` wasn't trained on clinical text. A biomedical encoder (BioBERT, SciBERT) would produce more meaningful semantic similarity scores.
+- **BERTScore encoder choice**: With the code default (`roberta-large`), scores reflect a general encoder not tuned for clinical text. The sample `.env` uses BioBERT (`dmis-lab/biobert-base-cased-v1.2`) for more domain-appropriate similarity; other biomedical encoders (e.g. SciBERT) are also reasonable overrides via `BERTSCORE_MODEL`.
 - **Self-reported confidence**: The `confidence` field in insights comes from the LLM's own output — it is not a calibrated probability.
 - **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
 - **Sequential pipeline**: Steps run sequentially. Production deployment would require async execution, batching, and a job queue.
