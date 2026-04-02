@@ -1,0 +1,63 @@
+{
+  "command": "insights_extract",
+  "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+  "timestamp_utc": "20260402T170931Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T17:02:14.459939+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 22.875,
+    "avg_elapsed_s_per_sample": 22.858
+  },
+  "results": [
+    {
+      "run_id": "8f26feb4-f19b-46b8-bd13-91019370dd4c",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents to emergency clinic referred by GP due to concerns about patient's mental state. Patient reports feeling full of energy and having lots of bright ideas, believing they have a cure for world hunger. Patient reports feeling fantastic and doing a really good job, attributing this to God telling them so. Patient reports feeling very busy and not sleeping. Patient reports having a large chart with numbers on it that they find in newspapers and other sources, which they add up and take away from other numbers to find a final number corresponding to God's instructions. Patient reports God talks to them in their ears, describing them as a big guy with a big beard, who tells them they are fantastic and should show their work to people like the Pope and Archbishop of Canterbury, who have not replied. Patient reports having sent copies of their work to the Pope and Archbishop of Canterbury. Patient reports having tons of energy and lots of ideas, feeling as if they are more clever than others, particularly at work. Patient reports having had no previous episodes like this. Patient reports feeling low sometimes in the past, but not now. Patient reports family members are not very clever. Patient reports having had no physical health problems. Patient reports taking Prozac long ago, which did not help. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had no thoughts of harming themselves or others. Patient reports having had",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said come and see a trick cyclist, because then you'll be alright. Come and see a... a trick cyclist? A psychiatrist? Yeah. He not... he not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to... getting to this, you see, he won't let... let me talk about this. He sort",
+      "timing": {
+        "elapsed_s": 22.858,
+        "transcript_char_count": 13494,
+        "transcript_word_count": 2655
+      }
+    }
+  ]
+}
