@@ -24,6 +24,7 @@ def evaluate_stt_against_gold(
     ref_run_id: str | None = None,
     reporter: EvalRunReporter | None = None,
     workers: int = 1,
+    metrics: set[str] | None = None,
     skip_cp_wer: bool = False,
     skip_speaker_metrics: bool = False,
 ) -> None:
@@ -48,6 +49,10 @@ def evaluate_stt_against_gold(
             ref_run_id=ref_run_id,
             candidate_run_info=analytics.get_stt_run_info(run_id) if run_id else None,
             ref_run_info=analytics.get_stt_run_info(ref_run_id) if ref_run_id else None,
+            workers=workers,
+            metrics=sorted(metrics) if metrics else None,
+            skip_cp_wer=skip_cp_wer,
+            skip_speaker_metrics=skip_speaker_metrics,
         )
     samples = loader.load_samples()
     samples_by_id = {s.sample_id: s for s in samples}
@@ -93,6 +98,7 @@ def evaluate_stt_against_gold(
                 "run_id": run_id,
                 "ref_run_id": ref_run_id,
                 "transcripts_dir": settings.transcripts_dir,
+                "metrics": sorted(metrics) if metrics else None,
                 "skip_cp_wer": skip_cp_wer,
                 "skip_speaker_metrics": skip_speaker_metrics,
             }
@@ -113,6 +119,7 @@ def evaluate_stt_against_gold(
         mer = float(result["mer"])
         wil = float(result["wil"])
         cp_val = result.get("cp_val")
+        enabled = result.get("enabled", {})
 
         _log_result_payload(
             sample_id=sample_id,
@@ -138,10 +145,14 @@ def evaluate_stt_against_gold(
                     details=details,
                 )
 
-        _insert_metric(metric_name="wer", metric_value=wer)
-        _insert_metric(metric_name="cer", metric_value=cer)
-        _insert_metric(metric_name="mer", metric_value=mer)
-        _insert_metric(metric_name="wil", metric_value=wil)
+        if enabled.get("wer", True):
+            _insert_metric(metric_name="wer", metric_value=wer)
+        if result["has_cer"]:
+            _insert_metric(metric_name="cer", metric_value=cer)
+        if result["has_mer"]:
+            _insert_metric(metric_name="mer", metric_value=mer)
+        if result["has_wil"]:
+            _insert_metric(metric_name="wil", metric_value=wil)
         if cp_val is not None:
             any_cp_wer = True
             _insert_metric(metric_name="cp_wer", metric_value=float(cp_val))
@@ -150,7 +161,15 @@ def evaluate_stt_against_gold(
     analytics.insert_eval_metrics_batch(metric_rows_to_insert)
 
     if reporter:
-        metric_names: list[str] = ["wer", "cer", "mer", "wil"]
+        metric_names: list[str] = []
+        if any(r.get("enabled", {}).get("wer", True) for r in results):
+            metric_names.append("wer")
+        if any(r["has_cer"] for r in results):
+            metric_names.append("cer")
+        if any(r["has_mer"] for r in results):
+            metric_names.append("mer")
+        if any(r["has_wil"] for r in results):
+            metric_names.append("wil")
         if any_cp_wer:
             metric_names.append("cp_wer")
         reporter.set_result_summary(
@@ -280,23 +299,42 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     ref_run_id = job.get("ref_run_id")
     ref_hypothesis = job.get("ref_hypothesis")
     transcripts_dir = str(job["transcripts_dir"])
+    metrics_raw = job.get("metrics")
+    metrics = set(metrics_raw) if isinstance(metrics_raw, list) else None
     skip_cp_wer = bool(job.get("skip_cp_wer", False))
     skip_speaker_metrics = bool(job.get("skip_speaker_metrics", False))
 
+    metric_enabled = {
+        "wer": metrics is None or "wer" in metrics,
+        "cer": metrics is None or "cer" in metrics,
+        "mer": metrics is None or "mer" in metrics,
+        "wil": metrics is None or "wil" in metrics,
+        "cp_wer": (metrics is None or "cp_wer" in metrics) and not skip_cp_wer,
+    }
+    # WER breakdown powers logs/details and may be needed by downstream fields.
+    if not metric_enabled["wer"]:
+        metric_enabled["wer"] = True
+
     breakdown = word_error_breakdown(reference=reference, hypothesis=hypothesis)
     wer = float(breakdown["wer"])
-    cer_breakdown = character_error_breakdown(reference=reference, hypothesis=hypothesis)
-    cer = float(cer_breakdown["cer"])
-    mer_wil_breakdown = word_mer_wil_breakdown(reference=reference, hypothesis=hypothesis)
-    mer = float(mer_wil_breakdown["mer"])
-    wil = float(mer_wil_breakdown["wil"])
+    cer_breakdown = character_error_breakdown(reference=reference, hypothesis=hypothesis) if metric_enabled["cer"] else None
+    cer = float(cer_breakdown["cer"]) if cer_breakdown else 0.0
+    mer_wil_breakdown = (
+        word_mer_wil_breakdown(reference=reference, hypothesis=hypothesis)
+        if metric_enabled["mer"] or metric_enabled["wil"]
+        else None
+    )
+    mer = float(mer_wil_breakdown["mer"]) if mer_wil_breakdown else 0.0
+    wil = float(mer_wil_breakdown["wil"]) if mer_wil_breakdown else 0.0
     details: dict[str, Any] = {
         "reference_source": "dataset.pickle",
         "run_id": run_id,
         "wer_breakdown": breakdown,
-        "cer_breakdown": cer_breakdown,
-        "mer_wil_breakdown": mer_wil_breakdown,
     }
+    if cer_breakdown:
+        details["cer_breakdown"] = cer_breakdown
+    if mer_wil_breakdown:
+        details["mer_wil_breakdown"] = mer_wil_breakdown
 
     json_path = transcribed_json_path(transcripts_dir, sample_id)
     sp_wer = (
@@ -311,7 +349,7 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     if sp_wer:
         details["speaker_wer"] = sp_wer
 
-    cp_payload = cp_wer_breakdown_from_json(hypothesis, json_path) if not skip_cp_wer else None
+    cp_payload = cp_wer_breakdown_from_json(hypothesis, json_path) if metric_enabled["cp_wer"] else None
     cp_val: float | None = None
     if cp_payload:
         details["cp_wer"] = cp_payload
@@ -327,15 +365,23 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
         ref_breakdown = word_error_breakdown(reference=reference, hypothesis=str(ref_hypothesis))
         ref_wer = float(ref_breakdown["wer"])
         delta = wer - ref_wer
-        ref_cer_breakdown = character_error_breakdown(reference=reference, hypothesis=str(ref_hypothesis))
-        ref_cer = float(ref_cer_breakdown["cer"])
-        delta_cer = cer - ref_cer
-        ref_mer_wil = word_mer_wil_breakdown(reference=reference, hypothesis=str(ref_hypothesis))
-        ref_mer = float(ref_mer_wil["mer"])
-        ref_wil = float(ref_mer_wil["wil"])
-        delta_mer = mer - ref_mer
-        delta_wil = wil - ref_wil
-        ref_cp_payload = cp_wer_breakdown_from_json(str(ref_hypothesis), json_path) if not skip_cp_wer else None
+        ref_cer_breakdown = (
+            character_error_breakdown(reference=reference, hypothesis=str(ref_hypothesis))
+            if metric_enabled["cer"]
+            else None
+        )
+        ref_cer = float(ref_cer_breakdown["cer"]) if ref_cer_breakdown else 0.0
+        delta_cer = cer - ref_cer if ref_cer_breakdown else None
+        ref_mer_wil = (
+            word_mer_wil_breakdown(reference=reference, hypothesis=str(ref_hypothesis))
+            if metric_enabled["mer"] or metric_enabled["wil"]
+            else None
+        )
+        ref_mer = float(ref_mer_wil["mer"]) if ref_mer_wil else 0.0
+        ref_wil = float(ref_mer_wil["wil"]) if ref_mer_wil else 0.0
+        delta_mer = mer - ref_mer if ref_mer_wil else None
+        delta_wil = wil - ref_wil if ref_mer_wil else None
+        ref_cp_payload = cp_wer_breakdown_from_json(str(ref_hypothesis), json_path) if metric_enabled["cp_wer"] else None
         if cp_payload and ref_cp_payload:
             delta_cp = float(cp_payload["cp_wer"]) - float(ref_cp_payload["cp_wer"])
         details.update(
@@ -344,14 +390,16 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
                 "ref_wer": ref_wer,
                 "ref_wer_breakdown": ref_breakdown,
                 "delta_vs_ref": delta,
-                "ref_cer": ref_cer,
-                "ref_cer_breakdown": ref_cer_breakdown,
-                "delta_cer_vs_ref": delta_cer,
-                "ref_mer_wil_breakdown": ref_mer_wil,
-                "delta_mer_vs_ref": delta_mer,
-                "delta_wil_vs_ref": delta_wil,
             }
         )
+        if ref_cer_breakdown:
+            details["ref_cer"] = ref_cer
+            details["ref_cer_breakdown"] = ref_cer_breakdown
+            details["delta_cer_vs_ref"] = delta_cer
+        if ref_mer_wil:
+            details["ref_mer_wil_breakdown"] = ref_mer_wil
+            details["delta_mer_vs_ref"] = delta_mer
+            details["delta_wil_vs_ref"] = delta_wil
         if ref_cp_payload:
             details["ref_cp_wer"] = ref_cp_payload
         if delta_cp is not None:
@@ -387,6 +435,10 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
         "ref_mer_wil": ref_mer_wil,
         "ref_cp_payload": ref_cp_payload,
         "delta_cp": delta_cp,
+        "enabled": metric_enabled,
+        "has_cer": cer_breakdown is not None,
+        "has_mer": mer_wil_breakdown is not None,
+        "has_wil": mer_wil_breakdown is not None,
     }
 
 
@@ -397,12 +449,12 @@ def _log_result_payload(
     payload: dict[str, Any],
 ) -> None:
     breakdown = payload["breakdown"]
-    cer_breakdown = payload["cer_breakdown"]
-    mer_wil_breakdown = payload["mer_wil_breakdown"]
+    cer_breakdown = payload.get("cer_breakdown")
+    mer_wil_breakdown = payload.get("mer_wil_breakdown")
     wer = float(payload["wer"])
-    cer = float(payload["cer"])
-    mer = float(payload["mer"])
-    wil = float(payload["wil"])
+    cer = float(payload.get("cer", 0.0))
+    mer = float(payload.get("mer", 0.0))
+    wil = float(payload.get("wil", 0.0))
     cp_payload = payload.get("cp_payload")
     sp_wer = payload.get("sp_wer")
     sp_ref = payload.get("sp_ref")
@@ -447,24 +499,47 @@ def _log_result_payload(
                 mer - float(ref_mer_wil["mer"]),
                 wil - float(ref_mer_wil["wil"]),
             )
+        elif ref_breakdown:
+            logger.info(
+                "Sample %s WER run=%s: %.4f (S:%s I:%s D:%s) | ref=%s WER: %.4f | delta_WER=%.4f",
+                sample_id,
+                run_id,
+                wer,
+                breakdown["substitutions"],
+                breakdown["insertions"],
+                breakdown["deletions"],
+                ref_run_id,
+                float(ref_breakdown["wer"]),
+                wer - float(ref_breakdown["wer"]),
+            )
     else:
-        logger.info(
-            "Sample %s WER: %.4f (S:%s I:%s D:%s) | CER: %.4f (S:%s I:%s D:%s chars) | "
-            "MER=%.4f WIL=%.4f (R=%s H=%s)",
-            sample_id,
-            wer,
-            breakdown["substitutions"],
-            breakdown["insertions"],
-            breakdown["deletions"],
-            cer,
-            cer_breakdown["substitutions"],
-            cer_breakdown["insertions"],
-            cer_breakdown["deletions"],
-            mer,
-            wil,
-            mer_wil_breakdown["reference_word_count"],
-            mer_wil_breakdown["hypothesis_word_count"],
-        )
+        if cer_breakdown and mer_wil_breakdown:
+            logger.info(
+                "Sample %s WER: %.4f (S:%s I:%s D:%s) | CER: %.4f (S:%s I:%s D:%s chars) | "
+                "MER=%.4f WIL=%.4f (R=%s H=%s)",
+                sample_id,
+                wer,
+                breakdown["substitutions"],
+                breakdown["insertions"],
+                breakdown["deletions"],
+                cer,
+                cer_breakdown["substitutions"],
+                cer_breakdown["insertions"],
+                cer_breakdown["deletions"],
+                mer,
+                wil,
+                mer_wil_breakdown["reference_word_count"],
+                mer_wil_breakdown["hypothesis_word_count"],
+            )
+        else:
+            logger.info(
+                "Sample %s WER: %.4f (S:%s I:%s D:%s)",
+                sample_id,
+                wer,
+                breakdown["substitutions"],
+                breakdown["insertions"],
+                breakdown["deletions"],
+            )
 
     _log_cp_wer_lines(
         sample_id,

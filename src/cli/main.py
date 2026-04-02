@@ -1,6 +1,7 @@
 from pathlib import Path
 import sys
 from datetime import datetime, timezone
+import os
 
 import click
 import psycopg
@@ -15,6 +16,38 @@ from src.evaluation.llm_judge_eval import run_llm_judge_eval
 from src.evaluation.stt_eval import evaluate_stt_against_gold
 from src.ingestion.dataset_loader import DatasetLoader
 from src.stt.pipeline import run_stt_both_profiles, run_stt_pipeline
+
+
+def _detect_total_memory_gb() -> float | None:
+    try:
+        if hasattr(os, "sysconf"):
+            pages = os.sysconf("SC_PHYS_PAGES")
+            page_size = os.sysconf("SC_PAGE_SIZE")
+            if isinstance(pages, int) and isinstance(page_size, int) and pages > 0 and page_size > 0:
+                return (pages * page_size) / (1024**3)
+    except (OSError, ValueError):
+        return None
+    return None
+
+
+def _resolve_workers(workers_raw: str) -> int:
+    raw = workers_raw.strip().lower()
+    if raw != "auto":
+        try:
+            workers = int(raw)
+        except ValueError as exc:
+            raise click.BadParameter("--workers must be a positive integer or 'auto'") from exc
+        if workers <= 0:
+            raise click.BadParameter("--workers must be a positive integer")
+        return workers
+
+    cpu = os.cpu_count() or 4
+    mem_gb = _detect_total_memory_gb()
+    by_cpu = max(1, cpu // 4)
+    by_mem = max(1, int((mem_gb or 16.0) // 12))
+    # Conservative default to avoid memory pressure on heavy clinical eval loops.
+    workers = min(4, by_cpu, by_mem)
+    return max(1, workers)
 
 
 @click.group()
@@ -257,14 +290,22 @@ def run_bertscore(
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
 @click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side WER comparison.")
-@click.option("--workers", type=int, default=1, show_default=True, help="Parallel workers for per-sample compute.")
+@click.option("--workers", type=str, default="auto", show_default=True, help="Parallel workers count or 'auto'.")
+@click.option(
+    "--metric",
+    "metrics",
+    multiple=True,
+    type=click.Choice(["wer", "cer", "mer", "wil", "cp-wer"], case_sensitive=False),
+    help="Restrict eval to selected metric(s). Repeat option for multiple metrics.",
+)
 @click.option("--skip-cp-wer", is_flag=True, default=False, help="Skip cpWER computation.")
 @click.option("--skip-speaker-metrics", is_flag=True, default=False, help="Skip per-speaker metrics (WER/CER/MER/WIL).")
 def run_eval(
     limit: int | None,
     run_id: str | None,
     ref_run_id: str | None,
-    workers: int,
+    workers: str,
+    metrics: tuple[str, ...],
     skip_cp_wer: bool,
     skip_speaker_metrics: bool,
 ) -> None:
@@ -272,8 +313,8 @@ def run_eval(
         raise click.BadParameter("--limit must be a positive integer")
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
-    if workers <= 0:
-        raise click.BadParameter("--workers must be a positive integer")
+    resolved_workers = _resolve_workers(workers)
+    metric_set = {m.lower().replace("-", "_") for m in metrics} if metrics else None
     eval_name = "run-eval"
     command_line = " ".join(sys.argv)
     report_path = make_eval_report_path(eval_name)
@@ -293,7 +334,8 @@ def run_eval(
             run_id=run_id,
             ref_run_id=ref_run_id,
             reporter=reporter,
-            workers=workers,
+            workers=resolved_workers,
+            metrics=metric_set,
             skip_cp_wer=skip_cp_wer,
             skip_speaker_metrics=skip_speaker_metrics,
         )
