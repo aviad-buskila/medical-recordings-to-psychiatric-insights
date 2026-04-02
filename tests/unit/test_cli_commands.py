@@ -17,6 +17,7 @@ def test_cli_help_lists_commands() -> None:
     for name in (
         "validate-dataset",
         "run-stt",
+        "restore-stt-from-generated",
         "run-bertscore",
         "run-eval",
         "run-all",
@@ -127,3 +128,11 @@ def test_run_eval_cli_skip_flags(mock_eval: MagicMock) -> None:
     assert kwargs["skip_cp_wer"] is True
     assert kwargs["skip_speaker_metrics"] is True
     assert kwargs["workers"] == 2
+
+
+def test_restore_stt_from_generated_dry_run_empty() -> None:
+    runner = CliRunner()
+    with runner.isolated_filesystem():
+        # no data/generated_transcripts in isolated cwd
+        result = runner.invoke(cli, ["restore-stt-from-generated", "--dry-run"])
+    assert result.exit_code != 0

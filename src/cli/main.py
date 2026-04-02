@@ -1,7 +1,10 @@
 from pathlib import Path
 import sys
+from datetime import datetime, timezone
 
 import click
+import psycopg
+from psycopg.types.json import Json
 
 from src.config.settings import get_settings
 from src.core.logging import configure_logging
@@ -66,6 +69,121 @@ def run_stt(limit: int | None, profile: str, flavor: str, no_fallback: bool) -> 
         return
     run_stt_pipeline(limit=limit, stt_profile=profile, allow_fallback=not no_fallback)
     click.echo("STT pipeline completed.")
+
+
+def _parse_generated_run_dir_name(name: str) -> tuple[str, datetime] | None:
+    if "_" not in name:
+        return None
+    run_id, ts = name.split("_", 1)
+    try:
+        run_ts = datetime.strptime(ts, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+    return run_id, run_ts
+
+
+@cli.command("restore-stt-from-generated")
+@click.option(
+    "--run-id",
+    type=str,
+    default=None,
+    help="Restore only a specific run_id from data/generated_transcripts.",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="Scan and report what would be restored without writing to DB.",
+)
+def restore_stt_from_generated(run_id: str | None, dry_run: bool) -> None:
+    """Restore stt_runs + stt_outputs rows from data/generated_transcripts/*.txt files."""
+    settings = get_settings()
+    base_dir = Path(settings.generated_transcripts_dir)
+    if not base_dir.exists():
+        raise click.ClickException(f"Generated transcripts directory not found: {base_dir}")
+
+    run_dirs: list[tuple[Path, str, datetime]] = []
+    for d in sorted(base_dir.iterdir()):
+        if not d.is_dir():
+            continue
+        parsed = _parse_generated_run_dir_name(d.name)
+        if not parsed:
+            continue
+        rid, run_ts = parsed
+        if run_id and rid != run_id:
+            continue
+        run_dirs.append((d, rid, run_ts))
+
+    if not run_dirs:
+        click.echo("No matching generated transcript runs found to restore.")
+        return
+
+    total_files = sum(len(list(d.glob("*.txt"))) for d, _, _ in run_dirs)
+    if dry_run:
+        click.echo(
+            f"Dry-run: would restore runs={len(run_dirs)} transcripts={total_files} "
+            f"from {base_dir}"
+        )
+        for d, rid, run_ts in run_dirs:
+            click.echo(f"  - run_id={rid} run_timestamp={run_ts.isoformat()} files={len(list(d.glob('*.txt')))}")
+        return
+
+    restored_runs = 0
+    restored_rows = 0
+    with psycopg.connect(settings.postgres_dsn) as conn:
+        with conn.cursor() as cur:
+            for d, rid, run_ts in run_dirs:
+                cur.execute(
+                    """
+                    INSERT INTO clinical_ai.stt_runs
+                      (run_id, provider, model_name, run_scope, run_timestamp, run_parameters)
+                    VALUES
+                      (%(run_id)s, %(provider)s, %(model_name)s, %(run_scope)s, %(run_timestamp)s, %(run_parameters)s)
+                    ON CONFLICT (run_id) DO NOTHING
+                    """,
+                    {
+                        "run_id": rid,
+                        "provider": settings.stt_provider,
+                        "model_name": "recovered-from-generated-transcripts",
+                        "run_scope": "full",
+                        "run_timestamp": run_ts,
+                        "run_parameters": Json({"recovered_from": str(d)}),
+                    },
+                )
+                if cur.rowcount > 0:
+                    restored_runs += 1
+
+                for txt in d.glob("*.txt"):
+                    sample_id = txt.stem
+                    transcript_text = txt.read_text(encoding="utf-8", errors="ignore")
+                    cur.execute(
+                        """
+                        INSERT INTO clinical_ai.stt_outputs
+                          (sample_id, provider, transcript_text, language, audio_duration_s, transcription_time_s,
+                           metadata, run_id, model_name, run_timestamp)
+                        VALUES
+                          (%(sample_id)s, %(provider)s, %(transcript_text)s, %(language)s, %(audio_duration_s)s, %(transcription_time_s)s,
+                           %(metadata)s, %(run_id)s, %(model_name)s, %(run_timestamp)s)
+                        """,
+                        {
+                            "sample_id": sample_id,
+                            "provider": settings.stt_provider,
+                            "transcript_text": transcript_text,
+                            "language": "unknown",
+                            "audio_duration_s": 0.0,
+                            "transcription_time_s": 0.0,
+                            "metadata": Json({"recovered_from": str(txt)}),
+                            "run_id": rid,
+                            "model_name": "recovered-from-generated-transcripts",
+                            "run_timestamp": run_ts,
+                        },
+                    )
+                    restored_rows += 1
+        conn.commit()
+
+    click.echo(
+        f"Restore completed. runs_inserted={restored_runs} transcript_rows_inserted={restored_rows}"
+    )
 
 
 @cli.command("run-bertscore")
