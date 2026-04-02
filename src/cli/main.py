@@ -139,11 +139,14 @@ def run_bertscore(
 @click.option("--limit", "-n", type=int, default=None, help="Evaluate only N samples.")
 @click.option("--run-id", type=str, default=None, help="Evaluate only outputs from a specific STT run_id.")
 @click.option("--ref-run-id", type=str, default=None, help="Reference STT run_id for side-by-side WER comparison.")
-def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> None:
+@click.option("--workers", type=int, default=1, show_default=True, help="Parallel workers for per-sample compute.")
+def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None, workers: int) -> None:
     if limit is not None and limit <= 0:
         raise click.BadParameter("--limit must be a positive integer")
     if ref_run_id and not run_id:
         raise click.BadParameter("--run-id is required when --ref-run-id is provided")
+    if workers <= 0:
+        raise click.BadParameter("--workers must be a positive integer")
     eval_name = "run-eval"
     command_line = " ".join(sys.argv)
     report_path = make_eval_report_path(eval_name)
@@ -158,7 +161,13 @@ def run_eval(limit: int | None, run_id: str | None, ref_run_id: str | None) -> N
             command_line=command_line,
             report_path=report_path,
         )
-        evaluate_stt_against_gold(limit=limit, run_id=run_id, ref_run_id=ref_run_id, reporter=reporter)
+        evaluate_stt_against_gold(
+            limit=limit,
+            run_id=run_id,
+            ref_run_id=ref_run_id,
+            reporter=reporter,
+            workers=workers,
+        )
         click.echo("Evaluation completed.")
         reporter.write_results_section(file=f)
         click.echo(f"Eval report written to {report_path}")

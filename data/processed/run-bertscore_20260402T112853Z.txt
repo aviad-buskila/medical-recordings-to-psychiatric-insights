@@ -1,0 +1,16 @@
+Command line: python -m src.cli.main show-alignment --run-id rid
+Report path: data/processed/run-bertscore_20260402T112853Z.txt
+=== Terminal output captured below ===
+BERTScore evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-bertscore",
+  "command_line": "python -m src.cli.main show-alignment --run-id rid",
+  "report_path": "data/processed/run-bertscore_20260402T112853Z.txt",
+  "run_metadata": {},
+  "metrics": [],
+  "result_summary": {}
+}
+Eval report written to data/processed/run-bertscore_20260402T112853Z.txt

@@ -101,6 +101,38 @@ class AnalyticsRepository:
                 )
             conn.commit()
 
+    def insert_eval_metrics_batch(
+        self,
+        rows: list[dict[str, Any]],
+        batch_size: int = 500,
+    ) -> None:
+        """Bulk insert evaluation rows in chunks to reduce DB round-trips."""
+        if not rows:
+            return
+        query = """
+            INSERT INTO clinical_ai.evaluation_metrics (
+                sample_id, metric_name, metric_value, details, created_at
+            ) VALUES (%(sample_id)s, %(metric_name)s, %(metric_value)s, %(details)s, %(created_at)s)
+        """
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                for i in range(0, len(rows), batch_size):
+                    chunk = rows[i : i + batch_size]
+                    cur.executemany(
+                        query,
+                        [
+                            {
+                                "sample_id": str(r["sample_id"]),
+                                "metric_name": str(r["metric_name"]),
+                                "metric_value": float(r["metric_value"]),
+                                "details": Json(r["details"]),
+                                "created_at": datetime.utcnow(),
+                            }
+                            for r in chunk
+                        ],
+                    )
+            conn.commit()
+
     def get_latest_stt_output(self, sample_id: str) -> str | None:
         query = """
             SELECT transcript_text
@@ -116,6 +148,22 @@ class AnalyticsRepository:
         if not row:
             return None
         return str(row[0])
+
+    def get_latest_stt_outputs(self, sample_ids: list[str]) -> dict[str, str]:
+        """Fetch latest transcript text for multiple sample_ids in one query."""
+        if not sample_ids:
+            return {}
+        query = """
+            SELECT DISTINCT ON (sample_id) sample_id, transcript_text
+            FROM clinical_ai.stt_outputs
+            WHERE sample_id = ANY(%(sample_ids)s)
+            ORDER BY sample_id, run_timestamp DESC NULLS LAST, id DESC
+        """
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, {"sample_ids": sample_ids})
+                rows = cur.fetchall()
+        return {str(sample_id): str(transcript_text) for sample_id, transcript_text in rows}
 
     def get_stt_outputs_for_run(self, run_id: str) -> dict[str, str]:
         query = """

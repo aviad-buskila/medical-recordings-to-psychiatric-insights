@@ -45,6 +45,12 @@ def test_run_eval_rejects_non_positive_limit() -> None:
     assert result.exit_code != 0
 
 
+def test_run_eval_rejects_non_positive_workers() -> None:
+    runner = CliRunner()
+    result = runner.invoke(cli, ["run-eval", "--workers", "0"])
+    assert result.exit_code != 0
+
+
 def test_show_alignment_rejects_low_chunk_columns() -> None:
     runner = CliRunner()
     result = runner.invoke(
@@ -106,4 +112,5 @@ def test_run_eval_cli_invokes_stt_eval(mock_eval: MagicMock) -> None:
     assert kwargs["limit"] == 3
     assert kwargs["run_id"] is None
     assert kwargs["ref_run_id"] is None
+    assert kwargs["workers"] == 1
     assert "reporter" in kwargs
