@@ -73,7 +73,7 @@ python -m src.cli.main run-llm-judge --run-id <uuid> --ref-run-id <other_uuid> -
 python -m src.cli.main run-all
 ```
 
-Note: `run-eval`, `run-bertscore`, and `run-llm-judge` also write a full run report (terminal transcript + JSON results) to `data/processed/<evalname>_<timestamp>.txt`.
+Note: `run-eval`, `run-bertscore`, `run-llm-judge`, and `show-alignment` also write an artifact to `data/processed/<evalname>_<timestamp>.txt` (command line + full output; plus JSON results for the DB-writing evals).
 
 ### Word alignment (gold vs hypothesis, S / I / D)
 

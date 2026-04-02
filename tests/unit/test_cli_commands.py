@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from click.testing import CliRunner
@@ -51,6 +52,32 @@ def test_show_alignment_rejects_low_chunk_columns() -> None:
         ["show-alignment", "--run-id", "x", "--chunk-columns", "2"],
     )
     assert result.exit_code != 0
+
+
+@patch("src.cli.main.run_alignment_report")
+@patch("src.cli.main.make_eval_report_path")
+def test_show_alignment_writes_report_artifact(
+    mock_make_path: MagicMock,
+    mock_report: MagicMock,
+    tmp_path: Path,
+) -> None:
+    from src.cli import main as cli_main
+
+    mock_make_path.return_value = tmp_path / "show-alignment_fixed.txt"
+    mock_report.return_value = "ALIGNMENT_TEXT"
+    # Make command-line deterministic for the written file.
+    cli_main.sys.argv = ["python", "-m", "src.cli.main", "show-alignment", "--run-id", "rid"]
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["show-alignment", "--run-id", "rid", "--chunk-columns", "48"])
+    assert result.exit_code == 0
+
+    report_file = tmp_path / "show-alignment_fixed.txt"
+    assert report_file.exists()
+    content = report_file.read_text(encoding="utf-8")
+    assert "Command line:" in content
+    assert "show-alignment output" in content
+    assert "ALIGNMENT_TEXT" in content
 
 
 @patch("src.cli.main.run_bertscore_eval")

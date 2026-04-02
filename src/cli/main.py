@@ -221,7 +221,22 @@ def show_alignment(
         chunk_columns=chunk_columns,
         output_path=output,
     )
+    # `show-alignment` does not persist metrics to DB, but we still write an artifact file
+    # so runs are reproducible/debuggable.
+    eval_name = "show-alignment"
+    command_line = " ".join(sys.argv)
+    report_path = make_eval_report_path(eval_name)
+    report_body = "\n".join(
+        [
+            f"Command line: {command_line}",
+            f"Report path: {report_path}",
+            "=== show-alignment output (fully captured) ===",
+            text,
+        ]
+    )
+    report_path.write_text(report_body, encoding="utf-8")
     click.echo(text)
+    click.echo(f"Eval report written to {report_path}")
 
 
 @cli.command("run-llm-judge")
