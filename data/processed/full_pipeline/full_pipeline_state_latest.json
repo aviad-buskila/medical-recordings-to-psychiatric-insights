@@ -23,6 +23,99 @@
     "insights_extract_artifacts": [
       "data/processed/insights_extract/insights_extract_9835ed61-9906-449d-bb8b-365cf7b0e70c_20260402T151252Z.json",
       "data/processed/insights_extract/insights_extract_87bac619-f810-4994-8a27-7b883b8f99b7_20260402T154752Z.json"
+    ],
+    "analysis_notebooks": [
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/model_eval_insights_20260402T150431Z.ipynb",
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/show_alignment_visualizer_20260402T150431Z.ipynb",
+      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T150431Z.ipynb"
+    ]
+  },
+  "db_summary": {
+    "stt_runs": [
+      {
+        "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-turbo",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T15:04:32.187840+00:00",
+        "run_parameters": {
+          "limit": 1,
+          "profile": "default",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 1
+        }
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-mlx",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T15:05:06.411223+00:00",
+        "run_parameters": {
+          "limit": 1,
+          "profile": "quality",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 1
+        }
+      }
+    ],
+    "stt_outputs_count_by_run": {
+      "87bac619-f810-4994-8a27-7b883b8f99b7": 1,
+      "9835ed61-9906-449d-bb8b-365cf7b0e70c": 1
+    },
+    "evaluation_metrics": [
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "cer",
+        "rows": 1,
+        "avg_metric_value": 0.2645619187469408
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "cp_wer",
+        "rows": 1,
+        "avg_metric_value": 0.07907869481765835
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "llm_judge_compare",
+        "rows": 1,
+        "avg_metric_value": -3.0
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "mer",
+        "rows": 1,
+        "avg_metric_value": 0.16249787306448868
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "wer",
+        "rows": 1,
+        "avg_metric_value": 0.29750778816199375
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "metric_name": "wil",
+        "rows": 1,
+        "avg_metric_value": 0.32499574612897736
+      }
+    ],
+    "insights_count_by_run_model": [
+      {
+        "run_id": "87bac619-f810-4994-8a27-7b883b8f99b7",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 1
+      },
+      {
+        "run_id": "9835ed61-9906-449d-bb8b-365cf7b0e70c",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 1
+      }
     ]
   }
 }
