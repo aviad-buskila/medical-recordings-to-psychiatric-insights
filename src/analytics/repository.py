@@ -236,3 +236,36 @@ class AnalyticsRepository:
                     },
                 )
             conn.commit()
+
+    def get_existing_transcript_insight_sample_ids(
+        self,
+        *,
+        run_id: str,
+        insight_model: str,
+        prompt_version: str,
+        sample_ids: list[str] | None = None,
+    ) -> set[str]:
+        """Return sample_ids that already have transcript_insights rows for this run/model/prompt."""
+        base_query = """
+            SELECT sample_id
+            FROM clinical_ai.transcript_insights
+            WHERE run_id = %(run_id)s
+              AND insight_model = %(insight_model)s
+              AND prompt_version = %(prompt_version)s
+        """
+        params: dict[str, Any] = {
+            "run_id": run_id,
+            "insight_model": insight_model,
+            "prompt_version": prompt_version,
+        }
+        if sample_ids:
+            query = base_query + " AND sample_id = ANY(%(sample_ids)s)"
+            params["sample_ids"] = sample_ids
+        else:
+            query = base_query
+
+        with psycopg.connect(self.settings.postgres_dsn) as conn:
+            with conn.cursor() as cur:
+                cur.execute(query, params)
+                rows = cur.fetchall()
+        return {str(r[0]) for r in rows}

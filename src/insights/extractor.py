@@ -192,6 +192,7 @@ def run_insights_extract(
     limit: int | None = None,
     model_name: str | None = None,
     output_json: Path | None = None,
+    skip_existing: bool = False,
 ) -> Path:
     settings = get_settings()
     analytics = AnalyticsRepository()
@@ -208,6 +209,26 @@ def run_insights_extract(
         sample_ids = [sid for sid in sample_ids if sid == sample_id]
     if limit is not None:
         sample_ids = sample_ids[:limit]
+
+    skipped_existing = 0
+    if skip_existing and sample_ids:
+        existing_ids = analytics.get_existing_transcript_insight_sample_ids(
+            run_id=run_id,
+            insight_model=resolved_model,
+            prompt_version=extractor.prompt_version,
+            sample_ids=sample_ids,
+        )
+        if existing_ids:
+            skipped_existing = len(existing_ids)
+            sample_ids = [sid for sid in sample_ids if sid not in existing_ids]
+            logger.info(
+                "Skipping existing insights rows run_id=%s model=%s prompt_version=%s skipped=%s remaining=%s",
+                run_id,
+                resolved_model,
+                extractor.prompt_version,
+                skipped_existing,
+                len(sample_ids),
+            )
 
     results: list[dict[str, Any]] = []
     run_started = time.perf_counter()
@@ -266,6 +287,8 @@ def run_insights_extract(
         "stt_run_info": run_info,
         "sample_filter": sample_id,
         "limit": limit,
+        "skip_existing": skip_existing,
+        "samples_skipped_existing": skipped_existing,
         "samples_processed": len(results),
         "timing": {
             "total_elapsed_s": round(time.perf_counter() - run_started, 3),

@@ -475,6 +475,7 @@ def main() -> None:
             candidate_run_id,
             "--limit",
             str(args.limit),
+            "--skip-existing",
         ]
         if insights_model:
             ins_candidate_cmd += ["--model", insights_model]
@@ -503,6 +504,7 @@ def main() -> None:
             baseline_run_id,
             "--limit",
             str(args.limit),
+            "--skip-existing",
         ]
         if insights_model:
             ins_baseline_cmd += ["--model", insights_model]
