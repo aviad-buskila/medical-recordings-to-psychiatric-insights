@@ -1,3 +1,5 @@
+"""Tests for mer wil behavior."""
+
 from src.evaluation.mer_wil import word_mer_wil_breakdown
 
 

@@ -1,3 +1,5 @@
+"""LLM client integrations used by the pipeline."""
+
 from typing import Any, Literal
 
 from ollama import Client

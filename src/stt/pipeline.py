@@ -1,3 +1,5 @@
+"""Speech-to-text pipeline utilities for pipeline."""
+
 import logging
 from datetime import datetime
 from pathlib import Path

@@ -1,3 +1,5 @@
+"""Tests for speaker wer behavior."""
+
 from src.evaluation.speaker_wer import (
     per_speaker_breakdown,
     per_speaker_char_breakdown,

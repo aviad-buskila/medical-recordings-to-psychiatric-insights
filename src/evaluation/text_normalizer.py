@@ -1,3 +1,5 @@
+"""Evaluation utilities for text normalizer."""
+
 import re
 import unicodedata
 

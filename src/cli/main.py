@@ -1,3 +1,5 @@
+"""Command-line interface commands and orchestration."""
+
 from pathlib import Path
 import sys
 from datetime import datetime, timezone
@@ -46,7 +48,7 @@ def _resolve_workers(workers_raw: str) -> int:
     mem_gb = _detect_total_memory_gb()
     by_cpu = max(1, cpu // 4)
     by_mem = max(1, int((mem_gb or 16.0) // 12))
-    # Conservative default to avoid memory pressure on heavy clinical eval loops.
+    # Conservative auto mode to reduce OOM risk on larger runs.
     workers = min(4, by_cpu, by_mem)
     return max(1, workers)
 
@@ -106,6 +108,7 @@ def run_stt(limit: int | None, profile: str, flavor: str, no_fallback: bool) -> 
 
 
 def _parse_generated_run_dir_name(name: str) -> tuple[str, datetime] | None:
+    # Directory format: <run_id>_<UTC timestamp>, e.g. uuid_20260403T110743Z
     if "_" not in name:
         return None
     run_id, ts = name.split("_", 1)
@@ -167,6 +170,7 @@ def restore_stt_from_generated(run_id: str | None, dry_run: bool) -> None:
     with psycopg.connect(settings.postgres_dsn) as conn:
         with conn.cursor() as cur:
             for d, rid, run_ts in run_dirs:
+                # Insert run metadata once, then add each recovered transcript row.
                 cur.execute(
                     """
                     INSERT INTO clinical_ai.stt_runs

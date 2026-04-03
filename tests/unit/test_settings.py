@@ -1,3 +1,5 @@
+"""Tests for settings behavior."""
+
 import pytest
 
 from src.config.settings import Settings

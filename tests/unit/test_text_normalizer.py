@@ -1,3 +1,5 @@
+"""Tests for text normalizer behavior."""
+
 from src.evaluation.text_normalizer import TextNormalizer
 
 

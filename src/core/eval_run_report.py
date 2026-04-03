@@ -1,3 +1,5 @@
+"""Core utilities for eval run report."""
+
 from __future__ import annotations
 
 import contextlib

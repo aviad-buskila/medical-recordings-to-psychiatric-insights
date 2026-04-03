@@ -1,3 +1,5 @@
+"""Tests for pickle loader behavior."""
+
 import pickle
 
 from src.ingestion.pickle_loader import DatasetPickleLoader

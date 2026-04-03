@@ -1,3 +1,5 @@
+"""Evaluation utilities for stt eval."""
+
 import logging
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path

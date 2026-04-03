@@ -1,3 +1,5 @@
+"""Analysis helpers for speaker timeline outputs."""
+
 from __future__ import annotations
 
 import json

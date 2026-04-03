@@ -19,7 +19,7 @@ Built for Apple Silicon. Local-first by design — no audio leaves the machine.
 
 ## Latest benchmark
 
-Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T182835Z.md`**
+Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260403T110743Z.md`**
 
 | | |
 | --- | --- |
@@ -51,7 +51,7 @@ Comparative semantic/judge summary:
 
 Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, higher is better for the candidate. See `analysis/statistical_significance.ipynb` before drawing significance conclusions.
 
-BERTScore figures above used the code default encoder (`roberta-large` via `BERTSCORE_MODEL` unset). If you copy `.env.example` to `.env`, `BERTSCORE_MODEL` is set to a biomedical encoder instead — rerun evals to compare under that setting.
+BERTScore figures above are taken from `data/processed/run-bertscore_20260403T110608Z.txt`, which used encoder `roberta-large` (`model_type` in the artifact and current `.env`).
 
 ---
 

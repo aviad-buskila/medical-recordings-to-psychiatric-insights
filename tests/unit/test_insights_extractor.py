@@ -1,3 +1,5 @@
+"""Tests for insights extractor behavior."""
+
 from __future__ import annotations
 
 from src.insights.extractor import _sanitize_with_evidence

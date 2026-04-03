@@ -1,3 +1,5 @@
+"""Tests for wer behavior."""
+
 from src.evaluation.wer import word_error_breakdown, word_error_rate
 
 

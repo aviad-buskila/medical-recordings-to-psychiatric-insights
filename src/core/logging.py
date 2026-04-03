@@ -1,3 +1,5 @@
+"""Core utilities for logging."""
+
 import logging
 
 

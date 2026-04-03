@@ -1,3 +1,5 @@
+"""Evaluation utilities for llm judge eval."""
+
 import logging
 from pathlib import Path
 from typing import Any
@@ -51,6 +53,7 @@ def run_llm_judge_eval(
 
     sample_ids = list(candidate_outputs.keys())
     if ref_run_id:
+        # In compare mode, require both candidate and baseline transcripts.
         sample_ids = [sid for sid in sample_ids if sid in baseline_outputs]
     if sample_id:
         sample_ids = [sid for sid in sample_ids if sid == sample_id]
@@ -116,6 +119,7 @@ def run_llm_judge_eval(
             if not baseline_text:
                 continue
             if existing is not None:
+                # Resume path: reuse prior DB value, but still include in report output.
                 result = existing.get("judge_result", {}) or {}
                 winner = str(result.get("winner", "unknown")).lower()
                 delta_value = float(existing.get("metric_value", 0.0) or 0.0)
@@ -126,6 +130,7 @@ def run_llm_judge_eval(
                 try:
                     result = judge.compare_transcripts(reference, candidate_text, baseline_text)
                 except Exception as e:
+                    # Soft-fail so long runs continue and still produce a complete artifact.
                     llm_failures += 1
                     result = {
                         "winner": "unknown",
@@ -172,6 +177,7 @@ def run_llm_judge_eval(
                     "ref_run_id": ref_run_id,
                     "judge_result": result,
                 }
+                # Persist exactly one logical row per sample/run pair.
                 analytics.insert_eval_metric(
                     sample_id=sample_id,
                     metric_name="llm_judge_compare",
@@ -197,6 +203,7 @@ def run_llm_judge_eval(
                     )
         else:
             if existing is not None:
+                # Resume path for single-run scoring mode.
                 result = existing.get("judge_result", {}) or {}
                 score = float(existing.get("metric_value", 0.0) or 0.0)
             else:

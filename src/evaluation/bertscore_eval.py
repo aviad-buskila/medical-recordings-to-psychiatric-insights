@@ -22,6 +22,30 @@ from src.core.eval_run_report import EvalRunReporter
 logger = logging.getLogger(__name__)
 
 
+def _resolve_num_layers_for_model(model_type: str) -> int | None:
+    """Resolve num_layers for model ids missing from bert-score's built-in map."""
+    try:
+        from bert_score.utils import model2layers
+
+        if model_type in model2layers:
+            return None
+    except Exception:
+        pass
+
+    try:
+        from transformers import AutoConfig
+
+        # For custom HF models, bert-score can run when we pass encoder depth explicitly.
+        cfg = AutoConfig.from_pretrained(model_type)
+        num_hidden_layers = getattr(cfg, "num_hidden_layers", None)
+        if isinstance(num_hidden_layers, int) and num_hidden_layers > 0:
+            return num_hidden_layers
+    except Exception:
+        pass
+
+    return None
+
+
 def run_bertscore_eval(
     run_id: str | None,
     ref_run_id: str | None,
@@ -47,6 +71,8 @@ def run_bertscore_eval(
 
     settings = get_settings()
     resolved_model = model_type or settings.bertscore_model
+    # Needed for biomedical/custom encoders that are absent from bert-score's model map.
+    resolved_num_layers = _resolve_num_layers_for_model(resolved_model)
 
     loader = DatasetLoader(
         recordings_dir=settings.recordings_dir,
@@ -123,9 +149,11 @@ def run_bertscore_eval(
         hyps,
         refs,
         model_type=resolved_model,
+        num_layers=resolved_num_layers,
         batch_size=batch_size,
         rescale_with_baseline=rescale_with_baseline,
         lang="en",
+        use_fast_tokenizer=False,
     )
     p1_list = [float(x) for x in p1]
     r1_list = [float(x) for x in r1]
@@ -154,6 +182,7 @@ def run_bertscore_eval(
         "reference_source": "dataset.pickle",
         "primary_scores": "stt_hypothesis_vs_gold",
         "model_type": resolved_model,
+        "num_layers": resolved_num_layers,
         "rescale_with_baseline": rescale_with_baseline,
         "run_id": run_id,
         "ref_run_id": ref_run_id,
@@ -179,6 +208,7 @@ def run_bertscore_eval(
                     "run_id": run_id,
                     "ref_run_id": ref_run_id,
                     "model_type": resolved_model,
+                    "num_layers": resolved_num_layers,
                     "rescale_with_baseline": rescale_with_baseline,
                 },
             )
@@ -188,9 +218,11 @@ def run_bertscore_eval(
             ref_hyps,
             refs,
             model_type=resolved_model,
+            num_layers=resolved_num_layers,
             batch_size=batch_size,
             rescale_with_baseline=rescale_with_baseline,
             lang="en",
+            use_fast_tokenizer=False,
         )
         p2_list = [float(x) for x in p2]
         r2_list = [float(x) for x in r2]
@@ -229,6 +261,7 @@ def run_bertscore_eval(
                         "run_id": run_id,
                         "ref_run_id": ref_run_id,
                         "model_type": resolved_model,
+                        "num_layers": resolved_num_layers,
                         "rescale_with_baseline": rescale_with_baseline,
                     },
                 )
@@ -242,17 +275,19 @@ def run_bertscore_eval(
                         "run_id": run_id,
                         "ref_run_id": ref_run_id,
                         "model_type": resolved_model,
+                        "num_layers": resolved_num_layers,
                         "rescale_with_baseline": rescale_with_baseline,
                     },
                 )
 
     logger.info(
-        "BERTScore aggregate: n=%s mean_F1=%.4f mean_P=%.4f mean_R=%.4f model=%s",
+        "BERTScore aggregate: n=%s mean_F1=%.4f mean_P=%.4f mean_R=%.4f model=%s num_layers=%s",
         len(sample_ids),
         summary["mean_f1"],
         summary["mean_precision"],
         summary["mean_recall"],
         resolved_model,
+        resolved_num_layers,
     )
     if "ref_mean_f1" in summary:
         logger.info(

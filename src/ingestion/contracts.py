@@ -1,3 +1,5 @@
+"""Data ingestion utilities for contracts."""
+
 from dataclasses import dataclass
 from pathlib import Path
 

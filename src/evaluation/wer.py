@@ -1,3 +1,5 @@
+"""Evaluation utilities for wer."""
+
 from rapidfuzz.distance import Levenshtein
 
 from src.evaluation.text_normalizer import TextNormalizer
