@@ -1,3 +1,5 @@
+"""Speech-to-text pipeline utilities for mlx whisper service."""
+
 import os
 import shutil
 import time

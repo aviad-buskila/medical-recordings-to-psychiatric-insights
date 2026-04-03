@@ -1,3 +1,5 @@
+"""Data ingestion utilities for pickle loader."""
+
 import pickle
 from pathlib import Path
 from typing import Any

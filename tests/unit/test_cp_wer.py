@@ -1,3 +1,5 @@
+"""Tests for cp wer behavior."""
+
 import json
 from pathlib import Path
 

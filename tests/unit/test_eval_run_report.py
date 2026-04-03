@@ -1,3 +1,5 @@
+"""Tests for eval run report behavior."""
+
 from __future__ import annotations
 
 import sys

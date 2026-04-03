@@ -1,3 +1,5 @@
+"""Analysis helpers for alignment viz outputs."""
+
 from __future__ import annotations
 
 import html

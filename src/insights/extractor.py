@@ -1,3 +1,5 @@
+"""Insight extraction logic for psychiatric outputs."""
+
 from __future__ import annotations
 
 import json
@@ -28,6 +30,7 @@ def _safe_json_loads(raw: str) -> dict[str, Any]:
     except json.JSONDecodeError:
         pass
 
+    # Some model responses wrap JSON with extra text; recover first valid object.
     candidates = re.findall(r"\{[\s\S]*\}", raw)
     for c in candidates:
         try:
@@ -110,6 +113,7 @@ def _sanitize_with_evidence(payload: dict[str, Any], transcript: str) -> dict[st
                 quote = ""
             if not claim:
                 continue
+            # Only keep claims backed by a quote present in transcript text.
             if _quote_supported(quote, transcript):
                 kept_claims.append(claim)
                 evidence[key].append({"claim": claim, "evidence_quote": quote})
@@ -212,6 +216,7 @@ def run_insights_extract(
 
     skipped_existing = 0
     if skip_existing and sample_ids:
+        # Resume helper: avoid recomputing rows already stored for same run/model/prompt.
         existing_ids = analytics.get_existing_transcript_insight_sample_ids(
             run_id=run_id,
             insight_model=resolved_model,
@@ -240,6 +245,7 @@ def run_insights_extract(
         transcript_word_count = len([w for w in transcript.split() if w])
         sample_started = time.perf_counter()
         parsed, raw = extractor.extract(transcript)
+        # Keep both parsed structure and raw model output for audit/debugging.
         insights_payload = {**parsed, "prompt_version": extractor.prompt_version}
         elapsed_s = time.perf_counter() - sample_started
         row = {

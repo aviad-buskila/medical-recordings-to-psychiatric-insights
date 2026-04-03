@@ -1,3 +1,5 @@
+"""Tests for cer behavior."""
+
 from src.evaluation.cer import align_char_lists_with_indices, character_error_breakdown
 
 

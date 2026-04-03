@@ -1,3 +1,5 @@
+"""Tests for transcribed json behavior."""
+
 import json
 
 from src.evaluation.transcribed_json import load_flat_words_with_speakers, transcribed_json_path

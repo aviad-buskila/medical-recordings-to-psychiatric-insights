@@ -1,3 +1,5 @@
+"""Analytics repository helpers for repository."""
+
 from datetime import datetime
 from typing import Any
 from uuid import uuid4

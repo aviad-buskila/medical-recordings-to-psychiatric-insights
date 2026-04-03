@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+"""CLI entrypoint for running the full project pipeline."""
+
 from __future__ import annotations
 
 import argparse
@@ -64,6 +66,7 @@ def load_dotenv_file(path: Path) -> dict[str, str]:
 
 def run_cmd(command: list[str], env: dict[str, str] | None = None, timeout_s: int | None = None) -> CmdResult:
     log(f"Running: {' '.join(command)}")
+    # Merge values from .env so this orchestrator matches direct CLI behavior.
     effective_env = {
         **os.environ,
         **load_dotenv_file(ROOT / ".env"),
@@ -107,6 +110,7 @@ def parse_stt_run_ids(stdout: str) -> tuple[str, str]:
 
 
 def parse_eval_report_path(stdout: str) -> str | None:
+    # Eval commands emit a standard footer with the artifact path.
     m = re.search(r"Eval report written to\s+(.+)$", stdout, re.MULTILINE)
     return m.group(1).strip() if m else None
 
@@ -117,11 +121,13 @@ def parse_insights_artifact_path(stdout: str) -> str | None:
 
 
 def latest_processed_artifact(prefix: str) -> str | None:
+    # Used when caller opts to skip eval execution and reuse last outputs.
     files = sorted(PROCESSED_DIR.glob(f"{prefix}_*.txt"), key=lambda p: p.stat().st_mtime, reverse=True)
     return str(files[0]) if files else None
 
 
 def save_state(state: dict[str, Any]) -> None:
+    # Persist after major steps so reruns can resume from partial progress.
     PIPELINE_OUT_DIR.mkdir(parents=True, exist_ok=True)
     STATE_LATEST.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
     log(f"State saved: {STATE_LATEST}")
@@ -339,7 +345,7 @@ def main() -> None:
     artifacts = state.get("artifacts", {})
 
     step("STT Runs")
-    # 1) run both STT models on first N recordings (or reuse provided IDs)
+    # 1) Run both STT profiles once unless run IDs were provided/resumed.
     if not (args.skip_stt or (baseline_run_id and candidate_run_id)):
         stt_cmd = ["python", "-m", "src.cli.main", "run-stt", "--flavor", "both", "--limit", str(args.limit)]
         stt_res = run_cmd(stt_cmd)
@@ -365,7 +371,7 @@ def main() -> None:
         raise SystemExit("Missing run IDs. Provide --baseline-run-id and --candidate-run-id, or run without --skip-stt.")
 
     step("Evaluations")
-    # 2-5) evals
+    # 2-5) Run eval suite in a stable order so artifacts are predictable.
     if not args.skip_evals:
         if not artifacts.get("run_eval_report"):
             eval_cmd = [
@@ -458,7 +464,7 @@ def main() -> None:
         log("Skipped evals; reused latest eval artifacts from data/processed")
 
     step("Insights Extraction")
-    # 6) insights for both runs (resume-friendly + model fallback)
+    # 6) Extract insights for candidate + baseline (supports skip-existing).
     insights_model = resolve_insights_model(args.insights_model)
     log(f"Insights model: {insights_model or 'default from CLI/env'}")
     insights_list = artifacts.get("insights_extract_artifacts", [])
@@ -524,7 +530,7 @@ def main() -> None:
         log(f"Reusing baseline insights artifact: {insights_list[1]}")
 
     step("Analysis Notebooks")
-    # 7) execute all analysis notebooks
+    # 7) Execute analysis notebooks against current artifacts.
     nb_model_out = ANALYSIS_OUT_DIR / f"model_eval_insights_{stamp}.ipynb"
     env_model = {
         **os.environ,

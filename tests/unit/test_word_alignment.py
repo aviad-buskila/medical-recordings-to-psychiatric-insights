@@ -1,3 +1,5 @@
+"""Tests for word alignment behavior."""
+
 import random
 
 from src.evaluation.wer import word_error_breakdown

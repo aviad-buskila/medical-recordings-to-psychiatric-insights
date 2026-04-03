@@ -1,3 +1,5 @@
+"""Data ingestion utilities for dataset loader."""
+
 from pathlib import Path
 
 from src.ingestion.contracts import ClinicalSample
