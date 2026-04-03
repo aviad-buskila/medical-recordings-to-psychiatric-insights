@@ -19,29 +19,37 @@ Built for Apple Silicon. Local-first by design — no audio leaves the machine.
 
 ## Latest benchmark
 
-Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T172054Z.md`**
+Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T182835Z.md`**
 
 | | |
 | --- | --- |
-| Command | `python run_full_pipeline.py --limit 5` |
-| Samples | `D0420-S1-T01` … `D0420-S1-T05` (N=5) |
-| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `22f69385` |
-| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `507e804d` |
-| Insights | MedGemma `medaibase/medgemma1.5:4b` · 5 rows per run |
+| Command | `python run_full_pipeline.py --limit 43 --eval-workers 1` |
+| Samples | `D0420-S1-T01` … `D0423-S1-T03` (N=43) |
+| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `50a52f67` |
+| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `e7fc04ce` |
+| Insights | MedGemma `medaibase/medgemma1.5:4b` · 43 rows per run |
 
-Mean metrics vs gold:
+Mean lexical metrics (candidate vs gold):
 
-| Metric | Baseline | Candidate | Δ (c−b) |
-| --- | ---: | ---: | ---: |
-| WER | 0.180 | 0.198 | +0.018 |
-| CER | 0.182 | 0.202 | +0.020 |
-| MER | 0.095 | 0.103 | +0.008 |
-| WIL | 0.190 | 0.206 | +0.017 |
-| cpWER | 0.082 | 0.105 | +0.023 |
-| BERTScore F1 (`roberta-large`, rescale on) | 0.147 | 0.144 | −0.003 |
-| LLM judge (mean comparative delta, N=5) | — | — | −0.4 |
+| Metric | Candidate |
+| --- | ---: |
+| WER | 0.256 |
+| CER | 0.216 |
+| MER | 0.128 |
+| WIL | 0.256 |
+| cpWER | 0.196 |
 
-Lower is better for WER/CER/MER/WIL/cpWER. LLM judge delta negative means baseline was preferred. These are point estimates over five files — see `analysis/statistical_significance.ipynb` before drawing conclusions.
+Comparative semantic/judge summary:
+
+| Metric | Result |
+| --- | ---: |
+| BERTScore F1 (`roberta-large`, candidate mean, N=43) | 0.199 |
+| BERTScore F1 (`roberta-large`, baseline mean, N=43) | 0.197 |
+| BERTScore ΔF1 (candidate−baseline mean, N=43) | +0.002 |
+| LLM judge wins (candidate / baseline / ties) | 27 / 13 / 3 |
+| LLM judge mean comparative delta (candidate−baseline, N=43) | +0.372 |
+
+Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, higher is better for the candidate. See `analysis/statistical_significance.ipynb` before drawing significance conclusions.
 
 BERTScore figures above used the code default encoder (`roberta-large` via `BERTSCORE_MODEL` unset). If you copy `.env.example` to `.env`, `BERTSCORE_MODEL` is set to a biomedical encoder instead — rerun evals to compare under that setting.
 
