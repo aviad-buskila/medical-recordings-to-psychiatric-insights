@@ -23,6 +23,7 @@ db-init:
 	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < sql/004_stt_remove_created_at_and_backfill_model.sql
 	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < sql/005_stt_run_scope.sql
 	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < sql/006_transcript_insights.sql
+	docker compose --env-file .env exec -T postgres sh -lc 'psql -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"' < sql/007_llm_judge_dedupe_and_uniqueness.sql
 
 test:
 	$(ACTIVATE) && pytest -q

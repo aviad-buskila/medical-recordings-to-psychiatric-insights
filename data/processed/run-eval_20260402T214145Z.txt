@@ -1,0 +1,3 @@
+Command line: /Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-eval --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --workers auto
+Report path: data/processed/run-eval_20260402T214145Z.txt
+=== Terminal output captured below ===

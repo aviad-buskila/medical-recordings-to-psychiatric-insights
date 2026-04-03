@@ -274,7 +274,10 @@ def write_markdown_summary(path: Path, payload: dict[str, Any]) -> None:
     lines.append("")
     lines.append("## Notes")
     lines.append("")
-    lines.append("- `run-eval` used `--workers auto` for conservative machine-friendly parallelism.")
+    ew = payload.get("eval_workers", "auto")
+    bs = payload.get("bertscore_batch_size", 8)
+    lines.append(f"- `run-eval` used `--workers {ew}`.")
+    lines.append(f"- `run-bertscore` used `--batch-size {bs}`.")
     lines.append("- Analysis notebooks were executed to generated notebook outputs under `data/processed/analysis_notebooks/`.")
     lines.append("- Full raw command outputs are available in generated eval/artifact files listed above.")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -300,9 +303,23 @@ def main() -> None:
         action="store_true",
         help="Continue pipeline even if one insights-extract command fails or times out.",
     )
+    parser.add_argument(
+        "--eval-workers",
+        type=str,
+        default="auto",
+        help="Forwarded to run-eval --workers (default: auto). Use 1 on low-RAM systems to avoid OOM.",
+    )
+    parser.add_argument(
+        "--bertscore-batch-size",
+        type=int,
+        default=8,
+        help="Forwarded to run-bertscore --batch-size (default: 8). Use 1 on low-RAM systems.",
+    )
     args = parser.parse_args()
     if args.limit <= 0:
         raise SystemExit("--limit must be positive")
+    if args.bertscore_batch_size < 1:
+        raise SystemExit("--bertscore-batch-size must be at least 1")
     step("Initialize")
 
     state = load_state(Path(args.resume_state) if args.resume_state else None)
@@ -363,7 +380,7 @@ def main() -> None:
                 "--limit",
                 str(args.limit),
                 "--workers",
-                "auto",
+                str(args.eval_workers),
             ]
             eval_res = run_cmd(eval_cmd)
             commands_run.append(" ".join(eval_cmd))
@@ -424,6 +441,8 @@ def main() -> None:
                 baseline_run_id,
                 "--limit",
                 str(args.limit),
+                "--batch-size",
+                str(args.bertscore_batch_size),
             ]
             bert_res = run_cmd(bert_cmd)
             commands_run.append(" ".join(bert_cmd))
@@ -456,6 +475,7 @@ def main() -> None:
             candidate_run_id,
             "--limit",
             str(args.limit),
+            "--skip-existing",
         ]
         if insights_model:
             ins_candidate_cmd += ["--model", insights_model]
@@ -484,6 +504,7 @@ def main() -> None:
             baseline_run_id,
             "--limit",
             str(args.limit),
+            "--skip-existing",
         ]
         if insights_model:
             ins_baseline_cmd += ["--model", insights_model]
@@ -540,6 +561,8 @@ def main() -> None:
     summary_payload = {
         "timestamp_utc": stamp,
         "limit": args.limit,
+        "eval_workers": args.eval_workers,
+        "bertscore_batch_size": args.bertscore_batch_size,
         "selected_recordings": selected,
         "baseline_run_id": baseline_run_id,
         "candidate_run_id": candidate_run_id,

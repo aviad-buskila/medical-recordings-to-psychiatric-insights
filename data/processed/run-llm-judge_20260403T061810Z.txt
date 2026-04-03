@@ -1,0 +1,3 @@
+Command line: /Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43
+Report path: data/processed/run-llm-judge_20260403T061810Z.txt
+=== Terminal output captured below ===

@@ -1,5 +1,8 @@
 import logging
 from pathlib import Path
+from typing import Any
+
+import psycopg
 
 from src.analytics.repository import AnalyticsRepository
 from src.config.settings import get_settings
@@ -58,6 +61,7 @@ def run_llm_judge_eval(
     ties = 0
     score_deltas: list[float] = []
     parse_failures = 0
+    llm_failures = 0
     candidate_label = (
         f"{candidate_run_info.get('provider')}:{candidate_run_info.get('model_name')}"
         if candidate_run_info
@@ -96,16 +100,50 @@ def run_llm_judge_eval(
         if not candidate_text:
             continue
 
+        # Avoid duplicate inserts when resuming after a failure: if the exact metric row
+        # already exists for (sample_id, run_id, ref_run_id), reuse it.
+        metric_name = "llm_judge_compare" if ref_run_id else "llm_judge_score"
+        existing = _load_existing_llm_judge_metric(
+            postgres_dsn=analytics.settings.postgres_dsn,
+            sample_id=sample_id,
+            metric_name=metric_name,
+            run_id=run_id,
+            ref_run_id=ref_run_id or "",
+        )
+
         if ref_run_id:
             baseline_text = baseline_outputs.get(sample_id, "")
             if not baseline_text:
                 continue
-            result = judge.compare_transcripts(reference, candidate_text, baseline_text)
-            winner = str(result.get("winner", "unknown")).lower()
-            delta_value = float(result.get("score_delta", 0.0) or 0.0)
-            candidate_score = float(result.get("candidate_overall_score", 0.0) or 0.0)
-            baseline_score = float(result.get("baseline_overall_score", 0.0) or 0.0)
-            rationale = str(result.get("rationale", "")).strip()
+            if existing is not None:
+                result = existing.get("judge_result", {}) or {}
+                winner = str(result.get("winner", "unknown")).lower()
+                delta_value = float(existing.get("metric_value", 0.0) or 0.0)
+                candidate_score = float(result.get("candidate_overall_score", 0.0) or 0.0)
+                baseline_score = float(result.get("baseline_overall_score", 0.0) or 0.0)
+                rationale = str(result.get("rationale", "")).strip()
+            else:
+                try:
+                    result = judge.compare_transcripts(reference, candidate_text, baseline_text)
+                except Exception as e:
+                    llm_failures += 1
+                    result = {
+                        "winner": "unknown",
+                        "candidate_overall_score": 0.0,
+                        "baseline_overall_score": 0.0,
+                        "score_delta": 0.0,
+                        "rationale": "LLM judge failed (timeout/error).",
+                        "judge_error": {
+                            "type": type(e).__name__,
+                            "message": str(e),
+                        },
+                    }
+
+                winner = str(result.get("winner", "unknown")).lower()
+                delta_value = float(result.get("score_delta", 0.0) or 0.0)
+                candidate_score = float(result.get("candidate_overall_score", 0.0) or 0.0)
+                baseline_score = float(result.get("baseline_overall_score", 0.0) or 0.0)
+                rationale = str(result.get("rationale", "")).strip()
 
             if winner == "candidate":
                 wins_candidate += 1
@@ -128,27 +166,54 @@ def run_llm_judge_eval(
                 delta_value,
                 rationale or "n/a",
             )
-            details = {
-                "run_id": run_id,
-                "ref_run_id": ref_run_id,
-                "judge_result": result,
-            }
-            analytics.insert_eval_metric(
-                sample_id=sample_id,
-                metric_name="llm_judge_compare",
-                metric_value=delta_value,
-                details=details,
-            )
-            if reporter:
-                reporter.add_metric(
+            if existing is None:
+                details = {
+                    "run_id": run_id,
+                    "ref_run_id": ref_run_id,
+                    "judge_result": result,
+                }
+                analytics.insert_eval_metric(
                     sample_id=sample_id,
                     metric_name="llm_judge_compare",
                     metric_value=delta_value,
                     details=details,
                 )
+                if reporter:
+                    reporter.add_metric(
+                        sample_id=sample_id,
+                        metric_name="llm_judge_compare",
+                        metric_value=delta_value,
+                        details=details,
+                    )
+            else:
+                # Still add to report file to keep run-llm-judge output consistent.
+                if reporter:
+                    details = {"run_id": run_id, "ref_run_id": ref_run_id, "judge_result": result}
+                    reporter.add_metric(
+                        sample_id=sample_id,
+                        metric_name="llm_judge_compare",
+                        metric_value=delta_value,
+                        details=details,
+                    )
         else:
-            result = judge.evaluate_transcript(reference, candidate_text)
-            score = float(result.get("overall_score", 0.0) or 0.0)
+            if existing is not None:
+                result = existing.get("judge_result", {}) or {}
+                score = float(existing.get("metric_value", 0.0) or 0.0)
+            else:
+                try:
+                    result = judge.evaluate_transcript(reference, candidate_text)
+                except Exception as e:
+                    llm_failures += 1
+                    result = {
+                        "overall_score": 0.0,
+                        "rationale": "LLM judge failed (timeout/error).",
+                        "judge_error": {
+                            "type": type(e).__name__,
+                            "message": str(e),
+                        },
+                    }
+                score = float(result.get("overall_score", 0.0) or 0.0)
+
             logger.info(
                 "Sample %s | overall[%s]=%.2f/10 | del=%s/10 ins=%s/10 sub=%s/10 risk=%s/10",
                 sample_id,
@@ -159,20 +224,30 @@ def run_llm_judge_eval(
                 result.get("substitution_error_severity", "n/a"),
                 result.get("medical_safety_risk", "n/a"),
             )
-            details = {"run_id": run_id, "judge_result": result}
-            analytics.insert_eval_metric(
-                sample_id=sample_id,
-                metric_name="llm_judge_score",
-                metric_value=score,
-                details=details,
-            )
-            if reporter:
-                reporter.add_metric(
+            if existing is None:
+                details = {"run_id": run_id, "judge_result": result}
+                analytics.insert_eval_metric(
                     sample_id=sample_id,
                     metric_name="llm_judge_score",
                     metric_value=score,
                     details=details,
                 )
+                if reporter:
+                    reporter.add_metric(
+                        sample_id=sample_id,
+                        metric_name="llm_judge_score",
+                        metric_value=score,
+                        details=details,
+                    )
+            else:
+                if reporter:
+                    details = {"run_id": run_id, "judge_result": result}
+                    reporter.add_metric(
+                        sample_id=sample_id,
+                        metric_name="llm_judge_score",
+                        metric_value=score,
+                        details=details,
+                    )
         evaluated += 1
 
     if ref_run_id and evaluated > 0:
@@ -186,6 +261,7 @@ def run_llm_judge_eval(
             parse_failures,
             avg_delta,
         )
+    logger.info("LLM judge failures summary | llm_failures=%s evaluated=%s", llm_failures, evaluated)
 
     logger.info(
         "LLM judge evaluation completed. run_id=%s ref_run_id=%s evaluated=%s",
@@ -213,3 +289,48 @@ def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], tr
     if transcript_path and transcript_path.exists():
         return Path(transcript_path).read_text(encoding="utf-8", errors="ignore")
     return None
+
+
+def _load_existing_llm_judge_metric(
+    *,
+    postgres_dsn: str,
+    sample_id: str,
+    metric_name: str,
+    run_id: str,
+    ref_run_id: str,
+) -> dict[str, Any] | None:
+    """
+    Returns existing judge metric info to support resuming without duplicate inserts.
+
+    We match by:
+      - sample_id
+      - metric_name
+      - details.run_id
+      - details.ref_run_id (empty string if absent)
+    """
+    with psycopg.connect(postgres_dsn) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT metric_value, details->'judge_result'
+                FROM clinical_ai.evaluation_metrics
+                WHERE sample_id = %(sample_id)s
+                  AND metric_name = %(metric_name)s
+                  AND details->>'run_id' = %(run_id)s
+                  AND COALESCE(details->>'ref_run_id', '') = %(ref_run_id)s
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+                {
+                    "sample_id": sample_id,
+                    "metric_name": metric_name,
+                    "run_id": run_id,
+                    "ref_run_id": ref_run_id,
+                },
+            )
+            row = cur.fetchone()
+            if not row:
+                return None
+            metric_value = float(row[0] or 0.0)
+            judge_result = row[1] if isinstance(row[1], dict) else {}
+            return {"metric_value": metric_value, "judge_result": judge_result}

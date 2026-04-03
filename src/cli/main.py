@@ -466,6 +466,12 @@ def run_llm_judge(run_id: str, ref_run_id: str | None, sample_id: str | None, li
 @click.option("--limit", "-n", type=int, default=None, help="Extract only first N samples.")
 @click.option("--model", type=str, default=None, help="Override Ollama model (default: OLLAMA_INSIGHTS_MODEL).")
 @click.option(
+    "--skip-existing",
+    is_flag=True,
+    default=False,
+    help="Skip samples that already have transcript_insights for this run/model/prompt_version (resume-friendly).",
+)
+@click.option(
     "--output-json",
     "-o",
     type=click.Path(path_type=Path, writable=True),
@@ -477,6 +483,7 @@ def insights_extract(
     sample_id: str | None,
     limit: int | None,
     model: str | None,
+    skip_existing: bool,
     output_json: Path | None,
 ) -> None:
     if limit is not None and limit <= 0:
@@ -487,6 +494,7 @@ def insights_extract(
         limit=limit,
         model_name=model,
         output_json=output_json,
+        skip_existing=skip_existing,
     )
     click.echo(f"Insights extraction completed. Artifact: {output_path}")
 

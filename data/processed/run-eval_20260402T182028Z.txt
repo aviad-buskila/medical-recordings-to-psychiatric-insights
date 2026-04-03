@@ -1,0 +1,1432 @@
+Command line: /Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-eval --run-id 492718d4-cf10-4919-809f-d5f0e4ac305d --ref-run-id 1273e9f6-672d-439f-9814-a63a4c881d41 --limit 1 --workers auto
+Report path: data/processed/run-eval_20260402T182028Z.txt
+=== Terminal output captured below ===
+Evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-eval",
+  "command_line": "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-eval --run-id 492718d4-cf10-4919-809f-d5f0e4ac305d --ref-run-id 1273e9f6-672d-439f-9814-a63a4c881d41 --limit 1 --workers auto",
+  "report_path": "data/processed/run-eval_20260402T182028Z.txt",
+  "run_metadata": {
+    "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+    "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T18:17:42.086202+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "ref_run_info": {
+      "run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T18:16:47.112265+00:00",
+      "run_parameters": {
+        "limit": 1,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 1
+      }
+    },
+    "workers": 3,
+    "metrics": null,
+    "skip_cp_wer": false,
+    "skip_speaker_metrics": false
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "wer",
+      "metric_value": 0.34804082976621664,
+      "details": {
+        "reference_source": "dataset.pickle",
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "wer_breakdown": {
+          "wer": 0.34804082976621664,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.0859400724399078,
+          "insertion_rate": 0.10668422785643727,
+          "deletion_rate": 0.15541652946987158
+        },
+        "cer_breakdown": {
+          "cer": 0.32030574941841145,
+          "substitutions": 1005,
+          "insertions": 1192,
+          "deletions": 2622,
+          "reference_character_count": 15045
+        },
+        "mer_wil_breakdown": {
+          "mer": 0.17836652041849477,
+          "wil": 0.35673304083698953,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "edit_total": 1057,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2889
+        },
+        "speaker_wer": {
+          "overall": {
+            "wer": 0.34804082976621664,
+            "substitutions": 261,
+            "insertions": 324,
+            "deletions": 472,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.0859400724399078,
+            "insertion_rate": 0.10668422785643727,
+            "deletion_rate": 0.15541652946987158
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.17836652041849477,
+              "wil": 0.35673304083698953,
+              "substitutions": 261,
+              "insertions": 324,
+              "deletions": 472,
+              "edit_total": 1057,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2889
+            },
+            "speaker_1": {
+              "mer": 0.2306878306878307,
+              "wil": 0.4613756613756614,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 915
+            },
+            "speaker_2": {
+              "mer": 0.15386521308225967,
+              "wil": 0.30773042616451934,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1974
+            }
+          },
+          "speaker_1": {
+            "wer": 0.4471794871794872,
+            "substitutions": 104,
+            "insertions": 136,
+            "deletions": 196,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 915,
+            "mer": 0.2306878306878307,
+            "wil": 0.4613756613756614
+          },
+          "speaker_2": {
+            "wer": 0.3011639185257032,
+            "substitutions": 157,
+            "insertions": 188,
+            "deletions": 276,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1974,
+            "mer": 0.15386521308225967,
+            "wil": 0.30773042616451934
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.32030574941841145,
+              "substitutions": 1005,
+              "insertions": 1192,
+              "deletions": 2622,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.44549950544015826,
+              "substitutions": 438,
+              "insertions": 663,
+              "deletions": 1151,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.256956956956957,
+              "substitutions": 567,
+              "insertions": 529,
+              "deletions": 1471,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        },
+        "cp_wer": {
+          "cp_wer": 0.254126679462572,
+          "cp_wer_breakdown": {
+            "wer": 0.254126679462572,
+            "substitutions": 198,
+            "insertions": 374,
+            "deletions": 90,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.07600767754318619,
+            "insertion_rate": 0.1435700575815739,
+            "deletion_rate": 0.0345489443378119
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "ref_wer": 0.18999012183075403,
+        "ref_wer_breakdown": {
+          "wer": 0.18999012183075403,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.03786631544287125,
+          "insertion_rate": 0.008561080013170892,
+          "deletion_rate": 0.14356272637471187
+        },
+        "delta_vs_ref": 0.1580507079354626,
+        "ref_cer": 0.20711199734130942,
+        "ref_cer_breakdown": {
+          "cer": 0.20711199734130942,
+          "substitutions": 185,
+          "insertions": 176,
+          "deletions": 2755,
+          "reference_character_count": 15045
+        },
+        "delta_cer_vs_ref": 0.11319375207710203,
+        "ref_mer_wil_breakdown": {
+          "mer": 0.10187146892655367,
+          "wil": 0.20374293785310735,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "edit_total": 577,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2627
+        },
+        "delta_mer_vs_ref": 0.0764950514919411,
+        "delta_wil_vs_ref": 0.1529901029838822,
+        "ref_cp_wer": {
+          "cp_wer": 0.061420345489443376,
+          "cp_wer_breakdown": {
+            "wer": 0.061420345489443376,
+            "substitutions": 100,
+            "insertions": 41,
+            "deletions": 19,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.03838771593090211,
+            "insertion_rate": 0.015738963531669866,
+            "deletion_rate": 0.007293666026871401
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "delta_cp_wer_vs_ref": 0.19270633397312864,
+        "speaker_wer_ref_run": {
+          "overall": {
+            "wer": 0.18999012183075403,
+            "substitutions": 115,
+            "insertions": 26,
+            "deletions": 436,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.03786631544287125,
+            "insertion_rate": 0.008561080013170892,
+            "deletion_rate": 0.14356272637471187
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.10187146892655367,
+              "wil": 0.20374293785310735,
+              "substitutions": 115,
+              "insertions": 26,
+              "deletions": 436,
+              "edit_total": 577,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2627
+            },
+            "speaker_1": {
+              "mer": 0.14203565267395055,
+              "wil": 0.2840713053479011,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 764
+            },
+            "speaker_2": {
+              "mer": 0.0840764331210191,
+              "wil": 0.1681528662420382,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1863
+            }
+          },
+          "speaker_1": {
+            "wer": 0.25333333333333335,
+            "substitutions": 32,
+            "insertions": 2,
+            "deletions": 213,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 764,
+            "mer": 0.14203565267395055,
+            "wil": 0.2840713053479011
+          },
+          "speaker_2": {
+            "wer": 0.1600387972841901,
+            "substitutions": 83,
+            "insertions": 24,
+            "deletions": 223,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1863,
+            "mer": 0.0840764331210191,
+            "wil": 0.1681528662420382
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.20711199734130942,
+              "substitutions": 185,
+              "insertions": 176,
+              "deletions": 2755,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.28625123639960437,
+              "substitutions": 45,
+              "insertions": 19,
+              "deletions": 1383,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.16706706706706706,
+              "substitutions": 140,
+              "insertions": 157,
+              "deletions": 1372,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "cer",
+      "metric_value": 0.32030574941841145,
+      "details": {
+        "reference_source": "dataset.pickle",
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "wer_breakdown": {
+          "wer": 0.34804082976621664,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.0859400724399078,
+          "insertion_rate": 0.10668422785643727,
+          "deletion_rate": 0.15541652946987158
+        },
+        "cer_breakdown": {
+          "cer": 0.32030574941841145,
+          "substitutions": 1005,
+          "insertions": 1192,
+          "deletions": 2622,
+          "reference_character_count": 15045
+        },
+        "mer_wil_breakdown": {
+          "mer": 0.17836652041849477,
+          "wil": 0.35673304083698953,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "edit_total": 1057,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2889
+        },
+        "speaker_wer": {
+          "overall": {
+            "wer": 0.34804082976621664,
+            "substitutions": 261,
+            "insertions": 324,
+            "deletions": 472,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.0859400724399078,
+            "insertion_rate": 0.10668422785643727,
+            "deletion_rate": 0.15541652946987158
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.17836652041849477,
+              "wil": 0.35673304083698953,
+              "substitutions": 261,
+              "insertions": 324,
+              "deletions": 472,
+              "edit_total": 1057,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2889
+            },
+            "speaker_1": {
+              "mer": 0.2306878306878307,
+              "wil": 0.4613756613756614,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 915
+            },
+            "speaker_2": {
+              "mer": 0.15386521308225967,
+              "wil": 0.30773042616451934,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1974
+            }
+          },
+          "speaker_1": {
+            "wer": 0.4471794871794872,
+            "substitutions": 104,
+            "insertions": 136,
+            "deletions": 196,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 915,
+            "mer": 0.2306878306878307,
+            "wil": 0.4613756613756614
+          },
+          "speaker_2": {
+            "wer": 0.3011639185257032,
+            "substitutions": 157,
+            "insertions": 188,
+            "deletions": 276,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1974,
+            "mer": 0.15386521308225967,
+            "wil": 0.30773042616451934
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.32030574941841145,
+              "substitutions": 1005,
+              "insertions": 1192,
+              "deletions": 2622,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.44549950544015826,
+              "substitutions": 438,
+              "insertions": 663,
+              "deletions": 1151,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.256956956956957,
+              "substitutions": 567,
+              "insertions": 529,
+              "deletions": 1471,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        },
+        "cp_wer": {
+          "cp_wer": 0.254126679462572,
+          "cp_wer_breakdown": {
+            "wer": 0.254126679462572,
+            "substitutions": 198,
+            "insertions": 374,
+            "deletions": 90,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.07600767754318619,
+            "insertion_rate": 0.1435700575815739,
+            "deletion_rate": 0.0345489443378119
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "ref_wer": 0.18999012183075403,
+        "ref_wer_breakdown": {
+          "wer": 0.18999012183075403,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.03786631544287125,
+          "insertion_rate": 0.008561080013170892,
+          "deletion_rate": 0.14356272637471187
+        },
+        "delta_vs_ref": 0.1580507079354626,
+        "ref_cer": 0.20711199734130942,
+        "ref_cer_breakdown": {
+          "cer": 0.20711199734130942,
+          "substitutions": 185,
+          "insertions": 176,
+          "deletions": 2755,
+          "reference_character_count": 15045
+        },
+        "delta_cer_vs_ref": 0.11319375207710203,
+        "ref_mer_wil_breakdown": {
+          "mer": 0.10187146892655367,
+          "wil": 0.20374293785310735,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "edit_total": 577,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2627
+        },
+        "delta_mer_vs_ref": 0.0764950514919411,
+        "delta_wil_vs_ref": 0.1529901029838822,
+        "ref_cp_wer": {
+          "cp_wer": 0.061420345489443376,
+          "cp_wer_breakdown": {
+            "wer": 0.061420345489443376,
+            "substitutions": 100,
+            "insertions": 41,
+            "deletions": 19,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.03838771593090211,
+            "insertion_rate": 0.015738963531669866,
+            "deletion_rate": 0.007293666026871401
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "delta_cp_wer_vs_ref": 0.19270633397312864,
+        "speaker_wer_ref_run": {
+          "overall": {
+            "wer": 0.18999012183075403,
+            "substitutions": 115,
+            "insertions": 26,
+            "deletions": 436,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.03786631544287125,
+            "insertion_rate": 0.008561080013170892,
+            "deletion_rate": 0.14356272637471187
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.10187146892655367,
+              "wil": 0.20374293785310735,
+              "substitutions": 115,
+              "insertions": 26,
+              "deletions": 436,
+              "edit_total": 577,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2627
+            },
+            "speaker_1": {
+              "mer": 0.14203565267395055,
+              "wil": 0.2840713053479011,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 764
+            },
+            "speaker_2": {
+              "mer": 0.0840764331210191,
+              "wil": 0.1681528662420382,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1863
+            }
+          },
+          "speaker_1": {
+            "wer": 0.25333333333333335,
+            "substitutions": 32,
+            "insertions": 2,
+            "deletions": 213,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 764,
+            "mer": 0.14203565267395055,
+            "wil": 0.2840713053479011
+          },
+          "speaker_2": {
+            "wer": 0.1600387972841901,
+            "substitutions": 83,
+            "insertions": 24,
+            "deletions": 223,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1863,
+            "mer": 0.0840764331210191,
+            "wil": 0.1681528662420382
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.20711199734130942,
+              "substitutions": 185,
+              "insertions": 176,
+              "deletions": 2755,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.28625123639960437,
+              "substitutions": 45,
+              "insertions": 19,
+              "deletions": 1383,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.16706706706706706,
+              "substitutions": 140,
+              "insertions": 157,
+              "deletions": 1372,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "mer",
+      "metric_value": 0.17836652041849477,
+      "details": {
+        "reference_source": "dataset.pickle",
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "wer_breakdown": {
+          "wer": 0.34804082976621664,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.0859400724399078,
+          "insertion_rate": 0.10668422785643727,
+          "deletion_rate": 0.15541652946987158
+        },
+        "cer_breakdown": {
+          "cer": 0.32030574941841145,
+          "substitutions": 1005,
+          "insertions": 1192,
+          "deletions": 2622,
+          "reference_character_count": 15045
+        },
+        "mer_wil_breakdown": {
+          "mer": 0.17836652041849477,
+          "wil": 0.35673304083698953,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "edit_total": 1057,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2889
+        },
+        "speaker_wer": {
+          "overall": {
+            "wer": 0.34804082976621664,
+            "substitutions": 261,
+            "insertions": 324,
+            "deletions": 472,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.0859400724399078,
+            "insertion_rate": 0.10668422785643727,
+            "deletion_rate": 0.15541652946987158
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.17836652041849477,
+              "wil": 0.35673304083698953,
+              "substitutions": 261,
+              "insertions": 324,
+              "deletions": 472,
+              "edit_total": 1057,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2889
+            },
+            "speaker_1": {
+              "mer": 0.2306878306878307,
+              "wil": 0.4613756613756614,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 915
+            },
+            "speaker_2": {
+              "mer": 0.15386521308225967,
+              "wil": 0.30773042616451934,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1974
+            }
+          },
+          "speaker_1": {
+            "wer": 0.4471794871794872,
+            "substitutions": 104,
+            "insertions": 136,
+            "deletions": 196,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 915,
+            "mer": 0.2306878306878307,
+            "wil": 0.4613756613756614
+          },
+          "speaker_2": {
+            "wer": 0.3011639185257032,
+            "substitutions": 157,
+            "insertions": 188,
+            "deletions": 276,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1974,
+            "mer": 0.15386521308225967,
+            "wil": 0.30773042616451934
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.32030574941841145,
+              "substitutions": 1005,
+              "insertions": 1192,
+              "deletions": 2622,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.44549950544015826,
+              "substitutions": 438,
+              "insertions": 663,
+              "deletions": 1151,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.256956956956957,
+              "substitutions": 567,
+              "insertions": 529,
+              "deletions": 1471,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        },
+        "cp_wer": {
+          "cp_wer": 0.254126679462572,
+          "cp_wer_breakdown": {
+            "wer": 0.254126679462572,
+            "substitutions": 198,
+            "insertions": 374,
+            "deletions": 90,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.07600767754318619,
+            "insertion_rate": 0.1435700575815739,
+            "deletion_rate": 0.0345489443378119
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "ref_wer": 0.18999012183075403,
+        "ref_wer_breakdown": {
+          "wer": 0.18999012183075403,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.03786631544287125,
+          "insertion_rate": 0.008561080013170892,
+          "deletion_rate": 0.14356272637471187
+        },
+        "delta_vs_ref": 0.1580507079354626,
+        "ref_cer": 0.20711199734130942,
+        "ref_cer_breakdown": {
+          "cer": 0.20711199734130942,
+          "substitutions": 185,
+          "insertions": 176,
+          "deletions": 2755,
+          "reference_character_count": 15045
+        },
+        "delta_cer_vs_ref": 0.11319375207710203,
+        "ref_mer_wil_breakdown": {
+          "mer": 0.10187146892655367,
+          "wil": 0.20374293785310735,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "edit_total": 577,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2627
+        },
+        "delta_mer_vs_ref": 0.0764950514919411,
+        "delta_wil_vs_ref": 0.1529901029838822,
+        "ref_cp_wer": {
+          "cp_wer": 0.061420345489443376,
+          "cp_wer_breakdown": {
+            "wer": 0.061420345489443376,
+            "substitutions": 100,
+            "insertions": 41,
+            "deletions": 19,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.03838771593090211,
+            "insertion_rate": 0.015738963531669866,
+            "deletion_rate": 0.007293666026871401
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "delta_cp_wer_vs_ref": 0.19270633397312864,
+        "speaker_wer_ref_run": {
+          "overall": {
+            "wer": 0.18999012183075403,
+            "substitutions": 115,
+            "insertions": 26,
+            "deletions": 436,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.03786631544287125,
+            "insertion_rate": 0.008561080013170892,
+            "deletion_rate": 0.14356272637471187
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.10187146892655367,
+              "wil": 0.20374293785310735,
+              "substitutions": 115,
+              "insertions": 26,
+              "deletions": 436,
+              "edit_total": 577,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2627
+            },
+            "speaker_1": {
+              "mer": 0.14203565267395055,
+              "wil": 0.2840713053479011,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 764
+            },
+            "speaker_2": {
+              "mer": 0.0840764331210191,
+              "wil": 0.1681528662420382,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1863
+            }
+          },
+          "speaker_1": {
+            "wer": 0.25333333333333335,
+            "substitutions": 32,
+            "insertions": 2,
+            "deletions": 213,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 764,
+            "mer": 0.14203565267395055,
+            "wil": 0.2840713053479011
+          },
+          "speaker_2": {
+            "wer": 0.1600387972841901,
+            "substitutions": 83,
+            "insertions": 24,
+            "deletions": 223,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1863,
+            "mer": 0.0840764331210191,
+            "wil": 0.1681528662420382
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.20711199734130942,
+              "substitutions": 185,
+              "insertions": 176,
+              "deletions": 2755,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.28625123639960437,
+              "substitutions": 45,
+              "insertions": 19,
+              "deletions": 1383,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.16706706706706706,
+              "substitutions": 140,
+              "insertions": 157,
+              "deletions": 1372,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "wil",
+      "metric_value": 0.35673304083698953,
+      "details": {
+        "reference_source": "dataset.pickle",
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "wer_breakdown": {
+          "wer": 0.34804082976621664,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.0859400724399078,
+          "insertion_rate": 0.10668422785643727,
+          "deletion_rate": 0.15541652946987158
+        },
+        "cer_breakdown": {
+          "cer": 0.32030574941841145,
+          "substitutions": 1005,
+          "insertions": 1192,
+          "deletions": 2622,
+          "reference_character_count": 15045
+        },
+        "mer_wil_breakdown": {
+          "mer": 0.17836652041849477,
+          "wil": 0.35673304083698953,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "edit_total": 1057,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2889
+        },
+        "speaker_wer": {
+          "overall": {
+            "wer": 0.34804082976621664,
+            "substitutions": 261,
+            "insertions": 324,
+            "deletions": 472,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.0859400724399078,
+            "insertion_rate": 0.10668422785643727,
+            "deletion_rate": 0.15541652946987158
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.17836652041849477,
+              "wil": 0.35673304083698953,
+              "substitutions": 261,
+              "insertions": 324,
+              "deletions": 472,
+              "edit_total": 1057,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2889
+            },
+            "speaker_1": {
+              "mer": 0.2306878306878307,
+              "wil": 0.4613756613756614,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 915
+            },
+            "speaker_2": {
+              "mer": 0.15386521308225967,
+              "wil": 0.30773042616451934,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1974
+            }
+          },
+          "speaker_1": {
+            "wer": 0.4471794871794872,
+            "substitutions": 104,
+            "insertions": 136,
+            "deletions": 196,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 915,
+            "mer": 0.2306878306878307,
+            "wil": 0.4613756613756614
+          },
+          "speaker_2": {
+            "wer": 0.3011639185257032,
+            "substitutions": 157,
+            "insertions": 188,
+            "deletions": 276,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1974,
+            "mer": 0.15386521308225967,
+            "wil": 0.30773042616451934
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.32030574941841145,
+              "substitutions": 1005,
+              "insertions": 1192,
+              "deletions": 2622,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.44549950544015826,
+              "substitutions": 438,
+              "insertions": 663,
+              "deletions": 1151,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.256956956956957,
+              "substitutions": 567,
+              "insertions": 529,
+              "deletions": 1471,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        },
+        "cp_wer": {
+          "cp_wer": 0.254126679462572,
+          "cp_wer_breakdown": {
+            "wer": 0.254126679462572,
+            "substitutions": 198,
+            "insertions": 374,
+            "deletions": 90,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.07600767754318619,
+            "insertion_rate": 0.1435700575815739,
+            "deletion_rate": 0.0345489443378119
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "ref_wer": 0.18999012183075403,
+        "ref_wer_breakdown": {
+          "wer": 0.18999012183075403,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.03786631544287125,
+          "insertion_rate": 0.008561080013170892,
+          "deletion_rate": 0.14356272637471187
+        },
+        "delta_vs_ref": 0.1580507079354626,
+        "ref_cer": 0.20711199734130942,
+        "ref_cer_breakdown": {
+          "cer": 0.20711199734130942,
+          "substitutions": 185,
+          "insertions": 176,
+          "deletions": 2755,
+          "reference_character_count": 15045
+        },
+        "delta_cer_vs_ref": 0.11319375207710203,
+        "ref_mer_wil_breakdown": {
+          "mer": 0.10187146892655367,
+          "wil": 0.20374293785310735,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "edit_total": 577,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2627
+        },
+        "delta_mer_vs_ref": 0.0764950514919411,
+        "delta_wil_vs_ref": 0.1529901029838822,
+        "ref_cp_wer": {
+          "cp_wer": 0.061420345489443376,
+          "cp_wer_breakdown": {
+            "wer": 0.061420345489443376,
+            "substitutions": 100,
+            "insertions": 41,
+            "deletions": 19,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.03838771593090211,
+            "insertion_rate": 0.015738963531669866,
+            "deletion_rate": 0.007293666026871401
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "delta_cp_wer_vs_ref": 0.19270633397312864,
+        "speaker_wer_ref_run": {
+          "overall": {
+            "wer": 0.18999012183075403,
+            "substitutions": 115,
+            "insertions": 26,
+            "deletions": 436,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.03786631544287125,
+            "insertion_rate": 0.008561080013170892,
+            "deletion_rate": 0.14356272637471187
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.10187146892655367,
+              "wil": 0.20374293785310735,
+              "substitutions": 115,
+              "insertions": 26,
+              "deletions": 436,
+              "edit_total": 577,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2627
+            },
+            "speaker_1": {
+              "mer": 0.14203565267395055,
+              "wil": 0.2840713053479011,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 764
+            },
+            "speaker_2": {
+              "mer": 0.0840764331210191,
+              "wil": 0.1681528662420382,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1863
+            }
+          },
+          "speaker_1": {
+            "wer": 0.25333333333333335,
+            "substitutions": 32,
+            "insertions": 2,
+            "deletions": 213,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 764,
+            "mer": 0.14203565267395055,
+            "wil": 0.2840713053479011
+          },
+          "speaker_2": {
+            "wer": 0.1600387972841901,
+            "substitutions": 83,
+            "insertions": 24,
+            "deletions": 223,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1863,
+            "mer": 0.0840764331210191,
+            "wil": 0.1681528662420382
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.20711199734130942,
+              "substitutions": 185,
+              "insertions": 176,
+              "deletions": 2755,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.28625123639960437,
+              "substitutions": 45,
+              "insertions": 19,
+              "deletions": 1383,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.16706706706706706,
+              "substitutions": 140,
+              "insertions": 157,
+              "deletions": 1372,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "cp_wer",
+      "metric_value": 0.254126679462572,
+      "details": {
+        "reference_source": "dataset.pickle",
+        "run_id": "492718d4-cf10-4919-809f-d5f0e4ac305d",
+        "wer_breakdown": {
+          "wer": 0.34804082976621664,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.0859400724399078,
+          "insertion_rate": 0.10668422785643727,
+          "deletion_rate": 0.15541652946987158
+        },
+        "cer_breakdown": {
+          "cer": 0.32030574941841145,
+          "substitutions": 1005,
+          "insertions": 1192,
+          "deletions": 2622,
+          "reference_character_count": 15045
+        },
+        "mer_wil_breakdown": {
+          "mer": 0.17836652041849477,
+          "wil": 0.35673304083698953,
+          "substitutions": 261,
+          "insertions": 324,
+          "deletions": 472,
+          "edit_total": 1057,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2889
+        },
+        "speaker_wer": {
+          "overall": {
+            "wer": 0.34804082976621664,
+            "substitutions": 261,
+            "insertions": 324,
+            "deletions": 472,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.0859400724399078,
+            "insertion_rate": 0.10668422785643727,
+            "deletion_rate": 0.15541652946987158
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.17836652041849477,
+              "wil": 0.35673304083698953,
+              "substitutions": 261,
+              "insertions": 324,
+              "deletions": 472,
+              "edit_total": 1057,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2889
+            },
+            "speaker_1": {
+              "mer": 0.2306878306878307,
+              "wil": 0.4613756613756614,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 915
+            },
+            "speaker_2": {
+              "mer": 0.15386521308225967,
+              "wil": 0.30773042616451934,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1974
+            }
+          },
+          "speaker_1": {
+            "wer": 0.4471794871794872,
+            "substitutions": 104,
+            "insertions": 136,
+            "deletions": 196,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 915,
+            "mer": 0.2306878306878307,
+            "wil": 0.4613756613756614
+          },
+          "speaker_2": {
+            "wer": 0.3011639185257032,
+            "substitutions": 157,
+            "insertions": 188,
+            "deletions": 276,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1974,
+            "mer": 0.15386521308225967,
+            "wil": 0.30773042616451934
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.32030574941841145,
+              "substitutions": 1005,
+              "insertions": 1192,
+              "deletions": 2622,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.44549950544015826,
+              "substitutions": 438,
+              "insertions": 663,
+              "deletions": 1151,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.256956956956957,
+              "substitutions": 567,
+              "insertions": 529,
+              "deletions": 1471,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        },
+        "cp_wer": {
+          "cp_wer": 0.254126679462572,
+          "cp_wer_breakdown": {
+            "wer": 0.254126679462572,
+            "substitutions": 198,
+            "insertions": 374,
+            "deletions": 90,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.07600767754318619,
+            "insertion_rate": 0.1435700575815739,
+            "deletion_rate": 0.0345489443378119
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "ref_run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+        "ref_wer": 0.18999012183075403,
+        "ref_wer_breakdown": {
+          "wer": 0.18999012183075403,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "reference_word_count": 3037,
+          "substitution_rate": 0.03786631544287125,
+          "insertion_rate": 0.008561080013170892,
+          "deletion_rate": 0.14356272637471187
+        },
+        "delta_vs_ref": 0.1580507079354626,
+        "ref_cer": 0.20711199734130942,
+        "ref_cer_breakdown": {
+          "cer": 0.20711199734130942,
+          "substitutions": 185,
+          "insertions": 176,
+          "deletions": 2755,
+          "reference_character_count": 15045
+        },
+        "delta_cer_vs_ref": 0.11319375207710203,
+        "ref_mer_wil_breakdown": {
+          "mer": 0.10187146892655367,
+          "wil": 0.20374293785310735,
+          "substitutions": 115,
+          "insertions": 26,
+          "deletions": 436,
+          "edit_total": 577,
+          "reference_word_count": 3037,
+          "hypothesis_word_count": 2627
+        },
+        "delta_mer_vs_ref": 0.0764950514919411,
+        "delta_wil_vs_ref": 0.1529901029838822,
+        "ref_cp_wer": {
+          "cp_wer": 0.061420345489443376,
+          "cp_wer_breakdown": {
+            "wer": 0.061420345489443376,
+            "substitutions": 100,
+            "insertions": 41,
+            "deletions": 19,
+            "reference_word_count": 2605,
+            "substitution_rate": 0.03838771593090211,
+            "insertion_rate": 0.015738963531669866,
+            "deletion_rate": 0.007293666026871401
+          },
+          "best_reference_preview": "i am the psychiatrist here in this department i came to see you because my gp sent me to see you didnt he yeah yeah he said come and see a trick cyclist cuz then youll be all right come and see us a trick cyclist a psychiatrist yeah he not he not had time to listen to me you see okay hes a gp hes a doctor but i dont think hes very clever hes not very clever because hes not okay getting to getting ",
+          "best_candidate_label": "chronological",
+          "candidates_evaluated": 3,
+          "block_permutations_generated": 2,
+          "distinct_speakers": [
+            1,
+            2
+          ]
+        },
+        "delta_cp_wer_vs_ref": 0.19270633397312864,
+        "speaker_wer_ref_run": {
+          "overall": {
+            "wer": 0.18999012183075403,
+            "substitutions": 115,
+            "insertions": 26,
+            "deletions": 436,
+            "reference_word_count": 3037,
+            "substitution_rate": 0.03786631544287125,
+            "insertion_rate": 0.008561080013170892,
+            "deletion_rate": 0.14356272637471187
+          },
+          "mer_wil": {
+            "overall": {
+              "mer": 0.10187146892655367,
+              "wil": 0.20374293785310735,
+              "substitutions": 115,
+              "insertions": 26,
+              "deletions": 436,
+              "edit_total": 577,
+              "reference_word_count": 3037,
+              "hypothesis_word_count": 2627
+            },
+            "speaker_1": {
+              "mer": 0.14203565267395055,
+              "wil": 0.2840713053479011,
+              "reference_word_count": 975,
+              "hypothesis_word_count": 764
+            },
+            "speaker_2": {
+              "mer": 0.0840764331210191,
+              "wil": 0.1681528662420382,
+              "reference_word_count": 2062,
+              "hypothesis_word_count": 1863
+            }
+          },
+          "speaker_1": {
+            "wer": 0.25333333333333335,
+            "substitutions": 32,
+            "insertions": 2,
+            "deletions": 213,
+            "reference_word_count": 975,
+            "hypothesis_word_count": 764,
+            "mer": 0.14203565267395055,
+            "wil": 0.2840713053479011
+          },
+          "speaker_2": {
+            "wer": 0.1600387972841901,
+            "substitutions": 83,
+            "insertions": 24,
+            "deletions": 223,
+            "reference_word_count": 2062,
+            "hypothesis_word_count": 1863,
+            "mer": 0.0840764331210191,
+            "wil": 0.1681528662420382
+          },
+          "cer": {
+            "overall": {
+              "cer": 0.20711199734130942,
+              "substitutions": 185,
+              "insertions": 176,
+              "deletions": 2755,
+              "reference_character_count": 15045
+            },
+            "speaker_1": {
+              "cer": 0.28625123639960437,
+              "substitutions": 45,
+              "insertions": 19,
+              "deletions": 1383,
+              "reference_character_count": 5055
+            },
+            "speaker_2": {
+              "cer": 0.16706706706706706,
+              "substitutions": 140,
+              "insertions": 157,
+              "deletions": 1372,
+              "reference_character_count": 9990
+            }
+          },
+          "speaker_labels_source": "data/raw/transcripts/transcribed/D0420-S1-T01.json"
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 1,
+    "metric_names": [
+      "wer",
+      "cer",
+      "mer",
+      "wil",
+      "cp_wer"
+    ],
+    "skip_cp_wer": false,
+    "skip_speaker_metrics": false,
+    "workers": 3
+  }
+}
+Eval report written to data/processed/run-eval_20260402T182028Z.txt

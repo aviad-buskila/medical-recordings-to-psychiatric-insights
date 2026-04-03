@@ -1,124 +1,164 @@
 {
-  "timestamp_utc": "20260402T172054Z",
-  "limit": 5,
+  "timestamp_utc": "20260402T182835Z",
+  "limit": 43,
   "selected_recordings": [
     "D0420-S1-T01",
     "D0420-S1-T02",
     "D0420-S1-T03",
     "D0420-S1-T04",
-    "D0420-S1-T05"
+    "D0420-S1-T05",
+    "D0420-S2-T01",
+    "D0420-S3-T01",
+    "D0420-S3-T02",
+    "D0420-S3-T03",
+    "D0420-S4-T01",
+    "D0420-S4-T02",
+    "D0421-S1-T01",
+    "D0421-S1-T02",
+    "D0421-S1-T03",
+    "D0421-S1-T04",
+    "D0421-S1-T05",
+    "D0421-S2-T01",
+    "D0421-S2-T02",
+    "D0421-S3-T01",
+    "D0421-S3-T02",
+    "D0421-S3-T03",
+    "D0421-S3-T04",
+    "D0421-S3-T05",
+    "D0422-S1-T01",
+    "D0422-S1-T02",
+    "D0422-S1-T03",
+    "D0422-S1-T04",
+    "D0422-S2-T01",
+    "D0422-S2-T02",
+    "D0422-S3-T01",
+    "D0422-S3-T02",
+    "D0422-S3-T03",
+    "D0422-S3-T04",
+    "D0422-S3-T05",
+    "D0422-S3-T06",
+    "D0422-S4-T01",
+    "D0422-S4-T02",
+    "D0422-S4-T03",
+    "D0422-S4-T04",
+    "D0422-S4-T05",
+    "D0423-S1-T01",
+    "D0423-S1-T02",
+    "D0423-S1-T03"
   ],
-  "baseline_run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
-  "candidate_run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+  "baseline_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+  "candidate_run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
   "commands": [
-    "python -m src.cli.main run-stt --flavor both --limit 5",
-    "python -m src.cli.main run-eval --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5 --workers auto",
-    "python -m src.cli.main run-llm-judge --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
-    "python -m src.cli.main show-alignment --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
-    "python -m src.cli.main run-bertscore --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --ref-run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5",
-    "python -m src.cli.main insights-extract --run-id 507e804d-4260-406a-b7b5-a97e395ad625 --limit 5 --model medaibase/medgemma1.5:4b",
-    "python -m src.cli.main insights-extract --run-id 22f69385-e088-4e6c-8e63-b148b36f0849 --limit 5 --model medaibase/medgemma1.5:4b"
+    "python -m src.cli.main run-stt --flavor both --limit 43",
+    "python -m src.cli.main run-eval --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --workers 1",
+    "python -m src.cli.main run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
+    "python -m src.cli.main show-alignment --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
+    "python -m src.cli.main run-bertscore --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --batch-size 8",
+    "python -m src.cli.main insights-extract --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --limit 43 --skip-existing --model medaibase/medgemma1.5:4b",
+    "python -m src.cli.main insights-extract --run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --skip-existing --model medaibase/medgemma1.5:4b"
   ],
   "artifacts": {
-    "run_eval_report": "data/processed/run-eval_20260402T172813Z.txt",
-    "run_llm_judge_report": "data/processed/run-llm-judge_20260402T173133Z.txt",
-    "show_alignment_report": "data/processed/show-alignment_20260402T173503Z.txt",
-    "run_bertscore_report": "data/processed/run-bertscore_20260402T173503Z.txt",
+    "run_eval_report": "data/processed/run-eval_20260402T222829Z.txt",
+    "run_llm_judge_report": "data/processed/run-llm-judge_20260403T093504Z.txt",
+    "show_alignment_report": "data/processed/show-alignment_20260403T094016Z.txt",
+    "run_bertscore_report": "data/processed/run-bertscore_20260403T094016Z.txt",
     "insights_extract_artifacts": [
-      "data/processed/insights_extract/insights_extract_507e804d-4260-406a-b7b5-a97e395ad625_20260402T173646Z.json",
-      "data/processed/insights_extract/insights_extract_22f69385-e088-4e6c-8e63-b148b36f0849_20260402T173804Z.json"
+      "data/processed/insights_extract/insights_extract_e7fc04ce-2cb2-427a-afa2-e456438abf8f_20260403T102432Z.json",
+      "data/processed/insights_extract/insights_extract_50a52f67-abce-47b6-939e-271013b3a4e0_20260403T103721Z.json"
     ],
     "analysis_notebooks": [
-      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/model_eval_insights_20260402T172054Z.ipynb",
-      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/show_alignment_visualizer_20260402T172054Z.ipynb",
-      "/Users/aviadbuskila/eleos_health/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T172054Z.ipynb"
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/model_eval_insights_20260402T182835Z.ipynb",
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/show_alignment_visualizer_20260402T182835Z.ipynb",
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T182835Z.ipynb"
     ]
   },
+  "eval_workers": "auto",
+  "bertscore_batch_size": 8,
   "db_summary": {
     "stt_runs": [
       {
-        "run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
+        "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
         "provider": "mlx-whisper",
         "model_name": "mlx-community/whisper-large-v3-turbo",
         "run_scope": "sample",
-        "run_timestamp": "2026-04-02T17:20:54.865871+00:00",
+        "run_timestamp": "2026-04-02T18:28:35.955809+00:00",
         "run_parameters": {
-          "limit": 5,
+          "limit": 43,
           "profile": "default",
           "compute_type": null,
           "allow_fallback": true,
           "fallback_model": "mlx-community/whisper-large-v3-turbo",
-          "total_candidates_with_audio": 5
+          "total_candidates_with_audio": 43
         }
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "provider": "mlx-whisper",
         "model_name": "mlx-community/whisper-large-v3-mlx",
         "run_scope": "sample",
-        "run_timestamp": "2026-04-02T17:22:41.614635+00:00",
+        "run_timestamp": "2026-04-02T19:03:55.561544+00:00",
         "run_parameters": {
-          "limit": 5,
+          "limit": 43,
           "profile": "quality",
           "compute_type": null,
           "allow_fallback": true,
           "fallback_model": "mlx-community/whisper-large-v3-turbo",
-          "total_candidates_with_audio": 5
+          "total_candidates_with_audio": 43
         }
       }
     ],
     "stt_outputs_count_by_run": {
-      "22f69385-e088-4e6c-8e63-b148b36f0849": 5,
-      "507e804d-4260-406a-b7b5-a97e395ad625": 5
+      "e7fc04ce-2cb2-427a-afa2-e456438abf8f": 43,
+      "50a52f67-abce-47b6-939e-271013b3a4e0": 43
     },
     "evaluation_metrics": [
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "cer",
-        "rows": 5,
-        "avg_metric_value": 0.20167790988943932
+        "rows": 43,
+        "avg_metric_value": 0.21619162476226636
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "cp_wer",
-        "rows": 5,
-        "avg_metric_value": 0.10507201380390589
+        "rows": 43,
+        "avg_metric_value": 0.19644360989827955
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "llm_judge_compare",
-        "rows": 5,
-        "avg_metric_value": -0.4
+        "rows": 43,
+        "avg_metric_value": 0.37209302325581395
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "mer",
-        "rows": 5,
-        "avg_metric_value": 0.103146417548898
+        "rows": 43,
+        "avg_metric_value": 0.12815555116764224
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "wer",
-        "rows": 5,
-        "avg_metric_value": 0.19753893588328658
+        "rows": 43,
+        "avg_metric_value": 0.256206331737445
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "wil",
-        "rows": 5,
-        "avg_metric_value": 0.20629283509779603
+        "rows": 43,
+        "avg_metric_value": 0.2563111023352845
       }
     ],
     "insights_count_by_run_model": [
       {
-        "run_id": "22f69385-e088-4e6c-8e63-b148b36f0849",
+        "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
         "insight_model": "medaibase/medgemma1.5:4b",
-        "rows": 5
+        "rows": 43
       },
       {
-        "run_id": "507e804d-4260-406a-b7b5-a97e395ad625",
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "insight_model": "medaibase/medgemma1.5:4b",
-        "rows": 5
+        "rows": 43
       }
     ]
   }

@@ -1,5 +1,7 @@
 # Medical Conversation Intelligence Pipeline
 
+> **Wiki — go deeper:** STT models, metrics, LLM judge, insights, Gemma & MedGemma, pipeline — all in [the repo's Wiki](https://github.com/aviad-buskila/medical-recordings-to-psychiatric-insights/wiki)
+
 An on-prem/local platform for benchmarking speech-to-text models for clinical use by extracting structured psychiatric insights from patient-doctor conversations. Covers the full behavioral health AI stack: STT evaluation, clinical NLP, reproducible pipelines, and multi-metric model comparison analytics.
 
 Built for Apple Silicon. Local-first by design — no audio leaves the machine.
@@ -17,29 +19,39 @@ Built for Apple Silicon. Local-first by design — no audio leaves the machine.
 
 ## Latest benchmark
 
-Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T172054Z.md`**
+Most recent end-to-end run: **`data/processed/full_pipeline/full_pipeline_20260402T182835Z.md`**
 
 | | |
 | --- | --- |
-| Command | `python run_full_pipeline.py --limit 5` |
-| Samples | `D0420-S1-T01` … `D0420-S1-T05` (N=5) |
-| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `22f69385` |
-| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `507e804d` |
-| Insights | MedGemma `medaibase/medgemma1.5:4b` · 5 rows per run |
+| Command | `python run_full_pipeline.py --limit 43 --eval-workers 1` |
+| Samples | `D0420-S1-T01` … `D0423-S1-T03` (N=43) |
+| Baseline STT | `mlx-community/whisper-large-v3-turbo` · run `50a52f67` |
+| Candidate STT | `mlx-community/whisper-large-v3-mlx` · run `e7fc04ce` |
+| Insights | MedGemma `medaibase/medgemma1.5:4b` · 43 rows per run |
 
-Mean metrics vs gold:
+Mean lexical metrics (candidate vs gold):
 
-| Metric | Baseline | Candidate | Δ (c−b) |
-| --- | ---: | ---: | ---: |
-| WER | 0.180 | 0.198 | +0.018 |
-| CER | 0.182 | 0.202 | +0.020 |
-| MER | 0.095 | 0.103 | +0.008 |
-| WIL | 0.190 | 0.206 | +0.017 |
-| cpWER | 0.082 | 0.105 | +0.023 |
-| BERTScore F1 (`roberta-large`, rescale on) | 0.147 | 0.144 | −0.003 |
-| LLM judge (mean comparative delta, N=5) | — | — | −0.4 |
+| Metric | Candidate |
+| --- | ---: |
+| WER | 0.256 |
+| CER | 0.216 |
+| MER | 0.128 |
+| WIL | 0.256 |
+| cpWER | 0.196 |
 
-Lower is better for WER/CER/MER/WIL/cpWER. LLM judge delta negative means baseline was preferred. These are point estimates over five files — see `analysis/statistical_significance.ipynb` before drawing conclusions.
+Comparative semantic/judge summary:
+
+| Metric | Result |
+| --- | ---: |
+| BERTScore F1 (`roberta-large`, candidate mean, N=43) | 0.199 |
+| BERTScore F1 (`roberta-large`, baseline mean, N=43) | 0.197 |
+| BERTScore ΔF1 (candidate−baseline mean, N=43) | +0.002 |
+| LLM judge wins (candidate / baseline / ties) | 27 / 13 / 3 |
+| LLM judge mean comparative delta (candidate−baseline, N=43) | +0.372 |
+
+Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, higher is better for the candidate. See `analysis/statistical_significance.ipynb` before drawing significance conclusions.
+
+BERTScore figures above used the code default encoder (`roberta-large` via `BERTSCORE_MODEL` unset). If you copy `.env.example` to `.env`, `BERTSCORE_MODEL` is set to a biomedical encoder instead — rerun evals to compare under that setting.
 
 ---
 
@@ -162,7 +174,7 @@ python -m src.cli.main run-stt --flavor both --limit 5         # Both profiles o
 python -m src.cli.main run-eval --run-id <UUID> --workers auto
 python -m src.cli.main run-eval --run-id <CANDIDATE> --ref-run-id <BASELINE> --workers auto
 
-# Semantic metric (BERTScore)
+# Semantic metric (BERTScore; see BERTSCORE_MODEL in Configuration)
 python -m src.cli.main run-bertscore --run-id <UUID>
 python -m src.cli.main run-bertscore --run-id <CANDIDATE> --ref-run-id <BASELINE>
 
@@ -191,6 +203,9 @@ python run_full_pipeline.py --skip-stt --baseline-run-id <UUID> --candidate-run-
 
 # Skip evals, re-run notebooks and report only
 python run_full_pipeline.py --skip-stt --skip-evals --baseline-run-id <UUID> --candidate-run-id <UUID>
+
+# Low RAM (sequential lexical eval + small BERTScore batches)
+python run_full_pipeline.py --limit 43 --eval-workers 1 --bertscore-batch-size 1
 ```
 
 Runs both STT profiles → all evaluations → insights extraction → notebook execution → consolidated Markdown report at `data/processed/full_pipeline/full_pipeline_<timestamp>.md`.
@@ -260,7 +275,7 @@ See `.env.example`. Key variables:
 | `OLLAMA_JUDGE_MODEL` | Model for LLM-as-judge evaluation |
 | `OLLAMA_INSIGHTS_MODEL` | Model for clinical insight extraction |
 | `DATASET_PICKLE_PATH` | Gold transcript source |
-| `BERTSCORE_MODEL` | Encoder for BERTScore (default: `roberta-large`) |
+| `BERTSCORE_MODEL` | Encoder for BERTScore. **Code default** (no env var): `roberta-large`. **`.env.example`** sets `dmis-lab/biobert-base-cased-v1.2` so a copied `.env` uses BioBERT unless you change it. |
 
 ---
 
@@ -301,7 +316,7 @@ Expected local path: `data/raw/dataset.pickle`
 
 - **Synthetic dataset**: Gold transcripts are scripted dialogue, not naturalistic psychiatric sessions. Real clinical audio would produce different benchmarks.
 - **Whisper struggles with medical terminology**: Drug names, dosages, and acronyms (SSRI, DSM-5, GAD, PTSD) have elevated error rates without domain fine-tuning — precisely the highest-value terms in psychiatric transcription.
-- **General-purpose BERTScore encoder**: `roberta-large` wasn't trained on clinical text. A biomedical encoder (BioBERT, SciBERT) would produce more meaningful semantic similarity scores.
+- **BERTScore encoder choice**: With the code default (`roberta-large`), scores reflect a general encoder not tuned for clinical text. The sample `.env` uses BioBERT (`dmis-lab/biobert-base-cased-v1.2`) for more domain-appropriate similarity; other biomedical encoders (e.g. SciBERT) are also reasonable overrides via `BERTSCORE_MODEL`.
 - **Self-reported confidence**: The `confidence` field in insights comes from the LLM's own output — it is not a calibrated probability.
 - **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
 - **Sequential pipeline**: Steps run sequentially. Production deployment would require async execution, batching, and a job queue.

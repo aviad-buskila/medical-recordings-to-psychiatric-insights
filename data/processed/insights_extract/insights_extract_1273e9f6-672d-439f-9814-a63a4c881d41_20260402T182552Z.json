@@ -1,0 +1,63 @@
+{
+  "command": "insights_extract",
+  "run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+  "timestamp_utc": "20260402T182552Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-turbo",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T18:16:47.112265+00:00",
+    "run_parameters": {
+      "limit": 1,
+      "profile": "default",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 1
+    }
+  },
+  "sample_filter": null,
+  "limit": 1,
+  "samples_processed": 1,
+  "timing": {
+    "total_elapsed_s": 18.083,
+    "avg_elapsed_s_per_sample": 18.067
+  },
+  "results": [
+    {
+      "run_id": "1273e9f6-672d-439f-9814-a63a4c881d41",
+      "sample_id": "D0420-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents to the emergency clinic following a referral from their GP. Patient reports feeling 'bonkers' and 'not very clever' due to a perceived lack of time from their GP to listen to their concerns about a 'cure for world hunger'. Patient describes a recent interaction with their sister, Libby, who called them 'bonkers' and told them to 'get the fuck away from her'. Patient has been working intensely on this 'cure' for the past week, involving finding numbers in newspapers and using a chart to correlate them, believing this is a divine message from God. Patient reports God telling them they are 'fantastic' and 'doing a really good job', and that they should show this to people. Patient has been neglecting sleep and basic needs, stating they don't need sleep because of the 'energy inside me'. Patient reports hearing God's voice in their ears, describing it as loud and coming from a 'big guy with a big beard' (referred to as 'beardy'). Patient has been showing copies of their work to the Pope and Archbishop of Canterbury with no response. Patient feels 'fantastic' and 'full of energy', believing they are 'more clever than other people'. Patient denies any prior history of similar experiences or depression, although they did take Prozac long ago which they believe was ineffective. Patient reports no physical health issues. Patient expresses frustration with the current 'boss' (consultant) and wants to talk to the 'top person' or 'top dog'.\",\n  \"history_of_present_illness\": \"Patient reports a recent onset of intense energy and bright ideas, believing they are working on a 'cure for world hunger' guided by God. This has led to neglecting sleep and basic needs. Patient feels 'fantastic' and 'full of energy', believing they are 'more clever than other people'.",
+      "transcript_preview": "I am the psychiatrist here in this department. I came to see you because my GP sent me to see you, didn't he? Yeah, yeah. He said, come and see a trick cyclist, because then you'll be all right. Come and see a trick cyclist? A psychiatrist? Yeah. He not had time to listen to me, you see. Okay. He's a GP. He's a doctor. But I don't think he's very clever. He's not very clever because he's not okay. Getting to this, you see, he won't let me talk about this. He sort of listens to it sometimes, but ",
+      "timing": {
+        "elapsed_s": 18.067,
+        "transcript_char_count": 13312,
+        "transcript_word_count": 2626
+      }
+    }
+  ]
+}
