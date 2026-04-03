@@ -54,7 +54,8 @@
     "python -m src.cli.main run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
     "python -m src.cli.main show-alignment --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
     "python -m src.cli.main run-bertscore --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --batch-size 8",
-    "python -m src.cli.main insights-extract --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --limit 43 --skip-existing --model medaibase/medgemma1.5:4b"
+    "python -m src.cli.main insights-extract --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --limit 43 --skip-existing --model medaibase/medgemma1.5:4b",
+    "python -m src.cli.main insights-extract --run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --skip-existing --model medaibase/medgemma1.5:4b"
   ],
   "artifacts": {
     "run_eval_report": "data/processed/run-eval_20260402T222829Z.txt",
@@ -63,7 +64,102 @@
     "run_bertscore_report": "data/processed/run-bertscore_20260403T094016Z.txt",
     "insights_extract_artifacts": [
       "data/processed/insights_extract/insights_extract_e7fc04ce-2cb2-427a-afa2-e456438abf8f_20260403T102432Z.json",
-      null
+      "data/processed/insights_extract/insights_extract_50a52f67-abce-47b6-939e-271013b3a4e0_20260403T103721Z.json"
+    ],
+    "analysis_notebooks": [
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/model_eval_insights_20260402T182835Z.ipynb",
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/show_alignment_visualizer_20260402T182835Z.ipynb",
+      "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T182835Z.ipynb"
+    ]
+  },
+  "eval_workers": "1",
+  "bertscore_batch_size": 8,
+  "db_summary": {
+    "stt_runs": [
+      {
+        "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-turbo",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T18:28:35.955809+00:00",
+        "run_parameters": {
+          "limit": 43,
+          "profile": "default",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 43
+        }
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "provider": "mlx-whisper",
+        "model_name": "mlx-community/whisper-large-v3-mlx",
+        "run_scope": "sample",
+        "run_timestamp": "2026-04-02T19:03:55.561544+00:00",
+        "run_parameters": {
+          "limit": 43,
+          "profile": "quality",
+          "compute_type": null,
+          "allow_fallback": true,
+          "fallback_model": "mlx-community/whisper-large-v3-turbo",
+          "total_candidates_with_audio": 43
+        }
+      }
+    ],
+    "stt_outputs_count_by_run": {
+      "e7fc04ce-2cb2-427a-afa2-e456438abf8f": 43,
+      "50a52f67-abce-47b6-939e-271013b3a4e0": 43
+    },
+    "evaluation_metrics": [
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "cer",
+        "rows": 43,
+        "avg_metric_value": 0.2161916247622663
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "cp_wer",
+        "rows": 43,
+        "avg_metric_value": 0.19644360989827953
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "llm_judge_compare",
+        "rows": 104,
+        "avg_metric_value": 0.75
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "mer",
+        "rows": 43,
+        "avg_metric_value": 0.1281555511676422
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "wer",
+        "rows": 43,
+        "avg_metric_value": 0.256206331737445
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "metric_name": "wil",
+        "rows": 43,
+        "avg_metric_value": 0.2563111023352845
+      }
+    ],
+    "insights_count_by_run_model": [
+      {
+        "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 43
+      },
+      {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "insight_model": "medaibase/medgemma1.5:4b",
+        "rows": 43
+      }
     ]
   }
 }

@@ -1,0 +1,328 @@
+{
+  "command": "insights_extract",
+  "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+  "timestamp_utc": "20260403T103721Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-turbo",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T18:28:35.955809+00:00",
+    "run_parameters": {
+      "limit": 43,
+      "profile": "default",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 43
+    }
+  },
+  "sample_filter": null,
+  "limit": 43,
+  "skip_existing": true,
+  "samples_skipped_existing": 35,
+  "samples_processed": 8,
+  "timing": {
+    "total_elapsed_s": 136.365,
+    "avg_elapsed_s_per_sample": 17.029
+  },
+  "results": [
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0422-S4-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The user is feeling stuck and overwhelmed in their job search, particularly in the field of library science. They are sending out one job application per week, which isn't yielding results. They feel trapped and consider pursuing further education (like a PhD) but are hesitant due to cost and lack of interest in programming. They also feel discouraged about networking, believing it's too difficult and that they don't know anyone in the field. The user is feeling anxious and is looking for advice on how to move forward. The therapist offers practical suggestions: send one job application per week, try networking by reconnecting with old contacts or finding the 'least scary' people to email, and framing networking as reconnecting rather than asking for a job directly. The therapist also reassures the user about the insurance situation, noting that it was just a request for more information and not a denial, offering a glimmer of hope.\",\n  \"analysis\": {\n    \"user_state\": \"Feeling stuck, overwhelmed, anxious, discouraged, trapped in job search.\",\n    \"key_issues\": [\n      \"Lack of job applications leading to no results.\",\n      \"Feeling trapped and considering drastic measures (further education).\",\n      \"Fear and discouragement regarding networking.\",\n      \"Anxiety about the insurance situation.\",\n      \"General feeling of helplessness and lack of progress.\"\n    ],\n    \"therapist_response_elements\": [\n      \"Validation of feelings (stuck, overwhelmed).\",\n      \"Practical advice: Send one job application per week.\",\n      \"Practical advice: Try networking (reconnecting, least scary contacts).\",\n      \"Reframing networking (reconnecting, not asking for a job).\",\n      \"Reassurance about the insurance situation (not a denial).\",\n      \"Encouragement and belief in",
+      "transcript_preview": "where do you want to start today I'm not sure like things are getting better with Sidney like when we talked after the fight so I think the problem I guess is my tone of voice when I'm mad at him and because like when we get into an argument you know and he says I'm yelling at him I'm like I'm not yelling he's like well you sound really upset yeah and I'm like I am really upset like I mean I guess the solution then is to figure out how to my tone of voice do you hear what he's saying like do you",
+      "timing": {
+        "elapsed_s": 18.568,
+        "transcript_char_count": 38718,
+        "transcript_word_count": 7654
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0422-S4-T02",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The therapist and patient discussed the patient's ongoing anxiety and panic attacks. The patient reported difficulty sleeping due to anxiety, including waking up in the middle of the night and feeling panicky. The patient also mentioned feeling tired, possibly due to the constant anxiety, and experiencing stomach acid. The therapist suggested trying a timed breathing exercise (inhale 4, hold 4, exhale 4) to help manage anxiety and potentially improve sleep. The patient found the holding part slightly dizzying but noted they are used to holding their breath for longer periods due to singing. The therapist emphasized that the dizziness is likely due to focusing on the breath in a new way and not dangerous. The therapist suggested trying the exercise when not panicking, but also as a tool during panic attacks if the patient feels safe. The therapist also discussed the patient's medication changes, specifically the lower dose of Wellbutrin and the Klonopin, noting that the patient is still experiencing significant suffering despite the changes. The therapist suggested the patient call her psychiatrist to discuss the intermediate steps, such as spreading out the Klonopin dose or considering other options like Ambien for sleep, while acknowledging the patient's preference to avoid adding another medication. The therapist suggested focusing on lowering the general anxiety baseline to improve sleep, as sleep deprivation exacerbates anxiety. The patient agreed to try the timed breathing exercise and to call her psychiatrist about the medication plan. The therapist scheduled the next appointment for Monday.\",\n  \"key_points\": [\n    \"Patient continues to experience significant anxiety and panic attacks.\",\n    \"Difficulty sleeping due to anxiety, including waking up panicky and feeling tired.\",\n    \"Stomach acid issue noted.\",\n    \"Therapist introduced timed breathing exercise (inhale 4, hold 4, exhale 4).\",\n    \"Patient found holding breath slightly dizzying but",
+      "transcript_preview": "So you've been having a rough time. Yeah, more panic attacks and stuff. It was really Sydney who wanted me to get the extra appointment. So I said sure because it was starting to get really rough on him because it wasn't like I wanted to hurt myself. It was me asking him, like trying to convince him that it would be that he'd be better off if I were dead and stuff, which I guess I like something that's really hard to listen to. Is that how you feel? That's how I feel when I'm in that much panic ",
+      "timing": {
+        "elapsed_s": 18.406,
+        "transcript_char_count": 35452,
+        "transcript_word_count": 6698
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0422-S4-T03",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The user is scheduling a therapy session for the following week. They are not available next week due to holidays. They suggest rescheduling for the week of January 2nd, proposing a time of 12:45 PM on Thursday, January 2nd. The user confirms this time and expresses gratitude. The conversation ends with well wishes for the holidays.",
+        "session_id": "session_12345",
+        "date": "2023-12-20",
+        "time": "12:45 PM",
+        "location": "Online",
+        "participants": [
+          "Therapist",
+          "User"
+        ],
+        "topic": "Scheduling therapy session",
+        "key_points": [
+          "User is not available next week due to holidays.",
+          "User suggests rescheduling for the week of January 2nd.",
+          "User proposes 12:45 PM on Thursday, January 2nd.",
+          "User confirms the proposed time.",
+          "User expresses gratitude.",
+          "Conversation ends with holiday wishes."
+        ],
+        "next_session_date": "2023-01-02",
+        "next_session_time": "12:45 PM",
+        "next_session_day": "Thursday",
+        "next_session_location": "Online",
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The user is scheduling a therapy session for the following week. They are not available next week due to holidays. They suggest rescheduling for the week of January 2nd, proposing a time of 12:45 PM on Thursday, January 2nd. The user confirms this time and expresses gratitude. The conversation ends with well wishes for the holidays.\",\n  \"session_id\": \"session_12345\",\n  \"date\": \"2023-12-20\",\n  \"time\": \"12:45 PM\",\n  \"location\": \"Online\",\n  \"participants\": [\"Therapist\", \"User\"],\n  \"topic\": \"Scheduling therapy session\",\n  \"key_points\": [\n    \"User is not available next week due to holidays.\",\n    \"User suggests rescheduling for the week of January 2nd.\",\n    \"User proposes 12:45 PM on Thursday, January 2nd.\",\n    \"User confirms the proposed time.\",\n    \"User expresses gratitude.\",\n    \"Conversation ends with holiday wishes.\"\n  ],\n  \"next_session_date\": \"2023-01-02\",\n  \"next_session_time\": \"12:45 PM\",\n  \"next_session_day\": \"Thursday\",\n  \"next_session_location\": \"Online\"\n}",
+      "transcript_preview": "Yeah, they're doing some painting. Probably the next time it'll be the new furniture. Oh, wow. Yeah, so painting furniture and... So I defended my dissertation. Oh, congratulations. Thank you. How did it go? It went fine. It was not the best presentation I've ever given, but it was good enough. So I got the dissertation done early Friday morning, flew to Ohio on Sunday, made my slides, and I finished those Tuesday morning and then gave the talk an hour later. So not the way I would recommend doi",
+      "timing": {
+        "elapsed_s": 15.739,
+        "transcript_char_count": 19662,
+        "transcript_word_count": 3754
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0422-S4-T04",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The provided text is a transcript of a conversation between Cecilia and David. Cecilia is discussing her feelings about her relationship with Victor, her anxieties about his future, and her recent dream. She expresses feelings of insecurity and a desire for independence, while also acknowledging her need for support from David. She reflects on the deceptive nature of the dream, comparing it to how she sometimes feels about situations. She also discusses her fear of being alone in India and her desire to feel secure on her own, while recognizing that David's presence can be comforting but also potentially stifling. The conversation touches on themes of anxiety, independence, support, and navigating relationships.\",\n  \"key_topics\": [\n    \"Cecilia's relationship with Victor\",\n    \"Anxiety and insecurity\",\n    \"Desire for independence vs. need for support\",\n    \"Recent dream analysis\",\n    \"Fear of being alone\",\n    \"Navigating relationships and future\",\n    \"Anxiety about career and dreams\",\n    \"Social anxiety and fear of judgment\",\n    \"Self-perception and age\",\n    \"Comfort vs. independence in relationships\"\n  ],\n  \"tone\": \"Conversational, reflective, anxious, seeking support\",\n  \"potential_insights\": [\n    \"Cecilia struggles with balancing her desire for independence and self-reliance with her need for emotional support, particularly from David.\",\n    \"Her anxiety seems linked to her relationship with Victor and her fear of his future actions impacting her own.\",\n    \"The dream serves as a metaphor for her feelings about navigating life's challenges and her perception of deception in relationships.\",\n    \"She feels a sense of inadequacy or being a 'sidekick' in her relationship with Victor, which contributes to her insecurity.\",\n    \"Her fear of being alone, especially in unfamiliar environments like",
+      "transcript_preview": "Hi. Sorry. How are you? Fine, thank you. Excuse me. Bless you. I had my nice yesterday. Let's see, school is over for the semester, but I wanted longer. It probably kind of feels like I missed that structure, but I'm kind of a little sad about theater department. I went to see my roommate yesterday, and she said they keep finding people, but for some reason, these people don't want my room, so I've already paid for the December rent without actually living there, and I've paid for the January re",
+      "timing": {
+        "elapsed_s": 18.401,
+        "transcript_char_count": 20031,
+        "transcript_word_count": 3981
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0422-S4-T05",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The speaker is reflecting on a difficult family visit with their wife, Tanya, where they encountered significant differences in their values and approaches to life, particularly concerning responsibility and ethics. The speaker feels frustrated and angry, and worries about the impact of their anger on Tanya, especially given her history of mental illness and ECT. They struggle with how to address these issues with Tanya, fearing that expressing their anger might trigger a negative reaction or relapse, while also feeling that suppressing it is unsustainable and potentially harmful to the marriage. The speaker acknowledges the difficulty of knowing what Tanya can and cannot handle, especially given the unpredictable nature of her illness. They are considering seeking professional help to navigate these conversations and find a more sustainable way forward in their marriage, although they are unsure of the specifics or timing. The conversation ends with the speaker agreeing to consider meeting with a therapist.",
+        "key_themes": [
+          "Marital conflict",
+          "Differing values and ethics",
+          "Anger and frustration",
+          "Impact of mental illness (ECT)",
+          "Communication challenges",
+          "Uncertainty about the future",
+          "Seeking professional help"
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The speaker is reflecting on a difficult family visit with their wife, Tanya, where they encountered significant differences in their values and approaches to life, particularly concerning responsibility and ethics. The speaker feels frustrated and angry, and worries about the impact of their anger on Tanya, especially given her history of mental illness and ECT. They struggle with how to address these issues with Tanya, fearing that expressing their anger might trigger a negative reaction or relapse, while also feeling that suppressing it is unsustainable and potentially harmful to the marriage. The speaker acknowledges the difficulty of knowing what Tanya can and cannot handle, especially given the unpredictable nature of her illness. They are considering seeking professional help to navigate these conversations and find a more sustainable way forward in their marriage, although they are unsure of the specifics or timing. The conversation ends with the speaker agreeing to consider meeting with a therapist.\",\n  \"key_themes\": [\n    \"Marital conflict\",\n    \"Differing values and ethics\",\n    \"Anger and frustration\",\n    \"Impact of mental illness (ECT)\",\n    \"Communication challenges\",\n    \"Uncertainty about the future\",\n    \"Seeking professional help\"\n  ]\n}",
+      "transcript_preview": "one. Hi, come on in. Thank you. Good morning. So last week, this time, I think I was out of practice, was part of it just like it had been a long time. And I think, so you asked if I knew I was frustrated. And I don't know what I said, if I answered that at the time, but I had known that I was frustrated, but not perhaps the extent to which I was not talking about being frustrated and thus had difficulty talking about being frustrated with you. My friend Franco is applying for academic jobs righ",
+      "timing": {
+        "elapsed_s": 13.817,
+        "transcript_char_count": 17765,
+        "transcript_word_count": 3385
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0423-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"Seamus is struggling with his marriage and feels unheard and unappreciated by his wife. He expresses his anger and frustration, feeling like he's living a lie and is tired of the hypocrisy in his marriage. He feels trapped and overwhelmed, and his wife seems to be ignoring his needs for emotional and physical intimacy. He feels like he's not getting the support he needs and is considering leaving. He expresses his anger and frustration to his therapist, Dr. K., who validates his feelings and encourages him to be honest about his needs and boundaries. Dr. K. suggests that Seamus needs to communicate his needs clearly and assertively, and that his wife's clinginess might be a sign of her own unresolved issues. Dr. K. advises Seamus to focus on his own well-being and to seek support from his network of friends and colleagues. Dr. K. also suggests that Seamus should consider seeking professional help for his marriage, such as couples counseling, but emphasizes that he needs to be willing to engage fully and honestly in the process. Dr. K. reassures Seamus that he is brave for addressing his issues and encourages him to take steps towards resolving the conflict in his marriage. Dr. K. offers to be a resource for Seamus, providing contact information for counselors and encouraging him to reach out if he needs further support. Seamus expresses his gratitude for Dr. K.'s support and acknowledges his own need for self-compassion.\",\n  \"analysis\": {\n    \"key_themes\": [\n      \"Marital conflict\",\n      \"Communication breakdown\",\n      \"Unmet needs (emotional/physical intimacy)\",\n      \"Anger and frustration\",\n      \"Feeling unheard/unappreciated\",\n      \"Hypocrisy in marriage\",\n      \"Seeking professional help\",\n      \"Self-compassion\",\n",
+      "transcript_preview": "Well, what's happening? I don't know where to begin. So probably best place is present moment, which is just trying to figure out where I'm at present moment wise, which is probably going to the course or the session where I'm at this morning is Lieutenant Danes strapped to the mass of the boat raging against the storm. Why? That's where I'm at. It's a good thing that I get the movie reference because whenever I find whenever I use movie reference in classes, all of mine are from the 90s and the",
+      "timing": {
+        "elapsed_s": 18.51,
+        "transcript_char_count": 45658,
+        "transcript_word_count": 8732
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0423-S1-T02",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The conversation focuses on the complex dynamics of a relationship facing a significant betrayal, specifically the loss of trust due to Tanya's actions. The speaker reflects on the nature of responsibility, the difficulty of healing from such a breach, and the potential need for professional help. Key themes include the impact of Tanya's actions on the speaker, the speaker's anger and hurt, the concept of obligation versus choice in responsibility, the difficulty of being nice when angry, and the potential value of couples therapy in navigating the healing process.",
+        "key_points": [
+          "The speaker is dealing with the aftermath of a significant betrayal by Tanya, leading to a loss of trust.",
+          "The speaker expresses anger and hurt, reflecting on the difficulty of navigating these emotions.",
+          "The speaker contemplates the nature of responsibility, distinguishing between obligations that might be difficult to control and choices that are more volitional.",
+          "The speaker acknowledges the difficulty of being kind to Tanya while feeling angry.",
+          "The speaker suggests that couples therapy might be beneficial for both Tanya and the speaker to help navigate the healing process and regain trust.",
+          "The speaker reflects on the potential relevance of historical events like the Brown v. Board of Education decision in understanding responsibility, even if the context is different.",
+          "The speaker acknowledges the need to stop the conversation for the day."
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The conversation focuses on the complex dynamics of a relationship facing a significant betrayal, specifically the loss of trust due to Tanya's actions. The speaker reflects on the nature of responsibility, the difficulty of healing from such a breach, and the potential need for professional help. Key themes include the impact of Tanya's actions on the speaker, the speaker's anger and hurt, the concept of obligation versus choice in responsibility, the difficulty of being nice when angry, and the potential value of couples therapy in navigating the healing process.\",\n  \"key_points\": [\n    \"The speaker is dealing with the aftermath of a significant betrayal by Tanya, leading to a loss of trust.\",\n    \"The speaker expresses anger and hurt, reflecting on the difficulty of navigating these emotions.\",\n    \"The speaker contemplates the nature of responsibility, distinguishing between obligations that might be difficult to control and choices that are more volitional.\",\n    \"The speaker acknowledges the difficulty of being kind to Tanya while feeling angry.\",\n    \"The speaker suggests that couples therapy might be beneficial for both Tanya and the speaker to help navigate the healing process and regain trust.\",\n    \"The speaker reflects on the potential relevance of historical events like the Brown v. Board of Education decision in understanding responsibility, even if the context is different.\",\n    \"The speaker acknowledges the need to stop the conversation for the day.\"\n  ]\n}",
+      "transcript_preview": "hi come on in oh thank you thank you good morning good morning so I'm not sure where to start again we left off last time you know being in the middle of things I guess but not really like it's sort of like we talk and talk and then we get to really hard things and then the session eventually winds down or ends but I don't know how to pick right back up to where we were does it feel like there were particular hard things that we keep getting to or does it just feel like lots of hard things come ",
+      "timing": {
+        "elapsed_s": 15.244,
+        "transcript_char_count": 25871,
+        "transcript_word_count": 5023
+      }
+    },
+    {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "sample_id": "D0423-S1-T03",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient presents for follow-up, discussing challenges with managing partner's mood volatility and navigating academic/professional stressors. Patient reports applying insights from previous sessions regarding accepting things as not ideal but still good, and not tracking mood day-to-day. Patient describes difficulties with academic pressures, including a recent conference experience where their poster was perceived as 'crappy' but still 'good' in the sense that it was still valuable work, despite not being ideal. Patient is working on a postdoc application, acknowledging it won't be ideal but aiming for a 'good' application. Patient reports ongoing difficulties with partner's mood volatility, noting she has good days but also fragile moods that can impact the household (e.g., dinner decisions). Patient reports partner is becoming more involved in church and community, which is seen as positive. Patient reports stopping couples counseling due to perceived issues with the therapist's approach, specifically his tendency to push Tanya towards specific answers rather than listening to her, leading to distress and a firm denial from Tanya. Patient describes the therapist's response as not syncing with their experience and feeling like he wasn't hearing them. Patient reports feeling bad about the referral, suggesting the therapist may not have been a good match. Patient expresses curiosity about the therapist's perspective and acknowledges the potential for a 'game' dynamic in their conversations. Patient reports a recent conversation with the therapist where they felt they had covered their main points, but the therapist seemed curious about their thoughts, leading to a pause in the session. Patient reports feeling a sense of 'turned into a game' but not in a negative way, describing it as a 'funny' dynamic where they wait for each other to speak. Patient reports the session ended with a pause, and they are unsure how to proceed. Patient reports a recent couples counseling experience where they stopped attending due to the",
+      "transcript_preview": "Good morning. Good morning. So I can't remember. It was last time we met that you gave me two pieces of advice. I don't remember if it was advice over two sessions, but you, the first one was you suggested that I was going to be okay in one of two ways. That is very helpful. And the other was that you suggested that you thought it would be, that you would wish for me, that I not, that I accept things as not ideal, but also good or able to do that in general. So I've been both trying to, both on,",
+      "timing": {
+        "elapsed_s": 17.55,
+        "transcript_char_count": 13127,
+        "transcript_word_count": 2495
+      }
+    }
+  ]
+}
