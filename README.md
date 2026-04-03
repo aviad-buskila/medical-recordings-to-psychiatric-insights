@@ -195,6 +195,9 @@ python run_full_pipeline.py --skip-stt --baseline-run-id <UUID> --candidate-run-
 
 # Skip evals, re-run notebooks and report only
 python run_full_pipeline.py --skip-stt --skip-evals --baseline-run-id <UUID> --candidate-run-id <UUID>
+
+# Low RAM (sequential lexical eval + small BERTScore batches)
+python run_full_pipeline.py --limit 43 --eval-workers 1 --bertscore-batch-size 1
 ```
 
 Runs both STT profiles → all evaluations → insights extraction → notebook execution → consolidated Markdown report at `data/processed/full_pipeline/full_pipeline_<timestamp>.md`.
