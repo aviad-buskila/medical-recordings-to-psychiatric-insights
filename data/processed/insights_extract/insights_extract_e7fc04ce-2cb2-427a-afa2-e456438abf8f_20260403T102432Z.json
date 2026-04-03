@@ -1,0 +1,340 @@
+{
+  "command": "insights_extract",
+  "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+  "timestamp_utc": "20260403T102432Z",
+  "insight_model": "medaibase/medgemma1.5:4b",
+  "prompt_version": "v2",
+  "stt_run_info": {
+    "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+    "provider": "mlx-whisper",
+    "model_name": "mlx-community/whisper-large-v3-mlx",
+    "run_scope": "sample",
+    "run_timestamp": "2026-04-02T19:03:55.561544+00:00",
+    "run_parameters": {
+      "limit": 43,
+      "profile": "quality",
+      "compute_type": null,
+      "allow_fallback": true,
+      "fallback_model": "mlx-community/whisper-large-v3-turbo",
+      "total_candidates_with_audio": 43
+    }
+  },
+  "sample_filter": null,
+  "limit": 43,
+  "skip_existing": true,
+  "samples_skipped_existing": 35,
+  "samples_processed": 8,
+  "timing": {
+    "total_elapsed_s": 136.816,
+    "avg_elapsed_s_per_sample": 17.087
+  },
+  "results": [
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0422-S4-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The user is feeling stuck and hopeless about finding a job in their field, despite sending out job applications. They feel trapped and overwhelmed. The therapist suggests a structured approach: sending one job application per week and engaging in networking, starting with the least scary person. The therapist emphasizes that networking isn't about asking for a job directly but about reconnecting and letting people know they are looking, hoping for a referral or lead. The therapist encourages the user to set a low bar for networking, starting with the least scary person, and suggests that the hardest part is the initial contact, not the follow-up. The therapist reassures the user that they can handle the scary parts, given their ability to handle panic attacks. The therapist also notes that the insurance process is still ongoing and might take longer.\",\n  \"analysis\": \"The user expresses significant distress and hopelessness regarding their job search. They feel overwhelmed by the process and lack of progress. The therapist's response is empathetic and practical, breaking down the overwhelming task into manageable steps. The core strategies are: 1. **Structured Job Application:** Focusing on one application per week to reduce the feeling of being constantly overwhelmed. 2. **Networking:** Introducing networking as a necessary but potentially daunting step. The therapist reframes networking not as a direct ask for a job, but as a reconnecting and informational process. 3. **Starting Small:** Recommending starting networking with the 'least scary' person to lower the barrier to entry and build confidence. 4. **Focusing on the Initial Contact:** Highlighting that the hardest part is often the initial outreach, not the subsequent follow-up. 5. **Self-Compassion and Reassurance:** Acknowledging the user's feelings of being trapped and offering reassurance based on their past resilience (handling panic attacks). 6. **Addressing Other Concerns",
+      "transcript_preview": "where do you want to start today I'm not sure like things are getting better with Sydney like when we talked after the fight so I think the problem I guess is my tone of voice when I'm mad at him and because like when we get into an argument you know and he says I'm yelling at him I'm like I'm not yelling he's like well you sound really upset yeah and I'm like I am really upset like I mean I guess the solution then is to figure out how to fix my tone of voice do you hear what he's saying like do",
+      "timing": {
+        "elapsed_s": 18.498,
+        "transcript_char_count": 41180,
+        "transcript_word_count": 8115
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0422-S4-T02",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The user is experiencing anxiety and panic attacks, possibly related to medication changes (Klonopin and Welbutrin). They are feeling overwhelmed and have difficulty sleeping due to panic. The therapist is trying to help them manage their anxiety and panic attacks using relaxation techniques like deep breathing and muscle relaxation. They are also exploring options like taking Ambien as needed for sleep disruption, but are hesitant due to past experience. The therapist is emphasizing the cycle of anxiety and sleep deprivation and suggests focusing on lowering the general anxiety baseline to improve sleep. They are practicing deep breathing exercises, specifically 'time to breathing' (inhale 4, hold 4, exhale 4), to help manage the physical sensations of panic and anxiety. The therapist is encouraging the user to try these techniques when they are not panicking but can practice them when they are, noting that the dizziness is not dangerous but might be related to focusing too much on the breath. The therapist is also exploring medication adjustments, including potentially spreading out the Klonopin dose or considering Ambien, but emphasizes consulting the psychiatrist for the best plan. The session ends with a plan to return to the clinic on Monday for a regular appointment.\",\n  \"analysis\": {\n    \"key_issues\": [\n      \"Anxiety and Panic Attacks\",\n      \"Medication Changes (Klonopin, Welbutrin)\",\n      \"Sleep Disruption\",\n      \"Difficulty Managing Panic Symptoms\",\n      \"Exploring Relaxation Techniques\",\n      \"Considering Medication Adjustments (Ambien, Klonopin dose)\",\n      \"Cycle of Anxiety and Sleep Deprivation\"\n    ],\n    \"therapist_actions\": [\n      \"Guided Relaxation Exercises (Deep Breathing, Muscle Relaxation)\",\n      \"Introduced 'Time to Breathing' technique (inhale 4, hold 4, exhale 4)\",\n      \"",
+      "transcript_preview": "So you've been having a rough time. Yeah, more panic attacks and stuff. It was really Sydney who wanted me to get the extra appointment, so I said sure because it was starting to get really rough on him because it wasn't like I wanted to hurt myself. It was me asking him, like trying to convince him that it would be that he'd be better off if I were dead and stuff, which I guess I like something that's really hard to listen to. Is that how you feel? Yeah, that's how I feel when I'm in that much ",
+      "timing": {
+        "elapsed_s": 18.362,
+        "transcript_char_count": 36893,
+        "transcript_word_count": 7100
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0422-S4-T03",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The user is scheduling a therapy session for the following week, starting January 2nd. They are not available next Wednesday, but are available on Thursday, January 2nd, at 12:45 PM. The user confirms they will be available for the subsequent Wednesdays.",
+        "next_step": "Confirm the scheduling of the session for January 2nd at 12:45 PM and acknowledge the user's availability for the following Wednesdays.",
+        "action": [
+          {
+            "type": "confirm_schedule",
+            "details": {
+              "date": "January 2nd",
+              "time": "12:45 PM",
+              "user_availability": "Yes",
+              "next_wednesdays": "Yes"
+            }
+          },
+          {
+            "type": "acknowledge",
+            "details": "Confirm the session time and date."
+          }
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The user is scheduling a therapy session for the following week, starting January 2nd. They are not available next Wednesday, but are available on Thursday, January 2nd, at 12:45 PM. The user confirms they will be available for the subsequent Wednesdays.\",\n  \"next_step\": \"Confirm the scheduling of the session for January 2nd at 12:45 PM and acknowledge the user's availability for the following Wednesdays.\",\n  \"action\": [\n    {\"type\": \"confirm_schedule\", \"details\": {\"date\": \"January 2nd\", \"time\": \"12:45 PM\", \"user_availability\": \"Yes\", \"next_wednesdays\": \"Yes\"}},\n    {\"type\": \"acknowledge\", \"details\": \"Confirm the session time and date.\"}\n  ]\n}",
+      "transcript_preview": "Yeah, they're doing some painting. Probably the next time it'll be the new furniture. Oh wow. Yeah, so painting furniture and... So I defended my dissertation. Oh, congratulations. Thank you. How did it go? It went fine. It was not the best presentation I've ever given, but it was good enough. So I got the dissertation done early Friday morning, flew to Ohio on Sunday, made my slides, and I finished those Tuesday morning and then give the talk an hour later. So not the way I would recommend doin",
+      "timing": {
+        "elapsed_s": 11.564,
+        "transcript_char_count": 20949,
+        "transcript_word_count": 4064
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0422-S4-T04",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The provided text is a transcript of a conversation between Cecilia and Seth. Cecilia is reflecting on her recent dreams, particularly one involving flying and deceptive objects. She discusses her feelings of insecurity and the need for security, mentioning her relationship with David and her past relationship with Victor. She also touches upon her anxieties about navigating foreign cities and her desire to pursue her dreams despite potential risks. Seth encourages her to focus on her career and dreams, reminding her that her past relationship with Victor was toxic and that she shouldn't let it ruin her future. Cecilia expresses her fear of losing her career and her difficulty in letting go of Victor, even though she knows it's not healthy. She talks about the anxiety of having freedom and the difficulty of feeling secure on her own. The conversation ends with a reminder about their next meeting and a Christmas greeting.",
+        "key_topics": [
+          "Cecilia's dreams and anxieties",
+          "Insecurity and need for security",
+          "Relationship with David",
+          "Past relationship with Victor",
+          "Fear of losing career",
+          "Anxiety about freedom",
+          "Navigating foreign cities",
+          "Pursuing dreams vs. past trauma"
+        ],
+        "main_themes": [
+          "Emotional vulnerability and insecurity",
+          "Dealing with past trauma and toxic relationships",
+          "The struggle for self-reliance and security",
+          "Fear of failure and loss of dreams",
+          "The importance of focusing on the present and future"
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The provided text is a transcript of a conversation between Cecilia and Seth. Cecilia is reflecting on her recent dreams, particularly one involving flying and deceptive objects. She discusses her feelings of insecurity and the need for security, mentioning her relationship with David and her past relationship with Victor. She also touches upon her anxieties about navigating foreign cities and her desire to pursue her dreams despite potential risks. Seth encourages her to focus on her career and dreams, reminding her that her past relationship with Victor was toxic and that she shouldn't let it ruin her future. Cecilia expresses her fear of losing her career and her difficulty in letting go of Victor, even though she knows it's not healthy. She talks about the anxiety of having freedom and the difficulty of feeling secure on her own. The conversation ends with a reminder about their next meeting and a Christmas greeting.\",\n  \"key_topics\": [\n    \"Cecilia's dreams and anxieties\",\n    \"Insecurity and need for security\",\n    \"Relationship with David\",\n    \"Past relationship with Victor\",\n    \"Fear of losing career\",\n    \"Anxiety about freedom\",\n    \"Navigating foreign cities\",\n    \"Pursuing dreams vs. past trauma\"\n  ],\n  \"main_themes\": [\n    \"Emotional vulnerability and insecurity\",\n    \"Dealing with past trauma and toxic relationships\",\n    \"The struggle for self-reliance and security\",\n    \"Fear of failure and loss of dreams\",\n    \"The importance of focusing on the present and future\"\n  ]\n}",
+      "transcript_preview": "Hi. Sorry. How are you? Fine, thank you. Excuse me. Bless you. I had my nice yesterday. Let's see, school is over for the semester, but I wanted longer. It probably kind of feels like I missed that structure, but I'm kind of a little sad about theater department. I went to see my roommate yesterday, and she said they keep finding people, but for some reason, these people don't want my room, so I've already paid for the December rent without actually living there, and I've paid for the January re",
+      "timing": {
+        "elapsed_s": 16.358,
+        "transcript_char_count": 21509,
+        "transcript_word_count": 4314
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0422-S4-T05",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The speaker is reflecting on a difficult visit with their wife, Tanya, who is dealing with the aftermath of an ECT procedure for her mental illness. The speaker feels frustrated and angry, particularly regarding Tanya's family's different approach to life and her desire to take on responsibilities again. The speaker struggles with how to express their anger without causing further harm to Tanya, who has limited memory of the traumatic period they went through. The speaker feels stuck on the inability to know the exact impact of their anger on Tanya, even though they understand it can be destructive. They are unsure of a practical strategy for communicating their frustrations and concerns about Tanya's well-being and responsibilities, acknowledging the difficulty of balancing their own anger with concern for her safety and mental health. The speaker expresses a desire to figure out a sustainable way forward in their marriage, suggesting a regular meeting might be helpful, but is unsure about the logistics and timing.\",\n  \"key_themes\": [\n    \"Marital conflict\",\n    \"Mental illness (ECT)\",\n    \"Anger and frustration\",\n    \"Communication difficulties\",\n    \"Family dynamics\",\n    \"Responsibility and control\",\n    \"Uncertainty and coping mechanisms\",\n    \"Seeking help/therapy\"\n  ],\n  \"potential_next_steps_or_questions\": [\n    \"How does the speaker plan to manage their anger?\",\n    \"What specific strategies might help them communicate with Tanya?\",\n    \"What support systems does the speaker have?\",\n    \"How does the speaker feel about the possibility of therapy?\",\n    \"What are the practical constraints affecting the speaker's ability to change their approach?\",\n    \"How does the speaker feel about Tanya's family's influence?\",\n    \"What are the speaker's long-term goals for the marriage?\"",
+      "transcript_preview": "Hi, come on in. Thank you. Good morning. So last week, this time, I think I was out of practice, was part of it, just like it had been a long time. And I think, so you asked if I knew I was frustrated. And I don't know what I said if I answered that at the time, but I had known that I was frustrated, but not perhaps the extent to which I was not talking about being frustrated and thus had difficulty talking about being frustrated with you. My friend Franco is applying for academic jobs right now",
+      "timing": {
+        "elapsed_s": 18.314,
+        "transcript_char_count": 18804,
+        "transcript_word_count": 3628
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0423-S1-T01",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"Seamus is struggling with his marriage and his wife's clingy behavior. He feels stuck and dishonest, and he's been told by a counselor that his needs for physical and emotional intimacy are normal and healthy. He's been working on being more honest about his feelings and needs, and he's starting to see his wife's clinginess as unreasonable. He's also been working on his own anger and frustration, and he's feeling more in control. He's been talking to a friend, who is also going through a similar situation, and they are trying to support each other. He's also been working on setting boundaries and communicating his needs more clearly. He's looking for professional help and has started researching counselors. He's feeling brave and hopeful about making changes in his marriage.\",\n  \"analysis\": {\n    \"key_themes\": [\n      \"Marriage difficulties\",\n      \"Clingy behavior\",\n      \"Communication\",\n      \"Honesty\",\n      \"Setting boundaries\",\n      \"Anger management\",\n      \"Seeking help\",\n      \"Self-awareness\",\n      \"Hope and bravery\"\n    ],\n    \"emotional_arc\": [\n      \"Frustration and feeling stuck\",\n      \"Anger and frustration\",\n      \"Self-reflection and honesty\",\n      \"Understanding and acceptance\",\n      \"Hope and bravery\",\n      \"Seeking support\"\n    ],\n    \"character_development\": [\n      \"Seamus starts feeling overwhelmed and dishonest, but through therapy and self-reflection, he becomes more aware of his needs, more honest about his feelings, and more courageous in addressing the issues.\",\n      \"He learns to identify his anger and frustration as unproductive, leading to better emotional regulation.\",\n      \"He recognizes the normalcy of his",
+      "transcript_preview": "Well, what's happening? I don't know where to begin. So probably best place is present moment, which is just trying to figure out where I'm at present moment wise, which is probably going to the course or the session where I'm at this morning is Lieutenant Danes strapped to the mass of the boat raging against the storm. Why? That's where I'm at. It's a good thing that I get the movie reference because whenever I find whenever I use movie reference in classes, all of mine are from the 90s and the",
+      "timing": {
+        "elapsed_s": 18.399,
+        "transcript_char_count": 47326,
+        "transcript_word_count": 9152
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0423-S1-T02",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "summary": "The conversation focuses on the complex dynamics of a relationship after a significant betrayal of trust, specifically an affair. The speaker discusses the difficulty of healing, the concept of responsibility in relationships, the parallels between infidelity and other forms of betrayal, and the potential need for professional help like couples therapy. The speaker reflects on the nature of obligations and responsibilities in relationships, contrasting them with the concept of reprisosity. The conversation touches upon the speaker's own anger and the challenges of being nice to someone they love while feeling angry. The speaker also mentions the Brown v. Board of Education case as an analogy for understanding responsibility, even when someone is not meeting their obligations. The conversation ends with a plan to continue the discussion next week.",
+        "key_themes": [
+          "Betrayal of trust",
+          "Infidelity",
+          "Relationship healing",
+          "Responsibility in relationships",
+          "Obligations vs. Reprisosity",
+          "Anger in relationships",
+          "Couples therapy",
+          "Analogy (Brown v. Board of Education)"
+        ],
+        "potential_next_steps": [
+          "Exploring the specific details of the affair and its impact.",
+          "Discussing the speaker's feelings of anger and how to manage them.",
+          "Developing strategies for communicating with Tanya about the betrayal and the need for change.",
+          "Considering the feasibility and benefits of couples therapy.",
+          "Reflecting on the speaker's own role in the relationship and how they can contribute to healing.",
+          "Addressing the speaker's feelings of responsibility towards Tanya, even amidst anger."
+        ],
+        "risk_flags": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "symptoms": [],
+        "clinical_presentation": "",
+        "confidence": null,
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"summary\": \"The conversation focuses on the complex dynamics of a relationship after a significant betrayal of trust, specifically an affair. The speaker discusses the difficulty of healing, the concept of responsibility in relationships, the parallels between infidelity and other forms of betrayal, and the potential need for professional help like couples therapy. The speaker reflects on the nature of obligations and responsibilities in relationships, contrasting them with the concept of reprisosity. The conversation touches upon the speaker's own anger and the challenges of being nice to someone they love while feeling angry. The speaker also mentions the Brown v. Board of Education case as an analogy for understanding responsibility, even when someone is not meeting their obligations. The conversation ends with a plan to continue the discussion next week.\",\n  \"key_themes\": [\n    \"Betrayal of trust\",\n    \"Infidelity\",\n    \"Relationship healing\",\n    \"Responsibility in relationships\",\n    \"Obligations vs. Reprisosity\",\n    \"Anger in relationships\",\n    \"Couples therapy\",\n    \"Analogy (Brown v. Board of Education)\"\n  ],\n  \"potential_next_steps\": [\n    \"Exploring the specific details of the affair and its impact.\",\n    \"Discussing the speaker's feelings of anger and how to manage them.\",\n    \"Developing strategies for communicating with Tanya about the betrayal and the need for change.\",\n    \"Considering the feasibility and benefits of couples therapy.\",\n    \"Reflecting on the speaker's own role in the relationship and how they can contribute to healing.\",\n    \"Addressing the speaker's feelings of responsibility towards Tanya, even amidst anger.\"\n  ]\n}",
+      "transcript_preview": "Hi, come on in. Oh, thank you. Thank you. Good morning. Good morning. So I'm not sure where to start again. We left off last time, you know, being in the middle of things, I guess, but not really like it's sort of like we talk and talk and then we get to really hard things and then the session eventually winds down or ends. But I don't know how to pick right back up to where we were. Does it feel like there were particular hard things that we keep getting to or does it just feel like lots of har",
+      "timing": {
+        "elapsed_s": 17.379,
+        "transcript_char_count": 27840,
+        "transcript_word_count": 5239
+      }
+    },
+    {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "sample_id": "D0423-S1-T03",
+      "insight_model": "medaibase/medgemma1.5:4b",
+      "prompt_version": "v2",
+      "insights": {
+        "clinical_presentation": "",
+        "risk_flags": [],
+        "symptoms": [],
+        "diagnostic_hypotheses": [],
+        "recommended_followup": [],
+        "confidence": null,
+        "parse_error": "Model output was not valid JSON.",
+        "evidence": {
+          "risk_flags": [],
+          "diagnostic_hypotheses": [],
+          "recommended_followup": []
+        },
+        "guardrail": {
+          "name": "evidence_quote_required_for_claims",
+          "dropped_unsupported_claims": 0
+        },
+        "prompt_version": "v2"
+      },
+      "raw_output": "{\n  \"clinical_presentation\": \"Patient reports difficulty accepting things as not ideal but still good, and applying this to academic situations like poster presentations. Patient describes a complex relationship with academic events, viewing them as never ideal but still good, acknowledging parts are not good. Patient is working on a postdoc application and recently gave posters at two conferences, one Monday night (described as not ideal but good) and one Wednesday night (described as very good). Patient expresses difficulty applying this 'not ideal but good' concept to the Monday night poster session, feeling it was 'crappy' but acknowledging it wasn't 'good' in the sense of being a privilege. Patient mentions a history of difficulty with couples counseling, citing a specific instance where a therapist pressed Tanya too hard about suicidal ideation, leading to Tanya's refusal to discuss the topic and the couple stopping counseling. Patient describes Tanya's mood as still fragile, with good days and bad days, but significant setbacks can have a large impact. Tanya is becoming more involved in church and community, which is seen as positive. Patient notes Tanya's mood is somewhat unpredictable, though not entirely unpredicted, as the effect of specific things is hard to predict. Patient describes a game-like interaction with the interviewer about their curiosity, indicating a desire to share thoughts while also being curious about the interviewer's. Patient reports a complex relationship with couples counseling, citing a specific instance where a therapist pressed Tanya too hard about suicidal ideation, leading to Tanya's refusal to discuss the topic and the couple stopping counseling. Patient describes Tanya's mood as still fragile, with good days and bad days, but significant setbacks can have a large impact. Tanya is becoming more involved in church and community, which is seen as positive. Patient notes Tanya's mood is somewhat unpredictable, though not entirely unpredicted, as the effect of specific things is hard to predict",
+      "transcript_preview": "Good morning. Good morning. So I can't remember. It was last time we met that you gave me two pieces of advice. I don't remember if it was advice over two sessions, but you, the first one was you suggested that I was going to be okay in one of two ways. That is very helpful. And the other was that you suggested that you thought it would be that you would wish for me that I not, that I accept things as not ideal, but also good or able to do that in general. So I've been both trying to both on cer",
+      "timing": {
+        "elapsed_s": 17.82,
+        "transcript_char_count": 14079,
+        "transcript_word_count": 2715
+      }
+    }
+  ]
+}

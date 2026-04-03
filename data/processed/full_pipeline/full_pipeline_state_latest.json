@@ -53,12 +53,17 @@
     "python -m src.cli.main run-eval --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --workers 1",
     "python -m src.cli.main run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
     "python -m src.cli.main show-alignment --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
-    "python -m src.cli.main run-bertscore --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --batch-size 8"
+    "python -m src.cli.main run-bertscore --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43 --batch-size 8",
+    "python -m src.cli.main insights-extract --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --limit 43 --skip-existing --model medaibase/medgemma1.5:4b"
   ],
   "artifacts": {
     "run_eval_report": "data/processed/run-eval_20260402T222829Z.txt",
     "run_llm_judge_report": "data/processed/run-llm-judge_20260403T093504Z.txt",
     "show_alignment_report": "data/processed/show-alignment_20260403T094016Z.txt",
-    "run_bertscore_report": "data/processed/run-bertscore_20260403T094016Z.txt"
+    "run_bertscore_report": "data/processed/run-bertscore_20260403T094016Z.txt",
+    "insights_extract_artifacts": [
+      "data/processed/insights_extract/insights_extract_e7fc04ce-2cb2-427a-afa2-e456438abf8f_20260403T102432Z.json",
+      null
+    ]
   }
 }
