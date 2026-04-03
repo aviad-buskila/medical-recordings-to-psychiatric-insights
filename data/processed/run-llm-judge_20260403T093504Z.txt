@@ -1,0 +1,750 @@
+Command line: /Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43
+Report path: data/processed/run-llm-judge_20260403T093504Z.txt
+=== Terminal output captured below ===
+LLM judge evaluation completed.
+
+
+===== EVAL REPORT RESULTS (mirrors DB rows) =====
+{
+  "eval_name": "run-llm-judge",
+  "command_line": "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/src/cli/main.py run-llm-judge --run-id e7fc04ce-2cb2-427a-afa2-e456438abf8f --ref-run-id 50a52f67-abce-47b6-939e-271013b3a4e0 --limit 43",
+  "report_path": "data/processed/run-llm-judge_20260403T093504Z.txt",
+  "run_metadata": {
+    "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+    "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+    "sample_id": null,
+    "candidate_run_info": {
+      "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-mlx",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T19:03:55.561544+00:00",
+      "run_parameters": {
+        "limit": 43,
+        "profile": "quality",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 43
+      }
+    },
+    "ref_run_info": {
+      "run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+      "provider": "mlx-whisper",
+      "model_name": "mlx-community/whisper-large-v3-turbo",
+      "run_scope": "sample",
+      "run_timestamp": "2026-04-02T18:28:35.955809+00:00",
+      "run_parameters": {
+        "limit": 43,
+        "profile": "default",
+        "compute_type": null,
+        "allow_fallback": true,
+        "fallback_model": "mlx-community/whisper-large-v3-turbo",
+        "total_candidates_with_audio": 43
+      }
+    }
+  },
+  "metrics": [
+    {
+      "sample_id": "D0420-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a significantly higher level of accuracy and completeness compared to the baseline. While both transcripts capture the core content of the dialogue, the candidate transcript includes more specific details, accurate phrasing, and a more natural flow. The baseline transcript, while understandable, consistently misses nuances, introduces minor errors in transcription (e.g., 'it's' vs 'it is'), and sometimes deviates from the intended meaning. The candidate does a much better job of preserving the patient's rambling and somewhat nonsensical speech, which is crucial for a clinical record. The baseline often simplifies this, losing important clinical context. The candidate exhibits a more robust comprehension of the text. Finally, the candidate contains far fewer omissions.",
+          "score_delta": 3.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -1.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "tie",
+          "rationale": "Both transcripts are remarkably similar and accurately represent the REFERENCE dialogue. The baseline is slightly better due to more precise phrasing ('nine' instead of 'nine' for example) and retaining the original punctuation more consistently. The candidate transcript has minor deviations in phrasing like 'I will listen to your heart and lunch' instead of 'lungs,' which is a transcription error. Overall, the quality is very high for both.",
+          "score_delta": -1.0,
+          "baseline_overall_score": 10.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript contains several noticeable errors and additions not present in the reference or baseline. These include inaccuracies such as stating this was the patient's 'fifth' suicide attempt when the reference states it was the 'first', and introducing the character 'Bill'. The baseline transcript is almost identical to the reference, with only minor punctuation/formatting differences, demonstrating a superior level of accuracy and adherence to the original dialogue. The candidate demonstrates more significant deviations from the source material.",
+          "score_delta": -2.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 7.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The Candidate transcript contains a series of significant errors and deviations from the Reference and Baseline.  While it captures the general flow of the conversation, it includes numerous inaccuracies in wording, sentence structure, and details. For example, it erroneously includes repeated phrases and adds filler words ('get work get what I have') that are not present in the reference text, and it misrepresents specific details from the conversation. The Baseline transcript is much closer to the Reference, maintaining the intended meaning and structure of the original dialogue with minimal variation, while also avoiding the errors found in the Candidate. Both texts omit some of the minor articles and prepositions, however, Candidate's deviation is beyond acceptable clinical transcription margin. ",
+          "score_delta": -2.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 7.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S1-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript maintains a very high degree of fidelity to the REFERENCE, with only minor deviations (e.g., slight rephrasing, addition of a few filler words). It accurately captures the essence of the conversation and the physician's explanations. The baseline transcript contains more significant omissions and alterations, impacting the clarity and accuracy of the content. For example, the baseline skips over the explanation of adrenaline, which is critical to understanding the discussion on panic attacks, and misses crucial clarifications and patient statements. The language, while similar, isn't as precisely captured. Thus, the candidate represents a much closer and more accurate transcription of the original dialogue.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S2-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more accurate and complete. It preserves most details from the reference, whereas the baseline transcript omits numerous phrases and sentences, creating a truncated and less informative record. While the baseline conveys the general gist, it misses key details that impact the clinical interpretation. The candidate is also more free flowing.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S3-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript exhibits several significant deviations from the reference dialogue, primarily through inaccuracies and additions that alter the meaning or flow of the conversation. The candidate transcript frequently includes phrases or sentences that are not present in the reference, such as 'I want to be around bunches of people' and 'I love being with my friends'. It also misrepresents information. For example, the candidate incorrectly states that the daughters are 'One is five and one is seven', when the reference indicates they are just 'two young daughters'.  Additionally, some phrasing is awkward or inaccurate, impacting clarity. The baseline transcript captures the essence of the conversation more faithfully, preserving the meaning and details accurately. While both transcripts contain errors of transcription, the baseline possesses a greater degree of accuracy and coherence, making it superior in representing the original dialogue.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S3-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a better understanding of the nuances and complexities of the conversation, showing a stronger attempt to capture the speaker's intent and tone. While both transcripts convey the gist of the dialogue, the candidate's rendition incorporates more detail and a more natural flow, even when containing a few minor grammatical errors. The baseline transcript excessively simplifies the dialogue, omitting crucial contextual cues and specific phrasing that contribute to the richness of the original exchange.  The 'I don't hold a stake for myself for days' repetition in the candidate transcription highlights a misinterpretation of the speaker's delivery, although it isn't an egregious error.  Overall, the candidate's transcript more accurately reflects the original text.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S3-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript significantly improves clarity and flow compared to the baseline. The baseline transcript contains numerous repetitive phrases ('She had a whole lot of people giving her a job. She had a whole lot of people giving her bad advice.') and grammatical errors, as well as many unnecessary repetitions and poor word choice (e.g., 'I think it's a good question. I think it's a good question.') creating a confusing and disjointed reading experience. The candidate's version streamlines these issues while maintaining the essence of the original dialogue. While there's some minor paraphrasing in the candidate transcript, it significantly enhances readability without sacrificing content.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S4-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript contains numerous inaccuracies and omissions compared to the baseline and reference. There are significant word choices that alter the meaning of the dialogue.  For example, 'I figured you were running late' vs. 'I figured you were running late' in the baseline.  Several phrases are altered or truncated (e.g., \"Ian's sleeping over\" vs. \"He's going to sleep in my bed tonight\"). Many conversational fillers and pauses were also added to the candidate transcript which wasn’t present in the baseline, giving a less accurate reflection of the spoken exchange. The baseline accurately captures the flow, tone, and key details of the conversation, making it the superior transcription.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0420-S4-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a significantly higher level of accuracy and completeness compared to the baseline. While the baseline captures the essence of the conversation, it omits several key details and phrases present in the candidate transcript, leading to a less comprehensive and nuanced representation of the dialogue. The candidate version includes more specific details regarding the client's experiences, family history, and emotional state, showcasing a more thorough transcription effort. Minor inaccuracies or word choices do not detract significantly from the overall superior quality of the candidate's work.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a slightly higher level of accuracy in capturing the nuances of the conversation, including some of the more complex phrasing and hesitations.  While both transcripts convey the core content, the candidate version is more complete and represents the original reference more closely. Baseline contains numerous filler words ('like', 'you know') excessively, and some missing phrasing. The candidate transcript has some minor redundancy but maintains a better structure and detail. The score delta reflects the candidate's closer adherence to the reference dialogue.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S1-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a markedly better understanding and preservation of the nuances of the original dialogue. While it misses some minor punctuation or wording choices (e.g., 'rural billing' instead of 'regular billing,' some slight wording variations) it captures the complex emotional state and conversational flow far more accurately. The baseline transcript simplifies several sentences and misses key details related to the narrative about the post office, Dave's suggestions, and the suicide ideation, significantly impacting the overall clinical value and diagnostic potential of the record. The candidate effectively conveys the patient's distress and provides a more complete picture of their experience. The baseline's omissions diminish its reliability for a clinical context. Certain phrases are also simplified which diminishes the information captured by the baseline. ",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S1-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript contains numerous repetitions of phrases and conversational filler (e.g., 'Yeah, Yeah, Yeah') which, while grammatically correct, significantly deviates from the reference.  The baseline transcript attempts to fix this by removing much of this repetition. However, the baseline transcript's aggressive editing results in a loss of the speaker's original tone and some detail, making the response feel overly concise and clinical compared to the more natural flow of the original.  Candidate captures tone well but needs a bit more cleaning.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S1-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more complete and accurate compared to the baseline. The baseline transcript has numerous omissions and inaccuracies, drastically altering the meaning and flow of the conversation. For example, large chunks of dialogue are missing, and many phrases are altered, making the transcript substantially less faithful to the reference.  The candidate is missing a few minor words but generally follows the reference closely. The baseline demonstrates a lack of diligence in transcribing, presenting a highly compromised representation of the original dialogue. Therefore, the candidate transcript is the clear winner.",
+          "score_delta": 3.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S1-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript exhibits several significant errors including added words (e.g., 'It's a deaf person') and misinterpretations/fabrications (e.g., 'She's a deaf person'). The Baseline transcript contains very minor discrepancies, such as \"grad school who are in the Denver area this weekend\" instead of \"grad school were in the Denver area this weekend.\" These are minor grammatical corrections; the content and meaning remain very close to the reference. Overall, the candidate’s inaccuracies significantly detract from its quality.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S2-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a significantly higher degree of accuracy in capturing the nuances and complexities of the dialogue compared to the baseline. While both transcripts convey the general meaning, the candidate transcript includes more specific details and phrasing from the reference, indicating better comprehension and transcription skills. The baseline transcript occasionally misses or alters critical details, which negatively impacts the overall assessment. Specifically, the candidate retained more unique vocabulary and conversational turns of phrase.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S2-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a higher degree of accuracy and completeness compared to the baseline. While both transcripts capture the essence of the conversation, the candidate's version contains fewer omissions and errors. For instance, the reference mentions the detail 'He's like, are you sure you didn't put them somewhere else?', a detail that the baseline misses. Conversely, the candidate's transcript is verbose and contains repetitive phrases ('It's not like I'm blind or anything with these, so…Like, I…') which, while not inaccurate, detract from its overall clarity and professionalism. Overall, the candidate's transcript is a closer match to the reference in terms of factual accuracy despite some verbosity.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S3-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript deviates significantly from the reference text, particularly in the inclusion of numerous repeated phrases like 'for me' and numerous extra, unnecessary sentences, such as 'and she has to restart the whole evaluation and diagnostic process over with a new therapist', which isn't in the reference. While the candidate captures the overall conversation, the excessive repetition and added material detract from the accuracy and coherence of the transcription. The baseline is more closely aligned with the intended dialogue.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S3-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more complete and accurate than the baseline. The baseline demonstrates many omissions and several errors in capturing the details of the conversation. While the baseline conveys the general meaning, it misses numerous specific details and phrases that are crucial to understanding the nuance of the discussion.  The candidate transcript captures the complexity and flow of the dialogue much more faithfully, demonstrating better comprehension and transcription accuracy, even with the speaker's occasional rambling.  Some phrasing differences are present due to natural transcription variations, but the candidate's accuracy is consistently superior.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S3-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript contains numerous transcription errors, including repeated words, added characters, and incorrect phrasing. However, it retains substantially more of the speaker's original meaning and flow. The baseline transcript significantly simplifies and omits much of the dialogue, losing nuances and details crucial for accurate representation. While both contain errors, the candidate retains more of the original content, earning a higher score.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S3-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript demonstrates significant omissions and inaccuracies compared to the baseline and reference. Many sentences are truncated or missing crucial details, leading to a distorted representation of the dialogue's meaning. While it captures the general topic, it lacks the richness and complexity of the original. The baseline is much more closely aligned with the reference transcript. The candidate is missing substantial portions of the dialog, making it a less useful representation.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0421-S3-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more complete and accurately reflects the nuances of the conversation. The baseline transcript misses numerous key phrases, sentences, and shifts in topic, especially in the long passages describing anxieties and complex reasoning. The candidate accurately captures the speaker’s conversational style and concerns regarding relationships and career. While both transcripts contain errors, the candidate’s higher fidelity to the REFERENCE makes it the clear winner. The baseline's omissions make it less useful for clinical purposes.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more accurate and complete than the baseline. While both capture the general gist of the conversation, the candidate transcript retains a much greater level of detail, nuanced phrasing, and conversational flow, faithfully representing the speaker's expressions and hesitations. The baseline transcript, while generally understandable, misses a considerable amount of detail and simplifies many statements, resulting in a less comprehensive and accurate record of the interaction. The candidate also correctly captures more of the speaker’s rambling, conversational style which, while sometimes grammatically incorrect, is important for conveying tone and meaning.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S1-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript exhibits a higher degree of accuracy in capturing the nuances of the speaker's dialogue compared to the baseline. While both transcripts convey the general content, the candidate's transcription is more faithful to the speaker's phrasing, including pauses, hesitations (e.g., 'I don't know,' repeated phrases), and slightly more complex sentence structures. The baseline transcript simplifies or omits details that contribute to the overall meaning and flow of the conversation. For instance, the repeated phrases and slight pauses in the candidate demonstrate better accuracy. The baseline has many repetitions and some omissions. The baseline has more grammatical errors and less accurate descriptions.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S1-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript includes numerous inaccuracies and omissions compared to the reference transcript. These include misattributions, incorrect paraphrasing of statements, and significant omissions of dialogue. For example, the candidate's transcript misses critical detail regarding the discussion of borderline personality disorder and the mention of Wellbutrin and Zoloft. The baseline, while still containing errors, more closely represents the overall flow and content of the original conversation. However, the significant inaccuracies of the candidate transcript resulted in a lower score.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S1-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript significantly expands upon the reference dialogue, adding considerable detail and nuance while generally preserving the meaning. While the frequent repetition of \"I don't know\" is present in both, the candidate's expansion of context and addition of details (e.g., more specifics about therapy types, names of people) suggests a fuller and more engaged understanding of the conversation. The baseline is accurate but somewhat flat, lacking the added layers of explanation present in the candidate. The candidate's overall score reflects that while still quite repetitive with 'I don't know', the detail it provides is notable. The baseline is penalized for a lack of added detail. ",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S2-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript exhibits significantly better accuracy and coherence than the baseline. While both attempts capture the general content, the candidate more closely adheres to the reference's phrasing and sentence structure, demonstrating a stronger grasp of the nuances of the original dialogue.  The baseline contains numerous errors in word choice, grammatical structure, and fragmented sentence constructions, leading to a less understandable and less faithful rendition of the reference. While the candidate isn’t perfect (some minor word choice variations exist), its overall quality is noticeably higher, demonstrating a stronger alignment with the expected transcription output.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S2-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 0.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "job": "transcription",
+          "time": "long",
+          "notes": "This transcription is exceptionally long and complex due to the conversational nature, pauses, filler words, and repetition. It requires careful attention to detail to accurately capture the nuances of the dialogue and maintain readability.",
+          "winner": "tie",
+          "rationale": "",
+          "difficulty": "hard",
+          "score_delta": 0.0,
+          "baseline_overall_score": 0.0,
+          "candidate_overall_score": 0.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript demonstrates a significantly better understanding of clinical nuance and therapeutic technique. It captures the essence of the discussion around distortion and emotional reasoning more accurately and presents the information in a more concise and organized manner.  The baseline transcript is more rambling and misses subtle shifts in the conversation, particularly around the complex feelings related to Ivan's career choices and Ramona's feelings of responsibility. While generally accurate, the baseline lacks the depth and precision of the candidate transcript.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -4.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript is a severely garbled and incoherent version of the reference dialogue. It's missing significant portions, repeats phrases nonsensically, and introduces many extraneous words and fragmented sentences. The baseline transcript, while imperfect (it has some errors), is significantly more faithful to the original dialogue and maintains the overall structure and meaning, despite some minor errors and omissions. The candidate transcript's quality is so low that it's essentially unusable as a transcription.",
+          "score_delta": -4.0,
+          "baseline_overall_score": 8.0,
+          "candidate_overall_score": 4.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more complete and accurate than the baseline. While the baseline captures the general flow and main points, it omits numerous details, specific phrases, and important nuances from the reference transcript. The candidate transcript exhibits more of the speaker's unique phrasing, hesitations, and corrections, making it a more faithful representation of the original dialogue. The baseline’s brevity impacts clarity and accuracy of the conversation’s details and complexities.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -4.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript is riddled with repeated phrases, filler words ('I don't know', 'you know'), and significant deviations from the reference dialogue. While it captures the general topics discussed, the excessive repetition and inaccurate phrasing significantly degrade its intelligibility and faithfulness to the original. The baseline transcript, while not perfect, presents a much clearer and more accurate representation of the conversation. The candidate's transcription contains multiple repetitions and additions that are not present in the original text.",
+          "score_delta": -4.0,
+          "baseline_overall_score": 8.0,
+          "candidate_overall_score": 4.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript significantly deviates from both the reference and baseline transcripts due to numerous additions and alterations of phrasing, and also has repetition of some phrases. The introduction of unnecessary details such as 'with the help of my mom' and the repetition of 'I think some of what you're saying is true' significantly degrades the quality of the transcript. The baseline transcript captures the core dialogue and tone of the reference more accurately. The candidate includes numerous extraneous utterances, altering the flow and intended meaning.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S3-T06",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript exhibits significant errors in punctuation, sentence structure, and word choice, demonstrating a lack of understanding of proper grammar and clinical documentation conventions. Many sentences are run together, and the flow is disjointed. The baseline transcript, while containing some filler words and conversational phrases (common in transcribed dialogue), maintains significantly better grammatical accuracy and readability. The candidate's use of 'uh-huh' is excessive and detracts from the professional nature of a clinical transcript. Overall, the baseline demonstrates superior transcription quality.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S4-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript captures the essence of the conversation more accurately and fully, avoiding several omissions and simplifications present in the baseline transcript. The candidate's response is more detailed and closer to the reference in terms of phrasing and content, demonstrating a better understanding of the nuances of the dialogue. The baseline is quite abridged. Some key phrases and details are missing, impacting the overall accuracy and completeness of the transcription. There is also a larger amount of filler words and rambling present in the baseline.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 6.0,
+          "candidate_overall_score": 8.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S4-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly more complete and accurate. It captures a broader range of details and nuances from the reference transcript, including many specific phrases and statements. The baseline transcript is heavily abridged, missing numerous exchanges and essential information. While the baseline conveys the general flow of the conversation, it lacks the depth and detail necessary to be considered a truly accurate transcription. The candidate transcript, though with minor imperfections, demonstrates a much greater fidelity to the original dialogue.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S4-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "rationale": "The candidate transcript is significantly better than the baseline. The candidate transcript more closely adheres to the REFERENCE's structure, syntax, and wording. The baseline transcript exhibits numerous instances of paraphrasing that deviates substantially from the original text, resulting in a less accurate representation of the dialogue and a decrease in overall quality. For instance, multiple phrases are simplified/altered or omitted entirely in the baseline. The candidate also maintains the original flow and nuances of the dialogue much more accurately, particularly evident in the longer, complex statements. While both capture the core content, the candidate's fidelity to the REFERENCE is considerably higher.",
+          "score_delta": 2.0,
+          "baseline_overall_score": 7.0,
+          "candidate_overall_score": 9.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S4-T04",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript is riddled with repetitions ('I don't know,' 'I mean,' filler phrases), and significant deviations from the core content of the REFERENCE.  While the candidate captures the general themes and order of topics, it frequently adds unnecessary verbiage and misses key details present in the REFERENCE, making it significantly less accurate and less readable. The baseline exhibits only minor deviations but faithfully relays the conversation's intent and nuances.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0422-S4-T05",
+      "metric_name": "llm_judge_compare",
+      "metric_value": -3.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "baseline",
+          "rationale": "The candidate transcript exhibits significant transcription errors, including omissions, additions, and incorrect word choices, that alter the meaning and flow of the conversation. For example, there are repeated phrases and extra words in the candidate version such as \"so it's ... So...\" that were not present in the baseline and reference. The baseline accurately captures the complex and detailed narrative with fewer inaccuracies and distortions, resulting in a higher score.",
+          "score_delta": -3.0,
+          "baseline_overall_score": 9.0,
+          "candidate_overall_score": 6.0
+        }
+      }
+    },
+    {
+      "sample_id": "D0423-S1-T01",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 0.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "candidate_overall_score": 0.0,
+          "baseline_overall_score": 0.0,
+          "score_delta": 0.0,
+          "winner": "tie",
+          "rationale": ""
+        }
+      }
+    },
+    {
+      "sample_id": "D0423-S1-T02",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 7.0,
+          "score_delta": 2.0,
+          "rationale": "The candidate transcript is significantly more accurate and complete than the baseline transcript. The baseline transcript contains numerous instances of paraphrasing that deviate from the reference dialogue, resulting in lost information and inaccuracies. While the overall structure and flow are similar, the candidate more closely mirrors the original text. For example, the baseline omits crucial details about Tanya's family history and the therapist’s recommendations. The baseline often combines sentences and omits transitional phrases, leading to a less nuanced and less faithful representation of the conversation."
+        }
+      }
+    },
+    {
+      "sample_id": "D0423-S1-T03",
+      "metric_name": "llm_judge_compare",
+      "metric_value": 2.0,
+      "details": {
+        "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
+        "ref_run_id": "50a52f67-abce-47b6-939e-271013b3a4e0",
+        "judge_result": {
+          "winner": "candidate",
+          "candidate_overall_score": 9.0,
+          "baseline_overall_score": 7.0,
+          "score_delta": 2.0,
+          "rationale": "The candidate transcript demonstrates significantly better fidelity to the reference dialogue. While both transcripts contain numerous errors, the candidate consistently captures the core meaning and sequence of events more accurately than the baseline. The baseline transcript contains numerous significant omissions and alterations to the speaker’s intent, resulting in distortions of meaning. The candidate maintains more of the original phrasing and sentence structure, resulting in a more accurate representation of the conversation. The candidate exhibits fewer instances of word substitutions and sentence rearrangements that drastically change the narrative. There are many instances of filler words in both transcripts, but the candidate’s use of these words is closer to the reference. The baseline’s numerous errors negatively impact the overall quality and accuracy of the transcription. "
+        }
+      }
+    }
+  ],
+  "result_summary": {
+    "evaluated": 43,
+    "wins_candidate": 27,
+    "wins_baseline": 13,
+    "ties": 3,
+    "parse_failures": 0,
+    "wins_candidate_only": null
+  }
+}
+Eval report written to data/processed/run-llm-judge_20260403T093504Z.txt
