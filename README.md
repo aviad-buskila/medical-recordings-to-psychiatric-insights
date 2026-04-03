@@ -53,6 +53,8 @@ Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, hi
 
 BERTScore figures above are taken from `data/processed/run-bertscore_20260403T110608Z.txt`, which used encoder `roberta-large` (`model_type` in the artifact and current `.env`).
 
+**BERTScore rescaling note:** These figures use baseline rescaling (`rescale_with_baseline=True`, the CLI default). Rescaled scores are centered around 0 rather than the 0.85–0.95 range typical of raw roberta-large output. The candidate's rescaled F1 of 0.199 corresponds to approximately 0.87 raw F1, which is consistent with ~25% WER text. Use `--no-rescale` to obtain unscaled values for comparison with published benchmarks.
+
 ---
 
 ## Architecture
@@ -259,6 +261,8 @@ make db-init
 
 Migration order: `001_init.sql` → `003_stt_runs.sql` → `004_stt_remove_created_at_and_backfill_model.sql` → `005_stt_run_scope.sql` → `006_transcript_insights.sql`
 
+Note: migration `002` was superseded before commit and is absent from the sequence — this is expected; `make db-init` applies migrations in filename order and the gap has no effect.
+
 ---
 
 ## Configuration
@@ -321,3 +325,5 @@ Expected local path: `data/raw/dataset.pickle`
 - **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
 - **Sequential pipeline**: Steps run sequentially. Production deployment would require async execution, batching, and a job queue.
 - **Small-sample benchmarks**: Point estimates over five files are directional only. Run `analysis/statistical_significance.ipynb` (or increase `--limit`) before drawing conclusions about model differences.
+- **Insights `symptoms` field is unverified**: The evidence guardrail (transcript-grounded quote required) applies to `risk_flags`, `diagnostic_hypotheses`, and `recommended_followup`. The `symptoms` field is accepted as a plain list of strings from the LLM without quote verification — treat it accordingly.
+- **BERTScore not persisted to `evaluation_metrics`**: BERTScore scores all samples in a single batched call for efficiency; the result is written to a flat artifact file under `data/processed/` rather than inserted row-by-row into the DB. All other metrics are persisted to `evaluation_metrics`.

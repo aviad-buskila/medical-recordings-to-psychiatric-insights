@@ -121,6 +121,9 @@ def _sanitize_with_evidence(payload: dict[str, Any], transcript: str) -> dict[st
                 dropped += 1
         out[key] = kept_claims
 
+    # NOTE: symptoms are accepted as plain strings without transcript-quote verification.
+    # They are unverified LLM outputs. The evidence guardrail above applies only to
+    # risk_flags, diagnostic_hypotheses, and recommended_followup.
     out["symptoms"] = _coerce_str_list(payload.get("symptoms"))
     out["clinical_presentation"] = str(payload.get("clinical_presentation", "") or "").strip()
     try:
@@ -178,8 +181,9 @@ class TranscriptInsightsExtractor:
                 options=options,
                 response_format="json",
             )
-        except Exception:
+        except Exception as exc:
             # One retry for transient Ollama stalls/timeouts.
+            logger.warning("Insights extract attempt 1 failed (%s), retrying", exc)
             raw = self.client.generate(
                 prompt=self._prompt(transcript),
                 model=self.model_name,

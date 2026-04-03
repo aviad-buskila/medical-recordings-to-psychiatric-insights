@@ -1,6 +1,6 @@
 """Analytics repository helpers for repository."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
@@ -25,7 +25,7 @@ class AnalyticsRepository:
         run_timestamp: datetime | None = None,
     ) -> tuple[str, datetime]:
         run_id = str(uuid4())
-        timestamp = run_timestamp or datetime.utcnow()
+        timestamp = run_timestamp or datetime.now(timezone.utc)
         if run_scope not in {"full", "sample"}:
             raise ValueError("run_scope must be 'full' or 'sample'")
         query = """
@@ -98,7 +98,7 @@ class AnalyticsRepository:
                         "metric_name": metric_name,
                         "metric_value": metric_value,
                         "details": Json(details),
-                        "created_at": datetime.utcnow(),
+                        "created_at": datetime.now(timezone.utc),
                     },
                 )
             conn.commit()
@@ -128,7 +128,7 @@ class AnalyticsRepository:
                                 "metric_name": str(r["metric_name"]),
                                 "metric_value": float(r["metric_value"]),
                                 "details": Json(r["details"]),
-                                "created_at": datetime.utcnow(),
+                                "created_at": datetime.now(timezone.utc),
                             }
                             for r in chunk
                         ],
@@ -234,7 +234,7 @@ class AnalyticsRepository:
                         "prompt_version": prompt_version,
                         "insights": Json(insights),
                         "raw_output": raw_output,
-                        "created_at": datetime.utcnow(),
+                        "created_at": datetime.now(timezone.utc),
                     },
                 )
             conn.commit()

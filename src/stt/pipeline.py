@@ -1,7 +1,7 @@
 """Speech-to-text pipeline utilities for pipeline."""
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from src.analytics.repository import AnalyticsRepository
@@ -47,7 +47,7 @@ def run_stt_pipeline(
         model_name=stt.model_name,
         run_scope=run_scope,
         run_parameters=run_parameters,
-        run_timestamp=datetime.utcnow(),
+        run_timestamp=datetime.now(timezone.utc),
     )
     run_dir = _prepare_run_output_dir(
         base_dir=Path(settings.generated_transcripts_dir),
