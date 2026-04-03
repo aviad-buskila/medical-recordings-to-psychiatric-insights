@@ -72,7 +72,7 @@
       "/Users/aviadbuskila/medical-recordings-to-psychiatric-insights/data/processed/analysis_notebooks/gold_speaker_timeline_20260402T182835Z.ipynb"
     ]
   },
-  "eval_workers": "1",
+  "eval_workers": "auto",
   "bertscore_batch_size": 8,
   "db_summary": {
     "stt_runs": [
@@ -116,25 +116,25 @@
         "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "cer",
         "rows": 43,
-        "avg_metric_value": 0.2161916247622663
+        "avg_metric_value": 0.21619162476226636
       },
       {
         "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "cp_wer",
         "rows": 43,
-        "avg_metric_value": 0.19644360989827953
+        "avg_metric_value": 0.19644360989827955
       },
       {
         "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "llm_judge_compare",
-        "rows": 104,
-        "avg_metric_value": 0.75
+        "rows": 43,
+        "avg_metric_value": 0.37209302325581395
       },
       {
         "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
         "metric_name": "mer",
         "rows": 43,
-        "avg_metric_value": 0.1281555511676422
+        "avg_metric_value": 0.12815555116764224
       },
       {
         "run_id": "e7fc04ce-2cb2-427a-afa2-e456438abf8f",
