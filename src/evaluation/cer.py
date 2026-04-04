@@ -24,6 +24,10 @@ def character_error_breakdown(reference: str, hypothesis: str) -> dict[str, floa
             "deletions": 0,
             "reference_character_count": 0,
         }
+    # CR: this is really high complexity, can reach OOM, since there are no limitation, there is no threshold
+    # CR: Should we use some c-extension python library ? it uses c and optimized for this matrices operations? 
+    # CR: I think you already uses rapidfuzz, why here you reimplemented the logic?
+
     n, m = len(ref_chars), len(hyp_chars)
     dp = [[0] * (m + 1) for _ in range(n + 1)]
     for i in range(1, n + 1):
@@ -73,7 +77,7 @@ def character_error_breakdown(reference: str, hypothesis: str) -> dict[str, floa
         "reference_character_count": n,
     }
 
-
+# CR: Same comment- you do manual matrices operations instead of usign exisiting sdk
 def align_char_lists_with_indices(
     ref_chars: list[str],
     hyp_chars: list[str],

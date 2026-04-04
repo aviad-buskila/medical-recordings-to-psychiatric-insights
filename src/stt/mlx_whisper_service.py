@@ -12,6 +12,7 @@ from src.config.settings import get_settings
 logger = logging.getLogger(__name__)
 
 
+# CR: Code is coupled to apple sillicon, no abstraction if wanted to support other platforms
 class MLXWhisperService:
     """Local STT wrapper using Apple's MLX Whisper backend."""
 
@@ -31,6 +32,8 @@ class MLXWhisperService:
             os.environ.setdefault("HF_TOKEN", settings.hf_token)
             os.environ.setdefault("HUGGINGFACE_HUB_TOKEN", settings.hf_token)
 
+    # CR: this blocks caller thread for all duration. Not an issue for the current implementation, but becomes a bottleneck if you want to overlap transscrive with llm call/evaluation
+    # CR: also, you load the model each time, maybe we can cache it? depends on the usecase
     def transcribe(self, recording_path: Path) -> dict[str, str | float]:
         started_at = time.perf_counter()
         result, model_used = self._run_transcription(recording_path)

@@ -141,7 +141,7 @@ def _sample_block(
 
     # Short raw preview (optional context)
     g_norm = TextNormalizer.normalize(gold_raw)
-    if len(g_norm) > 240:
+    if len(g_norm) > 240:  # CR: magic number
         lines.append("")
         lines.append(f"gold (normalized, truncated): {g_norm[:240]}…")
     return "\n".join(lines) + "\n"

@@ -58,6 +58,8 @@ def capture_terminal_to_file(report_path: Path, header_lines: list[str]) -> Iter
 
         original_stdout = sys.stdout
         original_stderr = sys.stderr
+        # CR: This is not thread safe, and can cause race conditions when running multiple processes in parallel
+        # CR: can you use stringio/redirectstdout?
         sys.stdout = _TeeTextIO(original_stdout, f)  # type: ignore[assignment]
         sys.stderr = _TeeTextIO(original_stderr, f)  # type: ignore[assignment]
         try:

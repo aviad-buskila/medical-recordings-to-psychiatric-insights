@@ -31,6 +31,7 @@ def _safe_json_loads(raw: str) -> dict[str, Any]:
         pass
 
     # Some model responses wrap JSON with extra text; recover first valid object.
+    # CR: for robustness i would suggest scheme validation using pydantic, this regex can be a cause for issues
     candidates = re.findall(r"\{[\s\S]*\}", raw)
     for c in candidates:
         try:
@@ -66,7 +67,7 @@ def _norm_text(s: str) -> str:
 def _quote_supported(quote: str, transcript: str) -> bool:
     q = _norm_text(quote)
     t = _norm_text(transcript)
-    if len(q) < 8:
+    if len(q) < 8:  # CR: magic number
         return False
     return q in t
 
@@ -82,7 +83,8 @@ def _coerce_str_list(value: Any) -> list[str]:
                 out.append(s)
     return out
 
-
+# CR: I suggest scheme validation using pydantic, and perhaps self healing for sceheme
+# CR: Also you allow the llm hallucinate extra fields that doesnt exist
 def _sanitize_with_evidence(payload: dict[str, Any], transcript: str) -> dict[str, Any]:
     """
     Content guardrail:
@@ -147,6 +149,10 @@ class TranscriptInsightsExtractor:
         self.client = OllamaClient()
         self.settings = get_settings()
 
+    # CR: for security better to use transcript sanitization
+    # CR: also better to use separate system prompt and user prompt - as i suggested in the prompt class
+    # CR: missing some short examples perhaps? in the prompt
+    # CR: how do we know llm didnt hallucinate symptoms?
     def _prompt(self, transcript: str) -> str:
         return (
             "You are a clinical psychiatry assistant.\n"
@@ -168,9 +174,12 @@ class TranscriptInsightsExtractor:
     def extract(self, transcript: str) -> tuple[dict[str, Any], str]:
         options = {
             # Bound generation length for deterministic latency.
+            # CR: default is not too low?
             "num_predict": int(self.settings.ollama_insights_max_tokens),
             "temperature": 0.1,
         }
+        # CR: Ollama have many network errors, so this retry logic is important especially when their servers are loaded
+        # CR: I suggest adding circuit breaker, and log the errors so you can debug easily, perhaps add exponential backoff
         try:
             raw = self.client.generate(
                 prompt=self._prompt(transcript),
@@ -180,6 +189,7 @@ class TranscriptInsightsExtractor:
             )
         except Exception:
             # One retry for transient Ollama stalls/timeouts.
+            # CR: add exception logging
             raw = self.client.generate(
                 prompt=self._prompt(transcript),
                 model=self.model_name,
@@ -255,7 +265,7 @@ def run_insights_extract(
             "prompt_version": extractor.prompt_version,
             "insights": insights_payload,
             "raw_output": raw,
-            "transcript_preview": transcript[:500],
+            "transcript_preview": transcript[:500],  # CR: magic number 
             "timing": {
                 "elapsed_s": round(elapsed_s, 3),
                 "transcript_char_count": transcript_char_count,

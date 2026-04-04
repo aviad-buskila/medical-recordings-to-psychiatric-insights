@@ -30,6 +30,7 @@ def run_stt_pipeline(
         samples = [s for s in samples if s.sample_id in selected_set]
     total_candidates = sum(1 for s in samples if s.recording_path is not None)
     stt, provider_name = _resolve_stt_engine(stt_profile, allow_fallback=allow_fallback)
+    # CR: AnalyticsRepository has no context manager, connection might leak
     analytics = AnalyticsRepository()
     fallback_model = getattr(stt, "fallback_model_name", None)
     compute_type = getattr(stt, "compute_type", None)
@@ -47,7 +48,7 @@ def run_stt_pipeline(
         model_name=stt.model_name,
         run_scope=run_scope,
         run_parameters=run_parameters,
-        run_timestamp=datetime.utcnow(),
+        run_timestamp=datetime.utcnow(),  # CR: is deprecated I think
     )
     run_dir = _prepare_run_output_dir(
         base_dir=Path(settings.generated_transcripts_dir),
@@ -66,6 +67,8 @@ def run_stt_pipeline(
         total_candidates,
         "all" if limit is None else limit,
     )
+    # CR: no resume support - if pipeline crashes at middle samples all progress goes to nothing
+    # CR: worth validation audio size and limit it, im sure not all samples are supported by apple sillicon and memory limits?
     for idx, sample in enumerate(samples, start=1):
         if limit is not None and processed >= limit:
             break
@@ -115,6 +118,7 @@ def run_stt_pipeline(
             if limit is not None:
                 # In sampled mode, continue scanning so limit still means successful transcriptions.
                 continue
+            # CR: in full mode any transient db write failures will aborts all remaining samples
             raise
     logger.info(
         "STT pipeline finished. processed=%s skipped_invalid_audio=%s failed_other=%s",
@@ -178,6 +182,8 @@ def _prepare_run_output_dir(base_dir: Path, run_id: str, run_timestamp: datetime
 
 
 def _write_transcript_file(run_dir: Path, sample_id: str, transcript: str | object) -> None:
+    # CR: sample_id is not sanitized, it can contain / or \  .. etc .. which can lead to path traversal
+    # CR: All this logic of sample normalization, should be in ClinicalSample 
     safe_sample_id = sample_id.replace("/", "_").replace("\\", "_")
     out_path = run_dir / f"{safe_sample_id}.txt"
     out_path.write_text(str(transcript or ""), encoding="utf-8")

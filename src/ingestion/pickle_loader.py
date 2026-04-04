@@ -15,6 +15,7 @@ class DatasetPickleLoader:
         if not self.path.exists():
             return {}
         with self.path.open("rb") as f:
+            # CR: using pickle is bad practice(secuirty risk), better use json.loads()
             payload = pickle.load(f)
         if not isinstance(payload, dict):
             return {}

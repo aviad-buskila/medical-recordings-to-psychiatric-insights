@@ -59,6 +59,7 @@ class Settings(BaseSettings):
 
     bertscore_model: str = Field(default="roberta-large", alias="BERTSCORE_MODEL")
 
+    # CR: password is embedded in plaintext in fstring, for security- use pydantic.secret.. and quote_plus for dsn
     @property
     def postgres_dsn(self) -> str:
         return (

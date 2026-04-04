@@ -62,8 +62,10 @@ def load_dotenv_file(path: Path) -> dict[str, str]:
         if key:
             out[key] = value
     return out
+# CR: general comment: No pipeline step abstraction, so it's hard to add new steps, know which step failed?
 
-
+# CR:  You use subprocess for ollama command, but there is an sdk for python you can use, 
+# CR: jupyter sdk if exists, I think also there is  an sdk for ffmpeg for pytho, it usually have better error handling and make it much more easier to debug since it saves states
 def run_cmd(command: list[str], env: dict[str, str] | None = None, timeout_s: int | None = None) -> CmdResult:
     log(f"Running: {' '.join(command)}")
     # Merge values from .env so this orchestrator matches direct CLI behavior.
@@ -94,7 +96,7 @@ def run_cmd(command: list[str], env: dict[str, str] | None = None, timeout_s: in
     log(f"Done: {' '.join(command)}")
     return CmdResult(command=command, stdout=proc.stdout, stderr=proc.stderr)
 
-
+# CR: use constants
 def select_recordings(limit: int) -> list[str]:
     recordings_dir = ROOT / "data" / "raw" / "recordings"
     allowed = {".wav", ".mp3", ".m4a", ".flac", ".aac", ".ogg"}
@@ -181,6 +183,8 @@ def run_notebook(input_nb: Path, output_nb: Path, env: dict[str, str] | None = N
     )
 
 
+# CR: It actually duplicates logic, since in AnalyticsRepository you handle all tcp connects on its own
+# CR: You break here single responsibility since both here and in AnalyticsRepository you handle sql queries
 def fetch_db_summary(candidate_run_id: str, baseline_run_id: str) -> dict[str, Any]:
     settings = get_settings()
     out: dict[str, Any] = {}

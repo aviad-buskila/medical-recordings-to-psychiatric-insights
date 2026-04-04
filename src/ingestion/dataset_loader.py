@@ -22,6 +22,7 @@ class DatasetLoader:
 
     def load_samples(self) -> list[ClinicalSample]:
         # TODO: match files by robust ID extraction from filenames.
+        # CR: do we support only wav files? if so we should update the validate_layout to only count wav files
         recording_files = {p.stem: p for p in self.recordings_dir.glob("*") if p.suffix.lower() in {".wav"}}
         transcript_files = {p.stem: p for p in self.transcripts_dir.glob("*") if p.suffix.lower() == ".txt"}
         casenote_files = {p.stem: p for p in self.casenotes_dir.glob("*") if p.suffix.lower() in {".txt", ".md"}}

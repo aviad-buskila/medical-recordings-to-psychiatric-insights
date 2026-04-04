@@ -12,7 +12,9 @@ class OllamaClient:
         settings = get_settings()
         self.model = settings.ollama_model
         self.client = Client(host=settings.ollama_base_url, timeout=settings.ollama_timeout_s)
-
+    # CR: A better design is to have generate accept system_prompt and then user_content and not make the callers concatenate it themselves,
+    # CR: Also it will allow you to send the system prompt only once and not for every call
+    # CR: You can also send them with different user roles so that they have different meaning for the model
     def generate(
         self,
         prompt: str,

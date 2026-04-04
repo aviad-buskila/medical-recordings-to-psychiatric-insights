@@ -10,6 +10,8 @@ from psycopg.types.json import Json
 from src.config.settings import get_settings
 
 
+# CR: God class stt runs, eval metrics, insights, connection mgmt
+# CR: consider splitting 
 class AnalyticsRepository:
     """Persistence adapter for pipeline metadata and evaluations."""
 
@@ -78,11 +80,14 @@ class AnalyticsRepository:
             "model_name": model_name,
             "run_timestamp": run_timestamp,
         }
+        # you repeat conenction handling again and again - better pythonic way is to create a single context manager with __enter__ and __exit__ and then lots of the code can be deleted and be compact, less bugs and less code
         with psycopg.connect(self.settings.postgres_dsn) as conn:
             with conn.cursor() as cur:
                 cur.execute(query, params)
             conn.commit()
 
+# CR: General comment- since its sensitive medical data perhaps missing encryption?
+# CR: not sure about regulatory concerns
     def insert_eval_metric(self, sample_id: str, metric_name: str, metric_value: float, details: dict[str, Any]) -> None:
         query = """
             INSERT INTO clinical_ai.evaluation_metrics (
@@ -106,7 +111,7 @@ class AnalyticsRepository:
     def insert_eval_metrics_batch(
         self,
         rows: list[dict[str, Any]],
-        batch_size: int = 500,
+        batch_size: int = 500,  # CR: magic number 
     ) -> None:
         """Bulk insert evaluation rows in chunks to reduce DB round-trips."""
         if not rows:

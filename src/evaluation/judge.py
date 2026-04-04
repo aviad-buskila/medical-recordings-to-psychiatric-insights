@@ -33,6 +33,8 @@ class OllamaJudge:
                 "rationale": "Judge output was not valid JSON.",
             }
 
+    # CR: temprature is set implictly
+    # CR: are llm judge compared to exisiting  real good examples?
     def evaluate_transcript(self, reference_text: str, predicted_text: str) -> dict:
         prompt = (
             "You are a strict clinical transcription judge.\n"
@@ -47,6 +49,7 @@ class OllamaJudge:
             "Scoring: higher overall_score is better; higher severities/risks are worse.\n\n"
             f"REFERENCE:\n{reference_text}\n\nPREDICTED:\n{predicted_text}"
         )
+        # CR: pass timeout to avoid hanging
         response = self.client.generate(prompt=prompt, model=self.model, response_format="json")
         return self._safe_parse(response)
 

@@ -77,6 +77,7 @@ def evaluate_stt_against_gold(
         candidate_sample_ids = [sid for sid in candidate_sample_ids if sid == sample_id]
 
     jobs: list[dict[str, Any]] = []
+    # CR: you override sample_id which is a method parameter , can cause bugs
     for sample_id in candidate_sample_ids:
         if limit is not None and len(jobs) >= limit:
             break
@@ -284,6 +285,7 @@ def _log_speaker_metrics_block(sample_id: str, payload: dict[str, Any], label: s
         )
 
 
+# CR: notice code duplication with llm_judge_eval.py.
 def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], transcript_path: Path | None) -> str | None:
     # Try direct sample ID match first, then normalized variants.
     candidates = [sample_id, sample_id.upper(), sample_id.replace("_", "-"), sample_id.replace("-", "_")]
@@ -293,10 +295,19 @@ def _resolve_gold_reference(sample_id: str, gold_transcripts: dict[str, str], tr
 
     # Fallback to transcript files if present.
     if transcript_path and transcript_path.exists():
+        # CR: errors="ignore" silently drops encoding issues, better to switch to warning
         return Path(transcript_path).read_text(encoding="utf-8", errors="ignore")
     return None
 
 
+# CR: really long and complex function hard to read, worth seprating to high level funcationalitu- compute candidate, compute deltas, build details , compute samples eval
+# CR: better have dataclass for job:dict: (not casting)
+# @dataclass(frozen=True)
+# class EvalJob:
+#     sample_id: str
+#     reference: str
+#     hypothesis: str
+#     run_id: str | None
 def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     sample_id = str(job["sample_id"])
     reference = str(job["reference"])
@@ -309,7 +320,7 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     metrics = set(metrics_raw) if isinstance(metrics_raw, list) else None
     skip_cp_wer = bool(job.get("skip_cp_wer", False))
     skip_speaker_metrics = bool(job.get("skip_speaker_metrics", False))
-
+    # CR: each metric follows similiar logic, can we extract a common inteface and avoid all the if-else?
     metric_enabled = {
         "wer": metrics is None or "wer" in metrics,
         "cer": metrics is None or "cer" in metrics,
@@ -321,6 +332,7 @@ def _compute_sample_eval_payload(job: dict[str, Any]) -> dict[str, Any] | None:
     if not metric_enabled["wer"]:
         metric_enabled["wer"] = True
 
+    # CR: normalize is called redundantly in word_error_breakdown? can we normalize once at beginning ? can improve performance maybe?
     breakdown = word_error_breakdown(reference=reference, hypothesis=hypothesis)
     wer = float(breakdown["wer"])
     cer_breakdown = character_error_breakdown(reference=reference, hypothesis=hypothesis) if metric_enabled["cer"] else None

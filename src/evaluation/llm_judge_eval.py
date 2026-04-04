@@ -89,6 +89,8 @@ def run_llm_judge_eval(
             run_id,
             candidate_label,
         )
+    # CR: you have n queries and you open and close db connection each time per sample
+    # CR: can we fetch all samples (in batchs) in one query? can be a nice preformance improvementc
     for sample_id in sample_ids:
         if limit is not None and evaluated >= limit:
             break

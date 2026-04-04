@@ -65,6 +65,7 @@ def cp_wer_breakdown_from_json(
 
     labeled_candidates: list[tuple[str, str]] = []
     labeled_candidates.append(("chronological", " ".join(words)))
+    # CR: you go bruteforce here - can be veru slow o(n!)? cannot find a better algo?
     for perm in itertools.permutations(speaker_ids):
         label = "blocks_order:" + ",".join(str(s) for s in perm)
         parts = [" ".join(by_sp[s]) for s in perm]

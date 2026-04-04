@@ -1,3 +1,5 @@
+# CR: no tests for generate() failures
+# CR: worth  adding tests to when llm returns malformed JSON, invalid scehemes, retry/timeout behavious
 """Tests for insights extractor behavior."""
 
 from __future__ import annotations
