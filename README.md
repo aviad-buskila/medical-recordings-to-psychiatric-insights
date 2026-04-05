@@ -1,6 +1,7 @@
 # Medical Conversation Intelligence Pipeline
 
 > **Wiki — go deeper:** STT models, metrics, LLM judge, insights, Gemma & MedGemma, pipeline — all in [the repo's Wiki](https://github.com/aviad-buskila/medical-recordings-to-psychiatric-insights/wiki)
+
 > Aggregative Results Report could be found [here](https://github.com/aviad-buskila/medical-recordings-to-psychiatric-insights/wiki/Results)
 
 An on-prem/local platform for benchmarking speech-to-text models for clinical use by extracting structured psychiatric insights from patient-doctor conversations. Covers the full behavioral health AI stack: STT evaluation, clinical NLP, reproducible pipelines, and multi-metric model comparison analytics.
