@@ -173,6 +173,8 @@ Audio files (WAV)
   [Pipeline Report]  ──── data/processed/full_pipeline/
 ```
 
+![Architecture](docs/architecture.png)
+
 **Pipeline steps:**
 
 1. **Ingestion** — discovers audio, gold transcripts, optional speaker-tagged JSON, and casenotes from `data/raw/`
