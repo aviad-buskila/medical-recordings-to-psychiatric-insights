@@ -53,7 +53,6 @@ Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, hi
 
 BERTScore figures above are taken from `data/processed/run-bertscore_20260403T110608Z.txt`, which used encoder `roberta-large` (`model_type` in the artifact and current `.env`).
 
-<<<<<<< HEAD
 ### Per-recording performance (all N=43 samples)
 
 The table below lists **every scalar metric we store per sample** for the quality candidate vs. the turbo baseline (same runs as in [Latest benchmark](#latest-benchmark)): lexical scores vs gold, WER edit counts, per-speaker WER when `transcribed/*.json` exists, BERTScore F1 vs gold, and LLM-as-judge comparative scores. Subscripts **`_c`** = candidate (large-v3-mlx), **`_b`** = baseline (large-v3-turbo). **WER S/I/D** = substitutions / insertions / deletions (word counts). **LLM_Δ** = candidate overall score minus baseline (0–10 scale). Empty speaker-WER cells mean that sample had no usable diarization JSON.
@@ -108,15 +107,7 @@ Canonical copy (for diffs and regeneration): [`data/processed/reports/per_sample
 | D0423-S1-T02 | 0.193 | 0.123 | 302 | 332 | 392 | 207 | 86 | 362 | 0.168 | 0.109 | 0.097 | 0.063 | 0.194 | 0.127 | 0.142 | 0.066 | 0.194 | 0.193 | 0.119 | 0.127 | 0.266 | 0.229 | 0.037 | 2.00 | candidate | 9.0 | 7.0 |
 | D0423-S1-T03 | 0.254 | 0.122 | 264 | 259 | 135 | 139 | 41 | 136 | 0.203 | 0.098 | 0.124 | 0.062 | 0.248 | 0.124 | 0.220 | 0.082 | 0.193 | 0.266 | 0.189 | 0.109 | 0.366 | 0.368 | -0.001 | 2.00 | candidate | 9.0 | 7.0 |
 
-_Rows with LLM scores `0.0` / winner `tie` may indicate a failed or placeholder judge call; see `evaluation_metrics` JSONB for `judge_error`._
-=======
-### Per-recording table (all samples)
-
-Full row-level table (same columns as below): [`data/processed/reports/per_sample_benchmark_N43.md`](data/processed/reports/per_sample_benchmark_N43.md). Regenerate after new eval artifacts:
-
-`python scripts/export_per_sample_benchmark_md.py`
-
-#### Column legend
+#### Column legend (metrics in the table above)
 
 | Column | Meaning |
 | --- | --- |
@@ -149,8 +140,7 @@ Full row-level table (same columns as below): [`data/processed/reports/per_sampl
 | LLM_score_c | Judge overall score (0–10) for candidate vs reference. |
 | LLM_score_b | Judge overall score (0–10) for baseline vs reference. |
 
-**Note:** For WER/CER/MER/WIL/cpWER, lower is better. For BERT F1, higher is better. `LLM_score_*` = 0 with `tie` may indicate a failed judge call; see `judge_error` in the DB or the llm-judge report.
->>>>>>> b2b3586 (add legend of metrics table)
+**Note:** For WER/CER/MER/WIL/cpWER, lower is better. For BERT F1, higher is better. Rows with `LLM_score_*` = `0.0` and winner `tie` often mean a failed or placeholder judge call—check `judge_error` in `evaluation_metrics` (JSONB) or the llm-judge report artifact.
 
 ---
 
