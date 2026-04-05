@@ -53,6 +53,7 @@ Lower is better for WER/CER/MER/WIL/cpWER. For BERTScore and LLM judge delta, hi
 
 BERTScore figures above are taken from `data/processed/run-bertscore_20260403T110608Z.txt`, which used encoder `roberta-large` (`model_type` in the artifact and current `.env`).
 
+<<<<<<< HEAD
 ### Per-recording performance (all N=43 samples)
 
 The table below lists **every scalar metric we store per sample** for the quality candidate vs. the turbo baseline (same runs as in [Latest benchmark](#latest-benchmark)): lexical scores vs gold, WER edit counts, per-speaker WER when `transcribed/*.json` exists, BERTScore F1 vs gold, and LLM-as-judge comparative scores. Subscripts **`_c`** = candidate (large-v3-mlx), **`_b`** = baseline (large-v3-turbo). **WER S/I/D** = substitutions / insertions / deletions (word counts). **LLM_Δ** = candidate overall score minus baseline (0–10 scale). Empty speaker-WER cells mean that sample had no usable diarization JSON.
@@ -108,6 +109,48 @@ Canonical copy (for diffs and regeneration): [`data/processed/reports/per_sample
 | D0423-S1-T03 | 0.254 | 0.122 | 264 | 259 | 135 | 139 | 41 | 136 | 0.203 | 0.098 | 0.124 | 0.062 | 0.248 | 0.124 | 0.220 | 0.082 | 0.193 | 0.266 | 0.189 | 0.109 | 0.366 | 0.368 | -0.001 | 2.00 | candidate | 9.0 | 7.0 |
 
 _Rows with LLM scores `0.0` / winner `tie` may indicate a failed or placeholder judge call; see `evaluation_metrics` JSONB for `judge_error`._
+=======
+### Per-recording table (all samples)
+
+Full row-level table (same columns as below): [`data/processed/reports/per_sample_benchmark_N43.md`](data/processed/reports/per_sample_benchmark_N43.md). Regenerate after new eval artifacts:
+
+`python scripts/export_per_sample_benchmark_md.py`
+
+#### Column legend
+
+| Column | Meaning |
+| --- | --- |
+| sample_id | Recording id (matches `data/raw/recordings/` stem). |
+| WER_c | Word error rate: **candidate** (quality STT) vs **gold** reference. Lower is better. |
+| WER_b | Word error rate: **baseline** (turbo STT) vs gold. Lower is better. |
+| WER_S_c | WER **substitutions** (word count): candidate vs gold. |
+| WER_I_c | WER **insertions** (word count): candidate vs gold. |
+| WER_D_c | WER **deletions** (word count): candidate vs gold. |
+| WER_S_b | WER substitutions: baseline vs gold. |
+| WER_I_b | WER insertions: baseline vs gold. |
+| WER_D_b | WER deletions: baseline vs gold. |
+| CER_c | Character error rate: candidate vs gold. Lower is better. |
+| CER_b | Character error rate: baseline vs gold. |
+| MER_c | Match error rate: candidate vs gold. Lower is better. |
+| MER_b | Match error rate: baseline vs gold. |
+| WIL_c | Word information lost: candidate vs gold. Lower is better. |
+| WIL_b | Word information lost: baseline vs gold. |
+| cpWER_c | cpWER (speaker-block permutation WER): candidate vs gold when `transcribed/*.json` exists. Lower is better. |
+| cpWER_b | cpWER: baseline vs gold. |
+| spk1_WER_c | Per-speaker WER for **speaker 1** (candidate); empty if no usable diarization JSON. |
+| spk2_WER_c | Per-speaker WER for **speaker 2** (candidate). |
+| spk1_WER_b | Per-speaker WER speaker 1 (baseline). |
+| spk2_WER_b | Per-speaker WER speaker 2 (baseline). |
+| BERT_F1_c | BERTScore F1: semantic overlap of **candidate** transcript vs gold (encoder in bertscore artifact). Higher is better. |
+| BERT_F1_b | BERTScore F1: baseline transcript vs gold. |
+| BERT_ΔF1 | **Candidate F1 − baseline F1** for this sample. Positive favors candidate in embedding space. |
+| LLM_Δ | LLM judge: **candidate overall score − baseline overall score** (each 0–10 vs reference). Positive favors candidate. |
+| LLM_winner | Judge label: `candidate`, `baseline`, or `tie`. |
+| LLM_score_c | Judge overall score (0–10) for candidate vs reference. |
+| LLM_score_b | Judge overall score (0–10) for baseline vs reference. |
+
+**Note:** For WER/CER/MER/WIL/cpWER, lower is better. For BERT F1, higher is better. `LLM_score_*` = 0 with `tie` may indicate a failed judge call; see `judge_error` in the DB or the llm-judge report.
+>>>>>>> b2b3586 (add legend of metrics table)
 
 ---
 
