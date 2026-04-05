@@ -321,3 +321,4 @@ Expected local path: `data/raw/dataset.pickle`
 - **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
 - **Sequential pipeline**: Steps run sequentially. Production deployment would require async execution, batching, and a job queue.
 - **Small-sample benchmarks**: Point estimates over five files are directional only. Run `analysis/statistical_significance.ipynb` (or increase `--limit`) before drawing conclusions about model differences.
+

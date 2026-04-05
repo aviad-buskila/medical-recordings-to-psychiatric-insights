@@ -587,7 +587,7 @@ def main() -> None:
     write_markdown_summary(summary_md, summary_payload)
     state.update(summary_payload)
     save_state(state)
-    log(f"Full pipeline completed. Summary: {summary_md}")
+    log(f"Full pipeline completed.  Summary: {summary_md}")
 
 
 if __name__ == "__main__":
