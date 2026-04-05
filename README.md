@@ -405,6 +405,7 @@ Expected local path: `data/raw/dataset.pickle`
 
 - **Synthetic dataset**: Gold transcripts are scripted dialogue, not naturalistic psychiatric sessions. Real clinical audio would produce different benchmarks.
 - **Whisper struggles with medical terminology**: Drug names, dosages, and acronyms (SSRI, DSM-5, GAD, PTSD) have elevated error rates without domain fine-tuning — precisely the highest-value terms in psychiatric transcription.
+- **No native diarization in Whisper**: Whisper does not perform speaker diarization out of the box. End-to-end diarization (who spoke when) was **not** implemented or evaluated in this pipeline’s scope; any per-speaker metrics in reports depend on separate diarization JSON when present, not on Whisper itself.
 - **BERTScore encoder choice**: With the code default (`roberta-large`), scores reflect a general encoder not tuned for clinical text. The sample `.env` uses BioBERT (`dmis-lab/biobert-base-cased-v1.2`) for more domain-appropriate similarity; other biomedical encoders (e.g. SciBERT) are also reasonable overrides via `BERTSCORE_MODEL`.
 - **Self-reported confidence**: The `confidence` field in insights comes from the LLM's own output — it is not a calibrated probability.
 - **Apple Silicon required for STT**: `mlx-whisper` requires Apple Silicon. Evaluation and insights extraction run anywhere.
