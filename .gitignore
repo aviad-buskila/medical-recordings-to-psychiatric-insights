@@ -221,3 +221,4 @@ logs/
 .cache/huggingface/
 .cache/torch/
 .cache/whisper/
+.DS_Store
